@@ -45,56 +45,56 @@ export function action<T extends object>(options: ActionOptions) {
 }
 
 /**
+ * Action alias options.
+ */
+type ActionAliasOptions = Flatten<Omit<ActionOptions, 'method' | 'path'>>;
+
+/**
  * Get decorator.
  *
+ * @param path
  * @param options
  */
-export const get = (options: Omit<ActionOptions, 'method'>) =>
-  action({
-    ...options,
-    method: HttpMethod.GET,
-  });
+export const get = (path: string, options?: ActionAliasOptions) => {
+  return action({...options, path, method: HttpMethod.GET});
+};
 
 /**
  * Post decorator.
  *
+ * @param path
  * @param options
  */
-export const post = (options: Omit<ActionOptions, 'method'>) =>
-  action({
-    ...options,
-    method: HttpMethod.POST,
-  });
+export const post = (path: string, options?: ActionAliasOptions) => {
+  return action({...options, path, method: HttpMethod.POST});
+};
 
 /**
  * Put decorator.
  *
+ * @param path
  * @param options
  */
-export const put = (options: Omit<ActionOptions, 'method'>) =>
-  action({
-    ...options,
-    method: HttpMethod.PUT,
-  });
+export const put = (path: string, options?: ActionAliasOptions) => {
+  return action({...options, path, method: HttpMethod.PUT});
+};
 
 /**
  * Patch decorator.
  *
+ * @param path
  * @param options
  */
-export const patch = (options: Omit<ActionOptions, 'method'>) =>
-  action({
-    ...options,
-    method: HttpMethod.PATCH,
-  });
+export const patch = (path: string, options?: ActionAliasOptions) => {
+  return action({...options, path, method: HttpMethod.PATCH});
+};
 
 /**
  * Del decorator.
  *
+ * @param path
  * @param options
  */
-export const del = (options: Omit<ActionOptions, 'method'>) =>
-  action({
-    ...options,
-    method: HttpMethod.DELETE,
-  });
+export const del = (path: string, options?: ActionAliasOptions) => {
+  return action({...options, path, method: HttpMethod.DELETE});
+};

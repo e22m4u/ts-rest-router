@@ -18,9 +18,9 @@ import {RequestDataReflector} from './decorators/index.js';
 import {RequestContextReflector} from './decorators/index.js';
 
 /**
- * Controller extra options.
+ * Controller root options.
  */
-export type ControllerExtraOptions = {
+export type ControllerRootOptions = {
   pathPrefix?: string;
   before?: RoutePreHandler | RoutePreHandler[];
   after?: RoutePostHandler | RoutePostHandler[];
@@ -43,7 +43,7 @@ export class ControllerRegistry extends DebuggableService {
    */
   addController<T extends object>(
     ctor: Constructor<T>,
-    options?: ControllerExtraOptions,
+    options?: ControllerRootOptions,
   ): this {
     // проверка повторной регистрации помогает
     // заметить ошибку в коде, который использует
@@ -68,20 +68,20 @@ export class ControllerRegistry extends DebuggableService {
       controllerMd,
       options,
     );
-    this.debug('%v pre-handlers found.', preHandlers.length);
+    this.debug('%v total pre-handlers found.', preHandlers.length);
     // подготовка post-обработчиков
     const postHandlers = this.getPostHandlersByControllerMetadata(
       controllerMd,
       options,
     );
-    this.debug('%v post-handlers found.', postHandlers.length);
+    this.debug('%v total post-handlers found.', postHandlers.length);
     // обход всех операций контроллера
     // для определения маршрутов
     const actionsMd = ActionReflector.getMetadata(ctor);
     this.debug('%v actions found.', actionsMd.size);
     const router = this.getService(TrieRouter);
     actionsMd.forEach((actionMd, actionName) => {
-      this.debug('Adding route by %s.%s action.', ctor.name, actionName);
+      this.debug('Adding route for %s.%s.', ctor.name, actionName);
       // подготовка пути маршрута с префиксом
       this.debug('Route path is %v.', actionMd.path);
       const prefixedRoutePath = `${pathPrefix}/${actionMd.path}`.replace(
@@ -89,14 +89,30 @@ export class ControllerRegistry extends DebuggableService {
         '/',
       );
       this.debug('Prefixed route path is %v.', prefixedRoutePath);
+      // подготовка pre-обработчиков операции
+      const actionPreHandlers = Array.isArray(actionMd.before)
+        ? actionMd.before
+        : actionMd.before
+          ? [actionMd.before]
+          : [];
+      this.debug('%v action pre-handlers found.', actionPreHandlers.length);
+      const mergedPreHandlers = [...preHandlers, ...actionPreHandlers];
+      // подготовка post-обработчиков операции
+      const actionPostHandlers = Array.isArray(actionMd.after)
+        ? actionMd.after
+        : actionMd.after
+          ? [actionMd.after]
+          : [];
+      this.debug('%v action post-handlers found.', actionPostHandlers.length);
+      const mergedPostHandlers = [...postHandlers, ...actionPostHandlers];
       // подготовка обработчика маршрута
       const routeHandler = this.createRouteHandler(ctor, actionName);
       router.defineRoute({
         method: actionMd.method,
         path: prefixedRoutePath,
-        preHandler: preHandlers,
+        preHandler: mergedPreHandlers,
         handler: routeHandler,
-        postHandler: postHandlers,
+        postHandler: mergedPostHandlers,
       });
       this.debug(
         'Route %s %v is added.',
@@ -125,13 +141,13 @@ export class ControllerRegistry extends DebuggableService {
    */
   getPathPrefixByControllerMetadata(
     controllerMd: ControllerMetadata,
-    options?: ControllerExtraOptions,
+    options?: ControllerRootOptions,
   ) {
-    const extraPathPrefix = options?.pathPrefix || '';
-    this.debug('Extra path prefix is %v.', extraPathPrefix);
+    const rootPathPrefix = options?.pathPrefix || '';
+    this.debug('Root path prefix is %v.', rootPathPrefix);
     const controllerPathPrefix = controllerMd.path || '';
     this.debug('Controller path prefix is %v.', controllerPathPrefix);
-    const mergedPathPrefix = `/${extraPathPrefix}/${controllerPathPrefix}`
+    const mergedPathPrefix = `/${rootPathPrefix}/${controllerPathPrefix}`
       .replace(/\/\//g, '/')
       .replace(/\/$/, '');
     this.debug('Merged path prefix is %v.', mergedPathPrefix);
@@ -146,16 +162,16 @@ export class ControllerRegistry extends DebuggableService {
    */
   getPreHandlersByControllerMetadata(
     controllerMd: ControllerMetadata,
-    options?: ControllerExtraOptions,
+    options?: ControllerRootOptions,
   ) {
     // подготовка дополнительных
     // pre-обработчиков запроса
-    let extraPreHandlers: RoutePreHandler[] = [];
+    let rootPreHandlers: RoutePreHandler[] = [];
     if (options?.before)
-      extraPreHandlers = Array.isArray(options?.before)
+      rootPreHandlers = Array.isArray(options?.before)
         ? options.before
         : [options.before];
-    this.debug('%v extra pre-handlers found.', extraPreHandlers.length);
+    this.debug('%v root pre-handlers found.', rootPreHandlers.length);
     // подготовка pre-обработчиков
     // запроса контроллера
     let ctlPreHandlers: RoutePreHandler[] = [];
@@ -166,7 +182,7 @@ export class ControllerRegistry extends DebuggableService {
     this.debug('%v controller pre-handlers found.', ctlPreHandlers.length);
     // подготовка объединенного набора
     // pre-обработчиков запроса
-    const mergedPreHandlers = [...extraPreHandlers, ...ctlPreHandlers];
+    const mergedPreHandlers = [...rootPreHandlers, ...ctlPreHandlers];
     this.debug('%v merged pre-handlers.', mergedPreHandlers.length);
     return mergedPreHandlers;
   }
@@ -179,16 +195,16 @@ export class ControllerRegistry extends DebuggableService {
    */
   getPostHandlersByControllerMetadata(
     controllerMd: ControllerMetadata,
-    options?: ControllerExtraOptions,
+    options?: ControllerRootOptions,
   ) {
     // подготовка дополнительных
     // post-обработчиков запроса
-    let extraPostHandlers: RoutePostHandler[] = [];
+    let rootPostHandlers: RoutePostHandler[] = [];
     if (options?.after)
-      extraPostHandlers = Array.isArray(options.after)
+      rootPostHandlers = Array.isArray(options.after)
         ? options.after
         : [options.after];
-    this.debug('%v extra post-handlers found.', extraPostHandlers.length);
+    this.debug('%v root post-handlers found.', rootPostHandlers.length);
     // подготовка post-обработчиков
     // запроса контроллера
     let ctlPostHandlers: RoutePostHandler[] = [];
@@ -199,7 +215,7 @@ export class ControllerRegistry extends DebuggableService {
     this.debug('%v controller post-handlers found.', ctlPostHandlers.length);
     // подготовка объединенного набора
     // post-обработчиков запроса
-    const mergedPostHandlers = [...extraPostHandlers, ...ctlPostHandlers];
+    const mergedPostHandlers = [...rootPostHandlers, ...ctlPostHandlers];
     this.debug('%v merged post-handlers.', mergedPostHandlers.length);
     return mergedPostHandlers;
   }
@@ -216,8 +232,8 @@ export class ControllerRegistry extends DebuggableService {
     actionName: string,
   ): RouteHandler {
     this.debug(
-      'Creating route handler by %s.%s action.',
-      controllerCtor,
+      'Creating route handler for %s.%s.',
+      controllerCtor.name,
       actionName,
     );
     const requestContextMetadataMap = RequestContextReflector.getMetadata(
@@ -233,8 +249,8 @@ export class ControllerRegistry extends DebuggableService {
     const dataValidator = this.getService(DataValidator);
     return (requestContext: RequestContext) => {
       this.debug(
-        'Executing route handler of %s.%s action.',
-        controllerCtor,
+        'Executing route handler for %s.%s.',
+        controllerCtor.name,
         actionName,
       );
       const args = Array(argsNumber).map((value, index) => {
