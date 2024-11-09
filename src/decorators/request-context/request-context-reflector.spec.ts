@@ -5,9 +5,9 @@ import {RequestContextMetadata} from './request-context-metadata.js';
 import {RequestContextReflector} from './request-context-reflector.js';
 import {REQUEST_CONTEXT_METADATA_KEY} from './request-context-metadata.js';
 
-describe('RequestContextReflector', function() {
-  describe('setMetadata', function() {
-    it('sets a given value as target metadata', function() {
+describe('RequestContextReflector', function () {
+  describe('setMetadata', function () {
+    it('sets a given value as target metadata', function () {
       class Target {}
       const md1 = {property: 'req' as const};
       const md2 = {property: 'res' as const};
@@ -23,7 +23,7 @@ describe('RequestContextReflector', function() {
       expect(res!.get(1)).to.be.eq(md2);
     });
 
-    it('overrides existing metadata', function() {
+    it('overrides existing metadata', function () {
       class Target {}
       const md1 = {property: 'req' as const};
       const md2 = {property: 'res' as const};
@@ -46,8 +46,8 @@ describe('RequestContextReflector', function() {
     });
   });
 
-  describe('getMetadata', function() {
-    it('returns an existing metadata of the target', function() {
+  describe('getMetadata', function () {
+    it('returns an existing metadata of the target', function () {
       class Target {}
       const md1 = {property: 'req' as const};
       const md2 = {property: 'res' as const};
@@ -67,7 +67,7 @@ describe('RequestContextReflector', function() {
       expect(res!.get(1)).to.be.eq(md2);
     });
 
-    it('returns an empty map if no metadata', function() {
+    it('returns an empty map if no metadata', function () {
       class Target {}
       const res = RequestContextReflector.getMetadata(Target, 'propertyKey');
       expect(res).to.be.instanceof(Map);

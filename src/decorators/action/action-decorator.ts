@@ -49,47 +49,52 @@ export function action<T extends object>(options: ActionOptions) {
  *
  * @param options
  */
-export const get = (options: Omit<ActionOptions, 'method'>) => action({
-  ...options,
-  method: HttpMethod.GET,
-});
+export const get = (options: Omit<ActionOptions, 'method'>) =>
+  action({
+    ...options,
+    method: HttpMethod.GET,
+  });
 
 /**
  * Post decorator.
  *
  * @param options
  */
-export const post = (options: Omit<ActionOptions, 'method'>) => action({
-  ...options,
-  method: HttpMethod.POST,
-});
+export const post = (options: Omit<ActionOptions, 'method'>) =>
+  action({
+    ...options,
+    method: HttpMethod.POST,
+  });
 
 /**
  * Put decorator.
  *
  * @param options
  */
-export const put = (options: Omit<ActionOptions, 'method'>) => action({
-  ...options,
-  method: HttpMethod.PUT,
-});
+export const put = (options: Omit<ActionOptions, 'method'>) =>
+  action({
+    ...options,
+    method: HttpMethod.PUT,
+  });
 
 /**
  * Patch decorator.
  *
  * @param options
  */
-export const patch = (options: Omit<ActionOptions, 'method'>) => action({
-  ...options,
-  method: HttpMethod.PATCH,
-});
+export const patch = (options: Omit<ActionOptions, 'method'>) =>
+  action({
+    ...options,
+    method: HttpMethod.PATCH,
+  });
 
 /**
  * Del decorator.
  *
  * @param options
  */
-export const del = (options: Omit<ActionOptions, 'method'>) => action({
-  ...options,
-  method: HttpMethod.DELETE,
-});
+export const del = (options: Omit<ActionOptions, 'method'>) =>
+  action({
+    ...options,
+    method: HttpMethod.DELETE,
+  });

@@ -10,10 +10,10 @@ export type ActionMetadata = {
   propertyKey: string;
   method: HttpMethod;
   path: string;
-  before?: RoutePreHandler | RoutePreHandler[],
-  after?: RoutePostHandler | RoutePostHandler[],
+  before?: RoutePreHandler | RoutePreHandler[];
+  after?: RoutePostHandler | RoutePostHandler[];
   [option: string]: unknown | undefined;
-}
+};
 
 /**
  * Action metadata map.

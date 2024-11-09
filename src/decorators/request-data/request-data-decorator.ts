@@ -45,10 +45,10 @@ export function requestData<T extends object>(metadata: RequestDataMetadata) {
  * @param source
  */
 function createDataDecorator(source: RequestDataSource) {
-  return function() {
+  return function () {
     const schema = {type: DataType.OBJECT};
     return requestData({schema, source});
-  }
+  };
 }
 
 /**
@@ -57,7 +57,7 @@ function createDataDecorator(source: RequestDataSource) {
  * @param source
  */
 function createPropertyDecorator(source: RequestDataSource) {
-  return function(propertyKey: string, schemaOrType?: DataSchema | DataType) {
+  return function (propertyKey: string, schemaOrType?: DataSchema | DataType) {
     const properties = {} as NoUndef<DataSchema['properties']>;
     const rootSchema: DataSchema = {type: DataType.OBJECT};
     if (typeof schemaOrType === 'object') {
@@ -72,7 +72,7 @@ function createPropertyDecorator(source: RequestDataSource) {
       schema: rootSchema,
       property: propertyKey,
     });
-  }
+  };
 }
 
 /**

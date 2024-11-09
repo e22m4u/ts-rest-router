@@ -7,7 +7,7 @@ import {RequestContext} from '@e22m4u/js-trie-router';
 export type RequestContextMetadata = {
   property?: keyof RequestContext;
   [option: string]: unknown | undefined;
-}
+};
 
 /**
  * Request context metadata map.

@@ -3,8 +3,8 @@ import {action} from './action-decorator.js';
 import {HttpMethod} from '@e22m4u/js-trie-router';
 import {ActionReflector} from './action-reflector.js';
 
-describe('action', function() {
-  it('sets given options to the target metadata', function() {
+describe('action', function () {
+  it('sets given options to the target metadata', function () {
     const method = HttpMethod.GET;
     const path = 'myPath';
     const before = () => undefined;
@@ -25,7 +25,7 @@ describe('action', function() {
     });
   });
 
-  it('overrides a given "propertyKey" option by the target method name', function() {
+  it('overrides a given "propertyKey" option by the target method name', function () {
     const method = HttpMethod.GET;
     const path = 'myPath';
     class Target {

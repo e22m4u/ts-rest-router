@@ -20,7 +20,7 @@ export type RequestDataMetadata = {
   schema?: DataSchema;
   property?: string;
   [option: string]: unknown | undefined;
-}
+};
 
 /**
  * Request data metadata map.

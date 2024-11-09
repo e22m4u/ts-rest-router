@@ -32,10 +32,7 @@ export class ActionReflector {
    * @param target
    */
   static getMetadata(target: Constructor): ActionMetadataMap {
-    const metadata = Reflector.getOwnMetadata(
-      ACTIONS_METADATA_KEY,
-      target,
-    );
+    const metadata = Reflector.getOwnMetadata(ACTIONS_METADATA_KEY, target);
     return metadata ?? new Map();
   }
 }

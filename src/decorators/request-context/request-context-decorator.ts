@@ -29,9 +29,10 @@ export function requestContext<T extends object>(
         '@requestContext decorator is only supported ' +
           'on an instance method parameter.',
       );
-    const metadata = typeof propertyOrMetadata !== 'object'
-      ? {property: propertyOrMetadata}
-      : propertyOrMetadata;
+    const metadata =
+      typeof propertyOrMetadata !== 'object'
+        ? {property: propertyOrMetadata}
+        : propertyOrMetadata;
     RequestContextReflector.setMetadata(
       metadata,
       target.constructor as Constructor<T>,

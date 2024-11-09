@@ -18,11 +18,8 @@ export interface Constructor<T = unknown> {
  * Object prototype that excludes
  * function and scalar values.
  */
-export type Prototype<T = unknown> = T
-  & object
-  & {bind?: never}
-  & {call?: never}
-  & {prototype?: object};
+export type Prototype<T = unknown> = T &
+  object & {bind?: never} & {call?: never} & {prototype?: object};
 
 /**
  * Make a specific property as optional.
@@ -58,5 +55,5 @@ export type NoUndef<T> = Exclude<T, null | undefined>;
  * Object type with open properties.
  */
 export type AnyObject = {
-  [property: PropertyKey]: any,
+  [property: PropertyKey]: any;
 };
