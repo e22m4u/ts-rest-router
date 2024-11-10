@@ -3079,224 +3079,6 @@ function createDebugger(name) {
   };
 }
 
-// node_modules/@e22m4u/js-service/src/errors/invalid-argument-error.js
-var InvalidArgumentError = class extends Errorf {
-};
-
-// node_modules/@e22m4u/js-service/src/service-container.js
-var ServiceContainer = class _ServiceContainer {
-  /**
-   * Services map.
-   *
-   * @type {Map<any, any>}
-   * @private
-   */
-  _services = /* @__PURE__ */ new Map();
-  /**
-   * Parent container.
-   *
-   * @type {ServiceContainer}
-   * @private
-   */
-  _parent;
-  /**
-   * Constructor.
-   *
-   * @param {ServiceContainer|undefined} parent
-   */
-  constructor(parent = void 0) {
-    if (parent != null) {
-      if (!(parent instanceof _ServiceContainer))
-        throw new InvalidArgumentError(
-          'The provided parameter "parent" of ServicesContainer.constructor must be an instance ServiceContainer, but %v given.',
-          parent
-        );
-      this._parent = parent;
-    }
-  }
-  /**
-   * Получить существующий или новый экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {*}
-   */
-  get(ctor, ...args) {
-    if (!ctor || typeof ctor !== "function")
-      throw new InvalidArgumentError(
-        "The first argument of ServicesContainer.get must be a class constructor, but %v given.",
-        ctor
-      );
-    if (!this._services.has(ctor) && this._parent && this._parent.has(ctor)) {
-      return this._parent.get(ctor);
-    }
-    let service = this._services.get(ctor);
-    if (!service || args.length) {
-      service = "prototype" in ctor && ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
-      this._services.set(ctor, service);
-    } else if (typeof service === "function") {
-      service = service();
-      this._services.set(ctor, service);
-    }
-    return service;
-  }
-  /**
-   * Проверка существования конструктора в контейнере.
-   *
-   * @param {*} ctor
-   * @return {boolean}
-   */
-  has(ctor) {
-    if (this._services.has(ctor)) return true;
-    if (this._parent) return this._parent.has(ctor);
-    return false;
-  }
-  /**
-   * Добавить конструктор в контейнер.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {this}
-   */
-  add(ctor, ...args) {
-    if (!ctor || typeof ctor !== "function")
-      throw new InvalidArgumentError(
-        "The first argument of ServicesContainer.add must be a class constructor, but %v given.",
-        ctor
-      );
-    const factory = () => ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
-    this._services.set(ctor, factory);
-    return this;
-  }
-  /**
-   * Добавить конструктор и создать экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {this}
-   */
-  use(ctor, ...args) {
-    if (!ctor || typeof ctor !== "function")
-      throw new InvalidArgumentError(
-        "The first argument of ServicesContainer.use must be a class constructor, but %v given.",
-        ctor
-      );
-    const service = ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
-    this._services.set(ctor, service);
-    return this;
-  }
-  /**
-   * Добавить конструктор и связанный экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} service
-   * @return {this}
-   */
-  set(ctor, service) {
-    if (!ctor || typeof ctor !== "function")
-      throw new InvalidArgumentError(
-        "The first argument of ServicesContainer.set must be a class constructor, but %v given.",
-        ctor
-      );
-    if (!service || typeof service !== "object" || Array.isArray(service))
-      throw new InvalidArgumentError(
-        "The second argument of ServicesContainer.set must be an Object, but %v given.",
-        service
-      );
-    this._services.set(ctor, service);
-    return this;
-  }
-};
-
-// node_modules/@e22m4u/js-service/src/service.js
-var Service = class {
-  /**
-   * Container.
-   *
-   * @type {ServiceContainer}
-   */
-  container;
-  /**
-   * Constructor.
-   *
-   * @param {ServiceContainer|undefined} container
-   */
-  constructor(container = void 0) {
-    this.container = container instanceof ServiceContainer ? container : new ServiceContainer();
-  }
-  /**
-   * Получить существующий или новый экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {*}
-   */
-  getService(ctor, ...args) {
-    return this.container.get(ctor, ...args);
-  }
-  /**
-   * Проверка существования конструктора в контейнере.
-   *
-   * @param {*} ctor
-   * @return {boolean}
-   */
-  hasService(ctor) {
-    return this.container.has(ctor);
-  }
-  /**
-   * Добавить конструктор в контейнер.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {this}
-   */
-  addService(ctor, ...args) {
-    this.container.add(ctor, ...args);
-    return this;
-  }
-  /**
-   * Добавить конструктор и создать экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} args
-   * @return {this}
-   */
-  useService(ctor, ...args) {
-    this.container.use(ctor, ...args);
-    return this;
-  }
-  /**
-   * Добавить конструктор и связанный экземпляр.
-   *
-   * @param {*} ctor
-   * @param {*} service
-   * @return {this}
-   */
-  setService(ctor, service) {
-    this.container.set(ctor, service);
-    return this;
-  }
-};
-
-// dist/esm/debuggable-service.js
-var DebuggableService = class extends Service {
-  /**
-   * Debug.
-   */
-  debug;
-  /**
-   * Constructor.
-   *
-   * @param container
-   */
-  constructor(container) {
-    super(container);
-    const serviceName = toCamelCase(this.constructor.name);
-    this.debug = createDebugger(serviceName);
-    this.debug("%v is created.", this.constructor);
-  }
-};
-
 // node_modules/@e22m4u/js-trie-router/src/utils/is-promise.js
 function isPromise(value) {
   if (!value) return false;
@@ -3505,8 +3287,207 @@ function getRequestPathname(req) {
   return (req.url || "/").replace(/\?.*$/, "");
 }
 
+// node_modules/@e22m4u/js-service/src/errors/invalid-argument-error.js
+var InvalidArgumentError = class extends Errorf {
+};
+
+// node_modules/@e22m4u/js-service/src/service-container.js
+var ServiceContainer = class _ServiceContainer {
+  /**
+   * Services map.
+   *
+   * @type {Map<any, any>}
+   * @private
+   */
+  _services = /* @__PURE__ */ new Map();
+  /**
+   * Parent container.
+   *
+   * @type {ServiceContainer}
+   * @private
+   */
+  _parent;
+  /**
+   * Constructor.
+   *
+   * @param {ServiceContainer|undefined} parent
+   */
+  constructor(parent = void 0) {
+    if (parent != null) {
+      if (!(parent instanceof _ServiceContainer))
+        throw new InvalidArgumentError(
+          'The provided parameter "parent" of ServicesContainer.constructor must be an instance ServiceContainer, but %v given.',
+          parent
+        );
+      this._parent = parent;
+    }
+  }
+  /**
+   * Получить существующий или новый экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {*}
+   */
+  get(ctor, ...args) {
+    if (!ctor || typeof ctor !== "function")
+      throw new InvalidArgumentError(
+        "The first argument of ServicesContainer.get must be a class constructor, but %v given.",
+        ctor
+      );
+    if (!this._services.has(ctor) && this._parent && this._parent.has(ctor)) {
+      return this._parent.get(ctor);
+    }
+    let service = this._services.get(ctor);
+    if (!service || args.length) {
+      service = "prototype" in ctor && ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
+      this._services.set(ctor, service);
+    } else if (typeof service === "function") {
+      service = service();
+      this._services.set(ctor, service);
+    }
+    return service;
+  }
+  /**
+   * Проверка существования конструктора в контейнере.
+   *
+   * @param {*} ctor
+   * @return {boolean}
+   */
+  has(ctor) {
+    if (this._services.has(ctor)) return true;
+    if (this._parent) return this._parent.has(ctor);
+    return false;
+  }
+  /**
+   * Добавить конструктор в контейнер.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {this}
+   */
+  add(ctor, ...args) {
+    if (!ctor || typeof ctor !== "function")
+      throw new InvalidArgumentError(
+        "The first argument of ServicesContainer.add must be a class constructor, but %v given.",
+        ctor
+      );
+    const factory = () => ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
+    this._services.set(ctor, factory);
+    return this;
+  }
+  /**
+   * Добавить конструктор и создать экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {this}
+   */
+  use(ctor, ...args) {
+    if (!ctor || typeof ctor !== "function")
+      throw new InvalidArgumentError(
+        "The first argument of ServicesContainer.use must be a class constructor, but %v given.",
+        ctor
+      );
+    const service = ctor.prototype instanceof Service ? new ctor(this, ...args) : new ctor(...args);
+    this._services.set(ctor, service);
+    return this;
+  }
+  /**
+   * Добавить конструктор и связанный экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} service
+   * @return {this}
+   */
+  set(ctor, service) {
+    if (!ctor || typeof ctor !== "function")
+      throw new InvalidArgumentError(
+        "The first argument of ServicesContainer.set must be a class constructor, but %v given.",
+        ctor
+      );
+    if (!service || typeof service !== "object" || Array.isArray(service))
+      throw new InvalidArgumentError(
+        "The second argument of ServicesContainer.set must be an Object, but %v given.",
+        service
+      );
+    this._services.set(ctor, service);
+    return this;
+  }
+};
+
+// node_modules/@e22m4u/js-service/src/service.js
+var Service = class {
+  /**
+   * Container.
+   *
+   * @type {ServiceContainer}
+   */
+  container;
+  /**
+   * Constructor.
+   *
+   * @param {ServiceContainer|undefined} container
+   */
+  constructor(container = void 0) {
+    this.container = container instanceof ServiceContainer ? container : new ServiceContainer();
+  }
+  /**
+   * Получить существующий или новый экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {*}
+   */
+  getService(ctor, ...args) {
+    return this.container.get(ctor, ...args);
+  }
+  /**
+   * Проверка существования конструктора в контейнере.
+   *
+   * @param {*} ctor
+   * @return {boolean}
+   */
+  hasService(ctor) {
+    return this.container.has(ctor);
+  }
+  /**
+   * Добавить конструктор в контейнер.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {this}
+   */
+  addService(ctor, ...args) {
+    this.container.add(ctor, ...args);
+    return this;
+  }
+  /**
+   * Добавить конструктор и создать экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} args
+   * @return {this}
+   */
+  useService(ctor, ...args) {
+    this.container.use(ctor, ...args);
+    return this;
+  }
+  /**
+   * Добавить конструктор и связанный экземпляр.
+   *
+   * @param {*} ctor
+   * @param {*} service
+   * @return {this}
+   */
+  setService(ctor, service) {
+    this.container.set(ctor, service);
+    return this;
+  }
+};
+
 // node_modules/@e22m4u/js-trie-router/src/debuggable-service.js
-var DebuggableService2 = class extends Service {
+var DebuggableService = class extends Service {
   /**
    * Debug.
    *
@@ -3531,7 +3512,7 @@ var HookName = {
   PRE_HANDLER: "preHandler",
   POST_HANDLER: "postHandler"
 };
-var HookRegistry = class extends DebuggableService2 {
+var HookRegistry = class extends DebuggableService {
   /**
    * Hooks.
    *
@@ -3599,7 +3580,7 @@ var HookRegistry = class extends DebuggableService2 {
 };
 
 // node_modules/@e22m4u/js-trie-router/src/hooks/hook-invoker.js
-var HookInvoker = class extends DebuggableService2 {
+var HookInvoker = class extends DebuggableService {
   /**
    * Invoke and continue until value received.
    *
@@ -3787,7 +3768,7 @@ var Route = class {
 };
 
 // node_modules/@e22m4u/js-trie-router/src/senders/data-sender.js
-var DataSender = class extends DebuggableService2 {
+var DataSender = class extends DebuggableService {
   /**
    * Send.
    *
@@ -3843,7 +3824,7 @@ var DataSender = class extends DebuggableService2 {
 var import_util = require("util");
 var import_statuses = __toESM(require_statuses(), 1);
 var EXPOSED_ERROR_PROPERTIES = ["code", "details"];
-var ErrorSender = class extends DebuggableService2 {
+var ErrorSender = class extends DebuggableService {
   /**
    * Handle.
    *
@@ -3917,7 +3898,7 @@ var ErrorSender = class extends DebuggableService2 {
 var import_http_errors2 = __toESM(require_http_errors(), 1);
 
 // node_modules/@e22m4u/js-trie-router/src/router-options.js
-var RouterOptions = class extends DebuggableService2 {
+var RouterOptions = class extends DebuggableService {
   /**
    * Request body bytes limit.
    *
@@ -3954,7 +3935,7 @@ var RouterOptions = class extends DebuggableService2 {
 // node_modules/@e22m4u/js-trie-router/src/parsers/body-parser.js
 var METHODS_WITH_BODY = ["POST", "PUT", "PATCH", "DELETE"];
 var UNPARSABLE_MEDIA_TYPES = ["multipart/form-data"];
-var BodyParser = class extends DebuggableService2 {
+var BodyParser = class extends DebuggableService {
   /**
    * Parsers.
    *
@@ -4078,7 +4059,7 @@ function parseJsonBody(input) {
 
 // node_modules/@e22m4u/js-trie-router/src/parsers/query-parser.js
 var import_querystring = __toESM(require("querystring"), 1);
-var QueryParser = class extends DebuggableService2 {
+var QueryParser = class extends DebuggableService {
   /**
    * Parse
    *
@@ -4105,7 +4086,7 @@ var QueryParser = class extends DebuggableService2 {
 };
 
 // node_modules/@e22m4u/js-trie-router/src/parsers/cookie-parser.js
-var CookieParser = class extends DebuggableService2 {
+var CookieParser = class extends DebuggableService {
   /**
    * Parse
    *
@@ -4133,7 +4114,7 @@ var CookieParser = class extends DebuggableService2 {
 
 // node_modules/@e22m4u/js-trie-router/src/parsers/request-parser.js
 var import_http2 = require("http");
-var RequestParser = class extends DebuggableService2 {
+var RequestParser = class extends DebuggableService {
   /**
    * Parse.
    *
@@ -4446,7 +4427,7 @@ var PathTrie = class {
 };
 
 // node_modules/@e22m4u/js-trie-router/src/route-registry.js
-var RouteRegistry = class extends DebuggableService2 {
+var RouteRegistry = class extends DebuggableService {
   /**
    * Constructor.
    *
@@ -4639,7 +4620,7 @@ var RequestContext = class {
 };
 
 // node_modules/@e22m4u/js-trie-router/src/trie-router.js
-var TrieRouter = class extends DebuggableService2 {
+var TrieRouter = class extends DebuggableService {
   /**
    * Define route.
    *
@@ -4782,6 +4763,25 @@ var TrieRouter = class extends DebuggableService2 {
   addHook(name, hook) {
     this.getService(HookRegistry).addHook(name, hook);
     return this;
+  }
+};
+
+// dist/esm/debuggable-service.js
+var DebuggableService2 = class extends Service {
+  /**
+   * Debug.
+   */
+  debug;
+  /**
+   * Constructor.
+   *
+   * @param container
+   */
+  constructor(container) {
+    super(container);
+    const serviceName = toCamelCase(this.constructor.name);
+    this.debug = createDebugger(serviceName);
+    this.debug("%v is created.", this.constructor);
   }
 };
 
@@ -5645,7 +5645,7 @@ var NotAControllerError = class extends Errorf {
 };
 
 // dist/esm/controller-registry.js
-var ControllerRegistry = class extends DebuggableService {
+var ControllerRegistry = class extends DebuggableService2 {
   /**
    * Controllers.
    */
@@ -5845,7 +5845,13 @@ var ControllerRegistry = class extends DebuggableService {
 };
 
 // dist/esm/rest-router.js
-var RestRouter = class extends DebuggableService {
+var RestRouter = class extends DebuggableService2 {
+  /**
+   * Request listener.
+   */
+  get requestListener() {
+    return this.getService(TrieRouter).requestListener;
+  }
   /**
    * Add controller.
    *

@@ -6,6 +6,10 @@ import { ControllerRootOptions } from './controller-registry.js';
  */
 export declare class RestRouter extends DebuggableService {
     /**
+     * Request listener.
+     */
+    get requestListener(): import("http").RequestListener;
+    /**
      * Add controller.
      *
      * @param ctor
