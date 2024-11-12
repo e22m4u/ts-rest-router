@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build:esm": "tsc --build",
-    "build:cjs": "node build-cjs.js",
+    "build:cjs": "rimraf ./dist/cjs && node --no-warnings=ExperimentalWarning build-cjs.js",
     "build": "rimraf dist && npm run build:esm && npm run build:cjs",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
@@ -41,8 +41,8 @@
     "@e22m4u/js-format": "0.1.x",
     "@e22m4u/js-service": "0.1.x",
     "@e22m4u/js-trie-router": "0.0.x",
-    "@e22m4u/ts-reflector": "0.1.x",
     "@e22m4u/ts-data-schema": "0.0.x",
+    "@e22m4u/ts-reflector": "0.1.x",
     "debug": "~4.3.7",
     "http-errors": "~2.0.0"
   },
