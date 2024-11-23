@@ -556,9 +556,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     const dataValidator = this.getService(import_ts_data_schema2.DataValidator);
     return (requestContext2) => {
       this.debug("Executing route handler for %s.%s.", controllerCtor.name, actionName);
-      const args = Array(argsNumber).map((value, index) => {
-        if (value != null)
-          return value;
+      const args = Array(argsNumber).fill(void 0).map((_, index) => {
         const requestContextMd = requestContextMetadataMap.get(index);
         if (requestContextMd != null) {
           this.debug("Argument %v has request context metadata.", index);

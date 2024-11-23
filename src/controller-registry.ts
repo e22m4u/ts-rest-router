@@ -253,100 +253,101 @@ export class ControllerRegistry extends DebuggableService {
         controllerCtor.name,
         actionName,
       );
-      const args = Array(argsNumber).map((value, index) => {
-        if (value != null) return value;
-        // заполнение аргументов операции
-        // значениями из контекста запроса
-        const requestContextMd = requestContextMetadataMap.get(index);
-        if (requestContextMd != null) {
-          this.debug('Argument %v has request context metadata.', index);
-          // если свойство контекста не определено,
-          // то используем весь объект контекста
-          // в качестве значения текущего аргумента
-          if (requestContextMd.property == null) {
-            this.debug('Request context property is not specified.');
-            this.debug('Argument %v is set to %v.', index, requestContext);
-            return requestContext;
-          }
-          // если свойство контекста определено,
-          // то используем значение этого свойства
-          // в качестве текущего аргумента
-          const propName = requestContextMd.property;
-          const propValue = requestContext[propName];
-          this.debug('Request context property is %v.', propName);
-          this.debug('Argument %v is set to %v.', index, propValue);
-          return propValue;
-        } else {
-          this.debug(
-            'No RequestContextMetadata specified for %v argument.',
-            index,
-          );
-        }
-        // заполнение аргументов операции
-        // значениями из данных запроса
-        const requestDataMd = requestDataMetadataMap.get(index);
-        if (requestDataMd != null) {
-          this.debug('Argument %v has request data metadata.', index);
-          // получение данных
-          // согласно источнику
-          let data: unknown;
-          switch (requestDataMd.source) {
-            case RequestDataSource.PARAMS:
-              data = requestContext.params;
-              break;
-            case RequestDataSource.QUERY:
-              data = requestContext.query;
-              break;
-            case RequestDataSource.HEADERS:
-              data = requestContext.headers;
-              break;
-            case RequestDataSource.COOKIE:
-              data = requestContext.cookie;
-              break;
-            case RequestDataSource.BODY:
-              data = requestContext.body;
-              break;
-          }
-          this.debug('Request data source is %v.', requestDataMd.source);
-          // при наличии схемы данных выполняется
-          // их конвертация и валидация
-          if (requestDataMd.schema) {
-            data = dataTypeCaster.cast(data, requestDataMd.schema, {
-              noTypeCastError: true,
-              sourcePath: requestDataMd.source,
-            });
-            this.debug('Data type casting is passed.');
-            dataValidator.validate(
-              data,
-              requestDataMd.schema,
-              requestDataMd.source,
+      const args = Array(argsNumber)
+        .fill(undefined)
+        .map((_, index) => {
+          // заполнение аргументов операции
+          // значениями из контекста запроса
+          const requestContextMd = requestContextMetadataMap.get(index);
+          if (requestContextMd != null) {
+            this.debug('Argument %v has request context metadata.', index);
+            // если свойство контекста не определено,
+            // то используем весь объект контекста
+            // в качестве значения текущего аргумента
+            if (requestContextMd.property == null) {
+              this.debug('Request context property is not specified.');
+              this.debug('Argument %v is set to %v.', index, requestContext);
+              return requestContext;
+            }
+            // если свойство контекста определено,
+            // то используем значение этого свойства
+            // в качестве текущего аргумента
+            const propName = requestContextMd.property;
+            const propValue = requestContext[propName];
+            this.debug('Request context property is %v.', propName);
+            this.debug('Argument %v is set to %v.', index, propValue);
+            return propValue;
+          } else {
+            this.debug(
+              'No RequestContextMetadata specified for %v argument.',
+              index,
             );
-            this.debug('Data validation is passed.');
           }
-          // если свойство данных не определено,
-          // то используем весь объекта данных
-          // в качестве значения текущего аргумента
-          if (requestDataMd.property == null) {
-            this.debug('Request data property is not specified.');
-            this.debug('Argument %v is set to %v.', index, data);
-            return data;
+          // заполнение аргументов операции
+          // значениями из данных запроса
+          const requestDataMd = requestDataMetadataMap.get(index);
+          if (requestDataMd != null) {
+            this.debug('Argument %v has request data metadata.', index);
+            // получение данных
+            // согласно источнику
+            let data: unknown;
+            switch (requestDataMd.source) {
+              case RequestDataSource.PARAMS:
+                data = requestContext.params;
+                break;
+              case RequestDataSource.QUERY:
+                data = requestContext.query;
+                break;
+              case RequestDataSource.HEADERS:
+                data = requestContext.headers;
+                break;
+              case RequestDataSource.COOKIE:
+                data = requestContext.cookie;
+                break;
+              case RequestDataSource.BODY:
+                data = requestContext.body;
+                break;
+            }
+            this.debug('Request data source is %v.', requestDataMd.source);
+            // при наличии схемы данных выполняется
+            // их конвертация и валидация
+            if (requestDataMd.schema) {
+              data = dataTypeCaster.cast(data, requestDataMd.schema, {
+                noTypeCastError: true,
+                sourcePath: requestDataMd.source,
+              });
+              this.debug('Data type casting is passed.');
+              dataValidator.validate(
+                data,
+                requestDataMd.schema,
+                requestDataMd.source,
+              );
+              this.debug('Data validation is passed.');
+            }
+            // если свойство данных не определено,
+            // то используем весь объекта данных
+            // в качестве значения текущего аргумента
+            if (requestDataMd.property == null) {
+              this.debug('Request data property is not specified.');
+              this.debug('Argument %v is set to %v.', index, data);
+              return data;
+            }
+            // если свойство данных определено,
+            // то используем значение этого свойства
+            // в качестве текущего аргумента
+            const dataAsObject = data as Record<string, unknown>;
+            const propName = requestDataMd.property;
+            const propValue = dataAsObject[propName];
+            this.debug('Request data property is %v.', propName);
+            this.debug('Argument %v is set to %v.', index, propValue);
+            return propValue;
+          } else {
+            this.debug(
+              'No RequestDataMetadata specified for %v argument.',
+              index,
+            );
           }
-          // если свойство данных определено,
-          // то используем значение этого свойства
-          // в качестве текущего аргумента
-          const dataAsObject = data as Record<string, unknown>;
-          const propName = requestDataMd.property;
-          const propValue = dataAsObject[propName];
-          this.debug('Request data property is %v.', propName);
-          this.debug('Argument %v is set to %v.', index, propValue);
-          return propValue;
-        } else {
-          this.debug(
-            'No RequestDataMetadata specified for %v argument.',
-            index,
-          );
-        }
-      });
+        });
       // выполнение операции контроллера
       const controller = this.getService(controllerCtor);
       return (controller as AnyObject)[actionName](...args);

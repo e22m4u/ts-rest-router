@@ -186,9 +186,9 @@ export class ControllerRegistry extends DebuggableService {
         const dataValidator = this.getService(DataValidator);
         return (requestContext) => {
             this.debug('Executing route handler for %s.%s.', controllerCtor.name, actionName);
-            const args = Array(argsNumber).map((value, index) => {
-                if (value != null)
-                    return value;
+            const args = Array(argsNumber)
+                .fill(undefined)
+                .map((_, index) => {
                 // заполнение аргументов операции
                 // значениями из контекста запроса
                 const requestContextMd = requestContextMetadataMap.get(index);
