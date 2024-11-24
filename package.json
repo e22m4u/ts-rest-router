@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@e22m4u/js-format": "0.1.x",
-    "@e22m4u/js-service": "0.1.x",
+    "@e22m4u/js-service": "0.2.x",
     "@e22m4u/js-trie-router": "0.0.x",
     "@e22m4u/ts-data-schema": "0.0.x",
     "@e22m4u/ts-reflector": "0.1.x",
