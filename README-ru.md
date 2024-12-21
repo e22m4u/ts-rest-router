@@ -6,11 +6,11 @@
 
 #### Основные возможности
 
-- Декларативное определение маршрутов через декораторы
-- Типизированные параметры запросов (body, query, params)
-- Поддержка middleware до и после обработки запроса
-- Валидация входящих данных
-- Поддержка всех HTTP методов (GET, POST, PUT, DELETE и т.д.)
+- Декларативное определение маршрутов через декораторы.
+- Типизированные параметры запросов (body, query, params).
+- Поддержка middleware до и после обработки запроса.
+- Валидация входящих данных.
+- Поддержка всех HTTP методов (GET, POST, PUT, DELETE и т.д.).
 
 ## Установка
 
@@ -45,7 +45,9 @@ class UserController {
   }
 
   @post('/users')
-  async createUser(@body() userData: UserDTO) {
+  async createUser(
+    @body() userData: UserDTO,
+  ) {
     return { success: true };
   }
 }
@@ -60,7 +62,7 @@ class ProductController {
   async getProduct(
     @param('id') productId: string,
     @query('fields') fields?: string,
-    @headers('authorization') auth?: string
+    @headers('authorization') auth?: string,
   ) {
     // ...
   }
@@ -73,11 +75,11 @@ Middleware и хуки
 @controller({
   path: '/api',
   before: [authMiddleware],
-  after: [loggerMiddleware]
+  after: [loggerMiddleware],
 })
 class ApiController {
   @get('/secure', {
-    before: [checkPermissions]
+    before: [checkPermissions],
   })
   secureEndpoint() {
     // ...
@@ -150,7 +152,7 @@ class UserController {
 @controller({
   path: '/api'
   before: [authMiddleware],
-  after: [loggerMiddleware]
+  after: [loggerMiddleware],
 })
 class UserController {
   // методы контроллера
@@ -171,7 +173,7 @@ class UserController {
 
   @get('/users/:id') 
   getUser(
-    @param('id') userId: string
+    @param('id') userId: string,
   ) {
     return {user: {id: userId}};
   }
@@ -185,7 +187,7 @@ class UserController {
 class UserController {
   @get('/users', {
     before: [authMiddleware],
-    after: [loggerMiddleware]
+    after: [loggerMiddleware],
   })
   async getUsers() {
     return {users: []};
@@ -203,7 +205,7 @@ class UserController {
   @get('/users')
   getUsers(
     @requestContext('req') req: IncomingMessage,
-    @requestContext('res') res: ServerResponse
+    @requestContext('res') res: ServerResponse,
   ) {
     // Доступ к оригинальным объектам запроса/ответа
   }

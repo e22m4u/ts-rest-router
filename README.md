@@ -6,11 +6,11 @@ Controllers-based REST router implementation for TypeScript.
 
 #### Key Features
 
-- Declarative route definition using decorators
-- Typed request parameters (body, query, params)
-- Pre and post request middleware support
-- Input data validation
-- Support for all HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Declarative route definition using decorators.
+- Typed request parameters (body, query, params).
+- Pre and post request middleware support.
+- Input data validation.
+- Support for all HTTP methods (GET, POST, PUT, DELETE, etc.).
 
 ## Installation
 
@@ -45,7 +45,9 @@ class UserController {
   }
 
   @post('/users')
-  async createUser(@body() userData: UserDTO) {
+  async createUser(
+    @body() userData: UserDTO,
+  ) {
     return { success: true };
   }
 }
@@ -60,7 +62,7 @@ class ProductController {
   async getProduct(
     @param('id') productId: string,
     @query('fields') fields?: string,
-    @headers('authorization') auth?: string
+    @headers('authorization') auth?: string,
   ) {
     // ...
   }
@@ -73,11 +75,11 @@ Middleware and hooks.
 @controller({
   path: '/api',
   before: [authMiddleware],
-  after: [loggerMiddleware]
+  after: [loggerMiddleware],
 })
 class ApiController {
   @get('/secure', {
-    before: [checkPermissions]
+    before: [checkPermissions],
   })
   secureEndpoint() {
     // ...
@@ -150,7 +152,7 @@ Additional decorator parameters.
 @controller({
   path: '/api'
   before: [authMiddleware],
-  after: [loggerMiddleware]
+  after: [loggerMiddleware],
 })
 class UserController {
   // controller methods
@@ -171,7 +173,7 @@ class UserController {
 
   @get('/users/:id') 
   getUser(
-    @param('id') userId: string
+    @param('id') userId: string,
   ) {
     return {user: {id: userId}};
   }
@@ -185,7 +187,7 @@ Additional decorator parameters.
 class UserController {
   @get('/users', {
     before: [authMiddleware],
-    after: [loggerMiddleware]
+    after: [loggerMiddleware],
   })
   async getUsers() {
     return {users: []};
@@ -205,7 +207,7 @@ class UserController {
   @get('/users')
   getUsers(
     @requestContext('req') req: IncomingMessage,
-    @requestContext('res') res: ServerResponse
+    @requestContext('res') res: ServerResponse,
   ) {
     // Access to original request/response objects
   }
