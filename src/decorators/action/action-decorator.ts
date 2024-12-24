@@ -32,12 +32,8 @@ export function action<T extends object>(options: ActionOptions) {
       throw new Error(
         '@action decorator is only supported on an instance method.',
       );
-    const metadata = {
-      ...options,
-      propertyKey,
-    } as ActionMetadata;
     ActionReflector.setMetadata(
-      metadata,
+      {...options, propertyKey},
       target.constructor as Constructor<T>,
       propertyKey,
     );
@@ -45,9 +41,11 @@ export function action<T extends object>(options: ActionOptions) {
 }
 
 /**
- * Action alias options.
+ * Action method options.
  */
-type ActionAliasOptions = Flatten<Omit<ActionOptions, 'method' | 'path'>>;
+export type ActionMethodOptions = Flatten<
+  Omit<ActionOptions, 'method' | 'path'>
+>;
 
 /**
  * Get decorator.
@@ -55,7 +53,7 @@ type ActionAliasOptions = Flatten<Omit<ActionOptions, 'method' | 'path'>>;
  * @param path
  * @param options
  */
-export const get = (path: string, options?: ActionAliasOptions) => {
+export const get = (path: string, options?: ActionMethodOptions) => {
   return action({...options, path, method: HttpMethod.GET});
 };
 
@@ -65,7 +63,7 @@ export const get = (path: string, options?: ActionAliasOptions) => {
  * @param path
  * @param options
  */
-export const post = (path: string, options?: ActionAliasOptions) => {
+export const post = (path: string, options?: ActionMethodOptions) => {
   return action({...options, path, method: HttpMethod.POST});
 };
 
@@ -75,7 +73,7 @@ export const post = (path: string, options?: ActionAliasOptions) => {
  * @param path
  * @param options
  */
-export const put = (path: string, options?: ActionAliasOptions) => {
+export const put = (path: string, options?: ActionMethodOptions) => {
   return action({...options, path, method: HttpMethod.PUT});
 };
 
@@ -85,7 +83,7 @@ export const put = (path: string, options?: ActionAliasOptions) => {
  * @param path
  * @param options
  */
-export const patch = (path: string, options?: ActionAliasOptions) => {
+export const patch = (path: string, options?: ActionMethodOptions) => {
   return action({...options, path, method: HttpMethod.PATCH});
 };
 
@@ -95,6 +93,6 @@ export const patch = (path: string, options?: ActionAliasOptions) => {
  * @param path
  * @param options
  */
-export const del = (path: string, options?: ActionAliasOptions) => {
+export const del = (path: string, options?: ActionMethodOptions) => {
   return action({...options, path, method: HttpMethod.DELETE});
 };
