@@ -4,15 +4,14 @@ import {RequestContext} from '@e22m4u/js-trie-router';
 import {DecoratorTargetType} from '@e22m4u/ts-reflector';
 import {getDecoratorTargetType} from '@e22m4u/ts-reflector';
 import {RequestContextReflector} from './request-context-reflector.js';
-import {RequestContextMetadata} from './request-context-metadata.js';
 
 /**
  * Request context decorator.
  *
- * @param propertyOrMetadata
+ * @param property
  */
 export function requestContext<T extends object>(
-  propertyOrMetadata?: keyof RequestContext | RequestContextMetadata,
+  property?: keyof RequestContext,
 ) {
   return function (
     target: Prototype<T>,
@@ -29,12 +28,8 @@ export function requestContext<T extends object>(
         '@requestContext decorator is only supported ' +
           'on an instance method parameter.',
       );
-    const metadata =
-      typeof propertyOrMetadata !== 'object'
-        ? {property: propertyOrMetadata}
-        : propertyOrMetadata;
     RequestContextReflector.setMetadata(
-      metadata,
+      {property},
       target.constructor as Constructor<T>,
       indexOrDescriptor,
       propertyKey,
