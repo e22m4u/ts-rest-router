@@ -3,11 +3,15 @@ import { DataType } from '@e22m4u/ts-data-schema';
 import { DataSchema } from '@e22m4u/ts-data-schema';
 import { RequestDataMetadata } from './request-data-metadata.js';
 /**
+ * Request data options.
+ */
+export type RequestDataOptions = RequestDataMetadata;
+/**
  * Request data decorator.
  *
- * @param metadata
+ * @param options
  */
-export declare function requestData<T extends object>(metadata: RequestDataMetadata): (target: Prototype<T>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare function requestData<T extends object>(options: RequestDataOptions): (target: Prototype<T>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
  * Decorator aliases.
  */

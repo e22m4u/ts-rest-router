@@ -13,47 +13,47 @@ import { HttpMethod } from '@e22m4u/js-trie-router';
 import { ActionReflector } from './action-reflector.js';
 describe('action', function () {
     it('sets given options to the target metadata', function () {
-        const method = HttpMethod.GET;
-        const path = 'myPath';
-        const before = () => undefined;
-        const after = () => undefined;
-        const customOption = 'customOption';
+        const options = {
+            method: HttpMethod.GET,
+            path: 'myPath',
+            before: () => undefined,
+            after: () => undefined,
+            customOption: 'customOption',
+        };
         class Target {
             method() { }
         }
         __decorate([
-            action({ method, path, before, after, customOption }),
+            action(options),
             __metadata("design:type", Function),
             __metadata("design:paramtypes", []),
             __metadata("design:returntype", void 0)
         ], Target.prototype, "method", null);
         const res = ActionReflector.getMetadata(Target);
         expect(res.get('method')).to.be.eql({
+            ...options,
             propertyKey: 'method',
-            method,
-            path,
-            before,
-            after,
-            customOption,
         });
     });
     it('overrides a given "propertyKey" option by the target method name', function () {
-        const method = HttpMethod.GET;
-        const path = 'myPath';
+        const options = {
+            propertyKey: 'myMethod',
+            method: HttpMethod.GET,
+            path: 'myPath',
+        };
         class Target {
             method() { }
         }
         __decorate([
-            action({ propertyKey: 'myMethod', method, path }),
+            action(options),
             __metadata("design:type", Function),
             __metadata("design:paramtypes", []),
             __metadata("design:returntype", void 0)
         ], Target.prototype, "method", null);
         const res = ActionReflector.getMetadata(Target);
         expect(res.get('method')).to.be.eql({
+            ...options,
             propertyKey: 'method',
-            method,
-            path,
         });
     });
 });

@@ -9,7 +9,6 @@ export type ControllerMetadata = {
     path?: string;
     before?: RoutePreHandler | RoutePreHandler[];
     after?: RoutePostHandler | RoutePostHandler[];
-    [option: string]: unknown | undefined;
 };
 /**
  * Controller metadata key.

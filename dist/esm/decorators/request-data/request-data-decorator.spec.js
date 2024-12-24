@@ -27,8 +27,8 @@ import { requestData } from './request-data-decorator.js';
 import { RequestDataSource } from './request-data-metadata.js';
 import { RequestDataReflector } from './request-data-reflector.js';
 describe('requestData', function () {
-    it('sets a given argument to the target metadata', function () {
-        const md = {
+    it('sets given options to the target metadata', function () {
+        const options = {
             source: RequestDataSource.PARAMS,
             customOption: 'myOption',
         };
@@ -36,13 +36,13 @@ describe('requestData', function () {
             myMethod(prop) { }
         }
         __decorate([
-            __param(0, requestData(md)),
+            __param(0, requestData(options)),
             __metadata("design:type", Function),
             __metadata("design:paramtypes", [Object]),
             __metadata("design:returntype", void 0)
         ], Target.prototype, "myMethod", null);
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
-        expect(res.get(0)).to.be.eql(md);
+        expect(res.get(0)).to.be.eql(options);
     });
     describe('request data by a given source', function () {
         describe('params', function () {

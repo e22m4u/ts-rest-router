@@ -15,7 +15,7 @@ import { expect } from 'chai';
 import { requestContext } from './request-context-decorator.js';
 import { RequestContextReflector } from './request-context-reflector.js';
 describe('requestContext', function () {
-    it('does not requires options', function () {
+    it('does not require options', function () {
         class Target {
             method(prop) { }
         }
@@ -28,7 +28,7 @@ describe('requestContext', function () {
         const res = RequestContextReflector.getMetadata(Target, 'method');
         expect(res.get(0)).to.be.eql({ property: undefined });
     });
-    it('sets a given key of RequestContext as "propertyKey" of the target metadata', function () {
+    it('sets a given property to the target metadata', function () {
         class Target {
             method(prop) { }
         }
@@ -40,20 +40,5 @@ describe('requestContext', function () {
         ], Target.prototype, "method", null);
         const res = RequestContextReflector.getMetadata(Target, 'method');
         expect(res.get(0)).to.be.eql({ property: 'res' });
-    });
-    it('sets a given RequestContextMetadata as the target metadata', function () {
-        const property = 'res';
-        const customOption = 'customOption';
-        class Target {
-            method(prop) { }
-        }
-        __decorate([
-            __param(0, requestContext({ property, customOption })),
-            __metadata("design:type", Function),
-            __metadata("design:paramtypes", [Object]),
-            __metadata("design:returntype", void 0)
-        ], Target.prototype, "method", null);
-        const res = RequestContextReflector.getMetadata(Target, 'method');
-        expect(res.get(0)).to.be.eql({ property, customOption });
     });
 });

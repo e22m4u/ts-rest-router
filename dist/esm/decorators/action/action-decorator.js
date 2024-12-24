@@ -12,11 +12,7 @@ export function action(options) {
         const decoratorType = getDecoratorTargetType(target, propertyKey, descriptor);
         if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD)
             throw new Error('@action decorator is only supported on an instance method.');
-        const metadata = {
-            ...options,
-            propertyKey,
-        };
-        ActionReflector.setMetadata(metadata, target.constructor, propertyKey);
+        ActionReflector.setMetadata({ ...options, propertyKey }, target.constructor, propertyKey);
     };
 }
 /**

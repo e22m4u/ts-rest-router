@@ -13,23 +13,22 @@ import {headers} from './request-data-decorator.js';
 import {bodyParam} from './request-data-decorator.js';
 import {requestData} from './request-data-decorator.js';
 import {RequestDataSource} from './request-data-metadata.js';
-import {RequestDataMetadata} from './request-data-metadata.js';
 import {RequestDataReflector} from './request-data-reflector.js';
 
 describe('requestData', function () {
-  it('sets a given argument to the target metadata', function () {
-    const md: RequestDataMetadata = {
+  it('sets given options to the target metadata', function () {
+    const options = {
       source: RequestDataSource.PARAMS,
       customOption: 'myOption',
     };
     class Target {
       myMethod(
-        @requestData(md)
+        @requestData(options)
         prop: unknown,
       ) {}
     }
     const res = RequestDataReflector.getMetadata(Target, 'myMethod');
-    expect(res.get(0)).to.be.eql(md);
+    expect(res.get(0)).to.be.eql(options);
   });
 
   describe('request data by a given source', function () {

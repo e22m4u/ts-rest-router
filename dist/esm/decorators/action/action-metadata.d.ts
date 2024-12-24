@@ -11,7 +11,6 @@ export type ActionMetadata = {
     path: string;
     before?: RoutePreHandler | RoutePreHandler[];
     after?: RoutePostHandler | RoutePostHandler[];
-    [option: string]: unknown | undefined;
 };
 /**
  * Action metadata map.

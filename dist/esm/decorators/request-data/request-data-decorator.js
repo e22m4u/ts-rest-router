@@ -6,34 +6,34 @@ import { RequestDataReflector } from './request-data-reflector.js';
 /**
  * Request data decorator.
  *
- * @param metadata
+ * @param options
  */
-export function requestData(metadata) {
+export function requestData(options) {
     return function (target, propertyKey, indexOrDescriptor) {
         const decoratorType = getDecoratorTargetType(target, propertyKey, indexOrDescriptor);
         if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
             throw new Error('@requestData decorator is only supported ' +
                 'on an instance method parameter.');
-        RequestDataReflector.setMetadata(metadata, target.constructor, indexOrDescriptor, propertyKey);
+        RequestDataReflector.setMetadata(options, target.constructor, indexOrDescriptor, propertyKey);
     };
 }
 /**
- * Create data decorator.
+ * Create request data decorator with source.
  *
  * @param source
  */
-function createDataDecorator(source) {
+function createRequestDataDecoratorWithSource(source) {
     return function () {
         const schema = { type: DataType.OBJECT };
         return requestData({ schema, source });
     };
 }
 /**
- * Create property decorator.
+ * Create request property decorator with source.
  *
  * @param source
  */
-function createPropertyDecorator(source) {
+function createRequestPropertyDecoratorWithSource(source) {
     return function (propertyKey, schemaOrType) {
         const properties = {};
         const rootSchema = { type: DataType.OBJECT };
@@ -55,15 +55,15 @@ function createPropertyDecorator(source) {
 /**
  * Decorator aliases.
  */
-export const params = createDataDecorator(RequestDataSource.PARAMS);
-export const param = createPropertyDecorator(RequestDataSource.PARAMS);
-export const queries = createDataDecorator(RequestDataSource.QUERY);
-export const query = createPropertyDecorator(RequestDataSource.QUERY);
-export const headers = createDataDecorator(RequestDataSource.HEADERS);
-export const header = createPropertyDecorator(RequestDataSource.HEADERS);
-export const cookies = createDataDecorator(RequestDataSource.COOKIE);
-export const cookie = createPropertyDecorator(RequestDataSource.COOKIE);
-export const bodyParam = createPropertyDecorator(RequestDataSource.BODY);
+export const params = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
+export const param = createRequestPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+export const queries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
+export const query = createRequestPropertyDecoratorWithSource(RequestDataSource.QUERY);
+export const headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
+export const header = createRequestPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+export const cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
+export const cookie = createRequestPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+export const bodyParam = createRequestPropertyDecoratorWithSource(RequestDataSource.BODY);
 /**
  * Request body decorator.
  *

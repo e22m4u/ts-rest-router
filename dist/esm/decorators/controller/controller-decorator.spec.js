@@ -8,7 +8,7 @@ import { expect } from 'chai';
 import { controller } from './controller-decorator.js';
 import { ControllerReflector } from './controller-reflector.js';
 describe('controller', function () {
-    it('does not requires options', function () {
+    it('does not require options', function () {
         let Target = class Target {
         };
         Target = __decorate([
@@ -18,27 +18,21 @@ describe('controller', function () {
         expect(res).to.be.eql({ className: 'Target' });
     });
     it('sets given options to the target metadata', function () {
-        const path = 'myPath';
-        const before = () => undefined;
-        const after = () => undefined;
-        const extraOption = 'extraOption';
+        const options = {
+            path: 'myPath',
+            before: () => undefined,
+            after: () => undefined,
+            extraOption: 'extraOption',
+        };
         let Target = class Target {
         };
         Target = __decorate([
-            controller({
-                path,
-                before,
-                after,
-                extraOption,
-            })
+            controller(options)
         ], Target);
         const res = ControllerReflector.getMetadata(Target);
         expect(res).to.be.eql({
+            ...options,
             className: 'Target',
-            path,
-            before,
-            after,
-            extraOption,
         });
     });
     it('overrides given "className" option by the target class name', function () {

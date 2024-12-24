@@ -176,11 +176,7 @@ function action(options) {
     const decoratorType = (0, import_ts_reflector4.getDecoratorTargetType)(target, propertyKey, descriptor);
     if (decoratorType !== import_ts_reflector3.DecoratorTargetType.INSTANCE_METHOD)
       throw new Error("@action decorator is only supported on an instance method.");
-    const metadata = {
-      ...options,
-      propertyKey
-    };
-    ActionReflector.setMetadata(metadata, target.constructor, propertyKey);
+    ActionReflector.setMetadata({ ...options, propertyKey }, target.constructor, propertyKey);
   };
 }
 __name(action, "action");
@@ -238,11 +234,7 @@ function controller(options) {
     const decoratorType = (0, import_ts_reflector8.getDecoratorTargetType)(target);
     if (decoratorType !== import_ts_reflector7.DecoratorTargetType.CONSTRUCTOR)
       throw new Error("@controller decorator is only supported on a class.");
-    const metadata = {
-      ...options,
-      className: target.name
-    };
-    ControllerReflector.setMetadata(metadata, target);
+    ControllerReflector.setMetadata({ ...options, className: target.name }, target);
   };
 }
 __name(controller, "controller");
@@ -296,23 +288,23 @@ __name(_RequestDataReflector, "RequestDataReflector");
 var RequestDataReflector = _RequestDataReflector;
 
 // dist/esm/decorators/request-data/request-data-decorator.js
-function requestData(metadata) {
+function requestData(options) {
   return function(target, propertyKey, indexOrDescriptor) {
     const decoratorType = (0, import_ts_reflector12.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
     if (decoratorType !== import_ts_reflector11.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error("@requestData decorator is only supported on an instance method parameter.");
-    RequestDataReflector.setMetadata(metadata, target.constructor, indexOrDescriptor, propertyKey);
+    RequestDataReflector.setMetadata(options, target.constructor, indexOrDescriptor, propertyKey);
   };
 }
 __name(requestData, "requestData");
-function createDataDecorator(source) {
+function createRequestDataDecoratorWithSource(source) {
   return function() {
     const schema = { type: import_ts_data_schema.DataType.OBJECT };
     return requestData({ schema, source });
   };
 }
-__name(createDataDecorator, "createDataDecorator");
-function createPropertyDecorator(source) {
+__name(createRequestDataDecoratorWithSource, "createRequestDataDecoratorWithSource");
+function createRequestPropertyDecoratorWithSource(source) {
   return function(propertyKey, schemaOrType) {
     const properties = {};
     const rootSchema = { type: import_ts_data_schema.DataType.OBJECT };
@@ -330,16 +322,16 @@ function createPropertyDecorator(source) {
     });
   };
 }
-__name(createPropertyDecorator, "createPropertyDecorator");
-var params = createDataDecorator(RequestDataSource.PARAMS);
-var param = createPropertyDecorator(RequestDataSource.PARAMS);
-var queries = createDataDecorator(RequestDataSource.QUERY);
-var query = createPropertyDecorator(RequestDataSource.QUERY);
-var headers = createDataDecorator(RequestDataSource.HEADERS);
-var header = createPropertyDecorator(RequestDataSource.HEADERS);
-var cookies = createDataDecorator(RequestDataSource.COOKIE);
-var cookie = createPropertyDecorator(RequestDataSource.COOKIE);
-var bodyParam = createPropertyDecorator(RequestDataSource.BODY);
+__name(createRequestPropertyDecoratorWithSource, "createRequestPropertyDecoratorWithSource");
+var params = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
+var param = createRequestPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+var queries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
+var query = createRequestPropertyDecoratorWithSource(RequestDataSource.QUERY);
+var headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
+var header = createRequestPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+var cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
+var cookie = createRequestPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+var bodyParam = createRequestPropertyDecoratorWithSource(RequestDataSource.BODY);
 function body(schemaOrType) {
   let schema;
   if (typeof schemaOrType === "object") {
@@ -393,13 +385,12 @@ __name(_RequestContextReflector, "RequestContextReflector");
 var RequestContextReflector = _RequestContextReflector;
 
 // dist/esm/decorators/request-context/request-context-decorator.js
-function requestContext(propertyOrMetadata) {
+function requestContext(property) {
   return function(target, propertyKey, indexOrDescriptor) {
     const decoratorType = (0, import_ts_reflector16.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
     if (decoratorType !== import_ts_reflector15.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error("@requestContext decorator is only supported on an instance method parameter.");
-    const metadata = typeof propertyOrMetadata !== "object" ? { property: propertyOrMetadata } : propertyOrMetadata;
-    RequestContextReflector.setMetadata(metadata, target.constructor, indexOrDescriptor, propertyKey);
+    RequestContextReflector.setMetadata({ property }, target.constructor, indexOrDescriptor, propertyKey);
   };
 }
 __name(requestContext, "requestContext");

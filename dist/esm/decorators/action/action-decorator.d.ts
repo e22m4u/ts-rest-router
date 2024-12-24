@@ -12,42 +12,41 @@ export type ActionOptions = Flatten<Omit<ActionMetadata, 'propertyKey'>>;
  */
 export declare function action<T extends object>(options: ActionOptions): (target: Prototype<T>, propertyKey: string, descriptor: PropertyDescriptor) => void;
 /**
- * Action alias options.
+ * Action method options.
  */
-type ActionAliasOptions = Flatten<Omit<ActionOptions, 'method' | 'path'>>;
+export type ActionMethodOptions = Flatten<Omit<ActionOptions, 'method' | 'path'>>;
 /**
  * Get decorator.
  *
  * @param path
  * @param options
  */
-export declare const get: (path: string, options?: ActionAliasOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare const get: (path: string, options?: ActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
 /**
  * Post decorator.
  *
  * @param path
  * @param options
  */
-export declare const post: (path: string, options?: ActionAliasOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare const post: (path: string, options?: ActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
 /**
  * Put decorator.
  *
  * @param path
  * @param options
  */
-export declare const put: (path: string, options?: ActionAliasOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare const put: (path: string, options?: ActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
 /**
  * Patch decorator.
  *
  * @param path
  * @param options
  */
-export declare const patch: (path: string, options?: ActionAliasOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare const patch: (path: string, options?: ActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
 /**
  * Del decorator.
  *
  * @param path
  * @param options
  */
-export declare const del: (path: string, options?: ActionAliasOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
-export {};
+export declare const del: (path: string, options?: ActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;

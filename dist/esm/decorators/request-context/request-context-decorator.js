@@ -4,18 +4,15 @@ import { RequestContextReflector } from './request-context-reflector.js';
 /**
  * Request context decorator.
  *
- * @param propertyOrMetadata
+ * @param property
  */
-export function requestContext(propertyOrMetadata) {
+export function requestContext(property) {
     return function (target, propertyKey, indexOrDescriptor) {
         const decoratorType = getDecoratorTargetType(target, propertyKey, indexOrDescriptor);
         if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
             throw new Error('@requestContext decorator is only supported ' +
                 'on an instance method parameter.');
-        const metadata = typeof propertyOrMetadata !== 'object'
-            ? { property: propertyOrMetadata }
-            : propertyOrMetadata;
-        RequestContextReflector.setMetadata(metadata, target.constructor, indexOrDescriptor, propertyKey);
+        RequestContextReflector.setMetadata({ property }, target.constructor, indexOrDescriptor, propertyKey);
     };
 }
 /**

@@ -11,10 +11,6 @@ export function controller(options) {
         const decoratorType = getDecoratorTargetType(target);
         if (decoratorType !== DecoratorTargetType.CONSTRUCTOR)
             throw new Error('@controller decorator is only supported on a class.');
-        const metadata = {
-            ...options,
-            className: target.name,
-        };
-        ControllerReflector.setMetadata(metadata, target);
+        ControllerReflector.setMetadata({ ...options, className: target.name }, target);
     };
 }
