@@ -29,8 +29,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // dist/esm/index.js
-var esm_exports = {};
-__export(esm_exports, {
+var index_exports = {};
+__export(index_exports, {
   ACTIONS_METADATA_KEY: () => ACTIONS_METADATA_KEY,
   ActionReflector: () => ActionReflector,
   CONTROLLER_METADATA_KEY: () => CONTROLLER_METADATA_KEY,
@@ -69,7 +69,7 @@ __export(esm_exports, {
   response: () => response,
   toCamelCase: () => toCamelCase
 });
-module.exports = __toCommonJS(esm_exports);
+module.exports = __toCommonJS(index_exports);
 
 // dist/esm/utils/capitalize.js
 function capitalize(input) {
