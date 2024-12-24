@@ -3,9 +3,9 @@ import { RequestContext } from '@e22m4u/js-trie-router';
 /**
  * Request context decorator.
  *
- * @param property
+ * @param propertyName
  */
-export declare function requestContext<T extends object>(property?: keyof RequestContext): (target: Prototype<T>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare function requestContext<T extends object>(propertyName?: keyof RequestContext): (target: Prototype<T>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
  * Request decorator.
  */

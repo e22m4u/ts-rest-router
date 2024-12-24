@@ -385,12 +385,12 @@ __name(_RequestContextReflector, "RequestContextReflector");
 var RequestContextReflector = _RequestContextReflector;
 
 // dist/esm/decorators/request-context/request-context-decorator.js
-function requestContext(property) {
+function requestContext(propertyName) {
   return function(target, propertyKey, indexOrDescriptor) {
     const decoratorType = (0, import_ts_reflector16.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
     if (decoratorType !== import_ts_reflector15.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error("@requestContext decorator is only supported on an instance method parameter.");
-    RequestContextReflector.setMetadata({ property }, target.constructor, indexOrDescriptor, propertyKey);
+    RequestContextReflector.setMetadata({ property: propertyName }, target.constructor, indexOrDescriptor, propertyKey);
   };
 }
 __name(requestContext, "requestContext");

@@ -8,10 +8,10 @@ import {RequestContextReflector} from './request-context-reflector.js';
 /**
  * Request context decorator.
  *
- * @param property
+ * @param propertyName
  */
 export function requestContext<T extends object>(
-  property?: keyof RequestContext,
+  propertyName?: keyof RequestContext,
 ) {
   return function (
     target: Prototype<T>,
@@ -29,7 +29,7 @@ export function requestContext<T extends object>(
           'on an instance method parameter.',
       );
     RequestContextReflector.setMetadata(
-      {property},
+      {property: propertyName},
       target.constructor as Constructor<T>,
       indexOrDescriptor,
       propertyKey,
