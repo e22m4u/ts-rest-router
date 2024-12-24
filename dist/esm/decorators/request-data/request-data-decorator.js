@@ -29,11 +29,11 @@ function createRequestDataDecoratorWithSource(source) {
     };
 }
 /**
- * Create request property decorator with source.
+ * Create request data property decorator with source.
  *
  * @param source
  */
-function createRequestPropertyDecoratorWithSource(source) {
+function createRequestDataPropertyDecoratorWithSource(source) {
     return function (propertyKey, schemaOrType) {
         const properties = {};
         const rootSchema = { type: DataType.OBJECT };
@@ -56,14 +56,14 @@ function createRequestPropertyDecoratorWithSource(source) {
  * Decorator aliases.
  */
 export const params = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
-export const param = createRequestPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+export const param = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
 export const queries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
-export const query = createRequestPropertyDecoratorWithSource(RequestDataSource.QUERY);
+export const query = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
 export const headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
-export const header = createRequestPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+export const header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 export const cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
-export const cookie = createRequestPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-export const bodyParam = createRequestPropertyDecoratorWithSource(RequestDataSource.BODY);
+export const cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+export const bodyParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 /**
  * Request body decorator.
  *

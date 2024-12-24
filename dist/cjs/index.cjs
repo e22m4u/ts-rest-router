@@ -304,7 +304,7 @@ function createRequestDataDecoratorWithSource(source) {
   };
 }
 __name(createRequestDataDecoratorWithSource, "createRequestDataDecoratorWithSource");
-function createRequestPropertyDecoratorWithSource(source) {
+function createRequestDataPropertyDecoratorWithSource(source) {
   return function(propertyKey, schemaOrType) {
     const properties = {};
     const rootSchema = { type: import_ts_data_schema.DataType.OBJECT };
@@ -322,16 +322,16 @@ function createRequestPropertyDecoratorWithSource(source) {
     });
   };
 }
-__name(createRequestPropertyDecoratorWithSource, "createRequestPropertyDecoratorWithSource");
+__name(createRequestDataPropertyDecoratorWithSource, "createRequestDataPropertyDecoratorWithSource");
 var params = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
-var param = createRequestPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+var param = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
 var queries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
-var query = createRequestPropertyDecoratorWithSource(RequestDataSource.QUERY);
+var query = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
 var headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
-var header = createRequestPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+var header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 var cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
-var cookie = createRequestPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-var bodyParam = createRequestPropertyDecoratorWithSource(RequestDataSource.BODY);
+var cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+var bodyParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 function body(schemaOrType) {
   let schema;
   if (typeof schemaOrType === "object") {

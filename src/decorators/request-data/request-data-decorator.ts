@@ -57,11 +57,13 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
 }
 
 /**
- * Create request property decorator with source.
+ * Create request data property decorator with source.
  *
  * @param source
  */
-function createRequestPropertyDecoratorWithSource(source: RequestDataSource) {
+function createRequestDataPropertyDecoratorWithSource(
+  source: RequestDataSource,
+) {
   return function (propertyKey: string, schemaOrType?: DataSchema | DataType) {
     const properties = {} as NoUndef<DataSchema['properties']>;
     const rootSchema: DataSchema = {type: DataType.OBJECT};
@@ -86,28 +88,28 @@ function createRequestPropertyDecoratorWithSource(source: RequestDataSource) {
 export const params = createRequestDataDecoratorWithSource(
   RequestDataSource.PARAMS,
 );
-export const param = createRequestPropertyDecoratorWithSource(
+export const param = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.PARAMS,
 );
 export const queries = createRequestDataDecoratorWithSource(
   RequestDataSource.QUERY,
 );
-export const query = createRequestPropertyDecoratorWithSource(
+export const query = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.QUERY,
 );
 export const headers = createRequestDataDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
-export const header = createRequestPropertyDecoratorWithSource(
+export const header = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
 export const cookies = createRequestDataDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
-export const cookie = createRequestPropertyDecoratorWithSource(
+export const cookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
-export const bodyParam = createRequestPropertyDecoratorWithSource(
+export const bodyParam = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,
 );
 
