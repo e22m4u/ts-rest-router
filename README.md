@@ -62,7 +62,7 @@ class ProductController {
   async getProduct(
     @param('id') productId: string,
     @query('fields') fields?: string,
-    @headers('authorization') auth?: string,
+    @header('authorization') auth?: string,
   ) {
     // ...
   }
@@ -159,7 +159,7 @@ class UserController {
 }
 ```
 
-### `@get(path: string, options?: ActionOptions)`
+#### `@get(path: string, options?: ActionOptions)`
 
 Decorator for defining GET method.
 
@@ -195,7 +195,7 @@ class UserController {
 }
 ```
 
-### `@requestContext(propertyName?: string)`
+#### `@requestContext(propertyName?: string)`
 
 Decorator for accessing request context.
 
