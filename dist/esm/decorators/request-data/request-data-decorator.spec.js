@@ -29,7 +29,9 @@ import { RequestDataReflector } from './request-data-reflector.js';
 describe('requestData', function () {
     it('sets given options to the target metadata', function () {
         const options = {
-            source: RequestDataSource.PARAMS,
+            source: RequestDataSource.BODY,
+            schema: { type: DataType.STRING },
+            property: 'prop',
             customOption: 'myOption',
         };
         class Target {
