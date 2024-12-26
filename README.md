@@ -45,12 +45,12 @@ import {controller} from '@e22m4u/ts-rest-router';
 class UserController {       // controller class
   @post('/login')            // POST /users/login method
   async login(
-    @field('username', {     // "username" is request body field
+    @field('username', {     // "username" field in request body
       type: DataType.STRING, // parameter type allows only strings
       required: true,        // parameter is required
     })
     username: string,
-    @field('password', {     // "password" is request body field
+    @field('password', {     // "password" field in request body
       type: DataType.STRING, // parameter type allows only strings
       required: true,        // parameter is required
     })
