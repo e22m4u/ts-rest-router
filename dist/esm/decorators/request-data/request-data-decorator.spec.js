@@ -22,7 +22,7 @@ import { params } from './request-data-decorator.js';
 import { queries } from './request-data-decorator.js';
 import { cookies } from './request-data-decorator.js';
 import { headers } from './request-data-decorator.js';
-import { bodyParam } from './request-data-decorator.js';
+import { bodyProp } from './request-data-decorator.js';
 import { requestData } from './request-data-decorator.js';
 import { RequestDataSource } from './request-data-metadata.js';
 import { RequestDataReflector } from './request-data-reflector.js';
@@ -460,13 +460,13 @@ describe('requestData', function () {
                 });
             });
         });
-        describe('bodyParam', function () {
+        describe('bodyProp', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyParam('myPropertyKey')),
+                    __param(0, bodyProp('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -485,7 +485,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyParam(propertyKey, propertyType)),
+                    __param(0, bodyProp(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -514,7 +514,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyParam(propertyKey, schema)),
+                    __param(0, bodyProp(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)

@@ -37,27 +37,28 @@ npm install @e22m4u/ts-rest-router
 ```ts
 import {get} from '@e22m4u/ts-rest-router';
 import {post} from '@e22m4u/ts-rest-router';
+import {bodyProp} from '@e22m4u/ts-rest-router';
 import {DataType} from '@e22m4u/ts-rest-router';
 import {controller} from '@e22m4u/ts-rest-router';
 
-@controller('/users')           // путь контроллера
-class UserController {          // класс контроллера
-  @post('/login')               // метод POST /users/login
+@controller('/users')         // путь контроллера
+class UserController {        // класс контроллера
+  @post('/login')             // метод POST /users/login
   async login(
-    @bodyParam('username', {    // параметр тела запроса "username"
-      type: DataType.STRING,    // тип параметра допускает только строки
-      required: true,           // параметр является обязательным
+    @bodyProp('username', {   // свойство тела запроса "username"
+      type: DataType.STRING,  // тип параметра допускает только строки
+      required: true,         // параметр является обязательным
     })
     username: string,
-    @bodyParam('password', {    // параметр тела запроса "password"
-      type: DataType.STRING,    // тип параметра допускает только строки
-      required: true,           // параметр является обязательным
-    )
+    @bodyProp('password', {   // свойство тела запроса "password"
+      type: DataType.STRING,  // тип параметра допускает только строки
+      required: true,         // параметр является обязательным
+    })
     password: string,
   ) {
-    return {                    // если метод возвращает объект,
-      id: '123',                // то результат будет представлен как
-      firstName: 'John',        // "Content-Type: application/json"
+    return {                  // если метод возвращает объект,
+      id: '123',              // то результат будет представлен как
+      firstName: 'John',      // "Content-Type: application/json"
       lastName: 'Doe',
     };
   }
@@ -109,7 +110,7 @@ server.listen('8080', '0.0.0.0', () => {
 - `@query` - один query параметр
 - `@queries` - все query параметры как объект
 - `@body` - тело запроса
-- `@bodyParam` - конкретное поле из тела запроса
+- `@bodyProp` - свойство из тела запроса
 - `@header` - один заголовок
 - `@headers` - все заголовки как объект
 - `@cookie` - одна cookie
@@ -141,7 +142,7 @@ class UserController {
 
 ```ts
 @controller({
-  path: '/api'               // путь контроллера
+  path: '/api',              // путь контроллера
   before: [authMiddleware],  // middleware до обработки запроса
   after: [loggerMiddleware], // middleware после обработки запроса
 })

@@ -37,27 +37,28 @@ Creating a controller and methods.
 ```ts
 import {get} from '@e22m4u/ts-rest-router';
 import {post} from '@e22m4u/ts-rest-router';
+import {bodyProp} from '@e22m4u/ts-rest-router';
 import {DataType} from '@e22m4u/ts-rest-router';
 import {controller} from '@e22m4u/ts-rest-router';
 
-@controller('/users')           // controller path
-class UserController {          // controller class
-  @post('/login')               // POST /users/login method
+@controller('/users')        // controller path
+class UserController {       // controller class
+  @post('/login')            // POST /users/login method
   async login(
-    @bodyParam('username', {    // "username" is request body parameter
-      type: DataType.STRING,    // parameter type allows only strings
-      required: true,           // parameter is required
+    @bodyProp('username', {  // "username" is request body property
+      type: DataType.STRING, // parameter type allows only strings
+      required: true,        // parameter is required
     })
     username: string,
-    @bodyParam('password', {    // "password" is request body parameter
-      type: DataType.STRING,    // parameter type allows only strings
-      required: true,           // parameter is required
+    @bodyProp('password', {  // "password" is request body property
+      type: DataType.STRING, // parameter type allows only strings
+      required: true,        // parameter is required
     })
     password: string,
   ) {
-    return {                    // if method returns an object,
-      id: '123',                // the result will be presented as
-      firstName: 'John',        // "Content-Type: application/json"
+    return {                 // if method returns an object,
+      id: '123',             // the result will be presented as
+      firstName: 'John',     // "Content-Type: application/json"
       lastName: 'Doe',
     };
   }
@@ -109,7 +110,7 @@ Request parameters:
 - `@query` - single query parameter
 - `@queries` - all query parameters as an object
 - `@body` - request body
-- `@bodyParam` - specific field from request body
+- `@bodyProp` - property from request body
 - `@header` - single header
 - `@headers` - all headers as an object
 - `@cookie` - single cookie
@@ -141,7 +142,7 @@ Additional decorator parameters.
 
 ```ts
 @controller({
-  path: '/api'               // controller path
+  path: '/api',              // controller path
   before: [authMiddleware],  // middleware before request processing
   after: [loggerMiddleware], // middleware after request processing
 })

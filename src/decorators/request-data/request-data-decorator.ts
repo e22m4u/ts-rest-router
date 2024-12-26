@@ -109,7 +109,7 @@ export const cookies = createRequestDataDecoratorWithSource(
 export const cookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
-export const bodyParam = createRequestDataPropertyDecoratorWithSource(
+export const bodyProp = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,
 );
 

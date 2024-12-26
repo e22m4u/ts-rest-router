@@ -51,7 +51,7 @@ __export(index_exports, {
   after: () => after,
   before: () => before,
   body: () => body,
-  bodyParam: () => bodyParam,
+  bodyProp: () => bodyProp,
   capitalize: () => capitalize,
   controller: () => controller,
   cookie: () => cookie,
@@ -470,7 +470,7 @@ var headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
 var header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 var cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
 var cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-var bodyParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
+var bodyProp = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 function body(schemaOrType) {
   let schema;
   if (typeof schemaOrType === "object") {
@@ -959,7 +959,7 @@ var RestRouter = _RestRouter;
   after,
   before,
   body,
-  bodyParam,
+  bodyProp,
   capitalize,
   controller,
   cookie,

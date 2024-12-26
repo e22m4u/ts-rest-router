@@ -63,7 +63,7 @@ export const headers = createRequestDataDecoratorWithSource(RequestDataSource.HE
 export const header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 export const cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
 export const cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-export const bodyParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
+export const bodyProp = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 /**
  * Request body decorator.
  *
