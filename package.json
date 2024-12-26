@@ -1,6 +1,6 @@
 {
   "name": "@e22m4u/ts-rest-router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Controllers-based REST router implementation for TypeScript",
   "author": "e22m4u <e22m4u@yandex.ru>",
   "keywords": [
