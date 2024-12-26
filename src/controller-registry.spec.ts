@@ -1,24 +1,25 @@
 import {expect} from 'chai';
 import {get} from './decorators/index.js';
 import {post} from './decorators/index.js';
+import {after} from './decorators/index.js';
+import {before} from './decorators/index.js';
 import {HookName} from '@e22m4u/js-trie-router';
 import {controller} from './decorators/index.js';
 import {TrieRouter} from '@e22m4u/js-trie-router';
 import {HttpMethod} from '@e22m4u/js-trie-router';
 import {RouteRegistry} from '@e22m4u/js-trie-router';
 import {createRequestMock} from '@e22m4u/js-trie-router';
-import {ControllerReflector} from './decorators/index.js';
 import {ControllerRegistry} from './controller-registry.js';
 
 const PRE_HANDLER_1 = () => undefined;
 const PRE_HANDLER_2 = () => undefined;
-const PRE_HANDLER_3 = () => undefined;
-const PRE_HANDLER_4 = () => undefined;
+// const PRE_HANDLER_3 = () => undefined;
+// const PRE_HANDLER_4 = () => undefined;
 
 const POST_HANDLER_1 = () => undefined;
 const POST_HANDLER_2 = () => undefined;
-const POST_HANDLER_3 = () => undefined;
-const POST_HANDLER_4 = () => undefined;
+// const POST_HANDLER_3 = () => undefined;
+// const POST_HANDLER_4 = () => undefined;
 
 describe('ControllerRegistry', function () {
   it('has a public property with set of controllers', function () {
@@ -45,7 +46,7 @@ describe('ControllerRegistry', function () {
       expect(s.hasController(MyController)).to.be.true;
     });
 
-    it('passes action method and path of a given controller to the route', function () {
+    it('uses http method and action path for a new route', function () {
       const s = new ControllerRegistry();
       @controller()
       class MyController {
@@ -64,7 +65,7 @@ describe('ControllerRegistry', function () {
       expect(matching!.route.path).to.be.eq('/myAction');
     });
 
-    it('creates routes for multiple actions of a given controller', function () {
+    it('adds multiple routes by the given controller', function () {
       const s = new ControllerRegistry();
       @controller()
       class MyController {
@@ -89,8 +90,59 @@ describe('ControllerRegistry', function () {
       expect(barMatching).to.be.not.empty;
     });
 
+    it('uses path prefix of controller root options', function () {
+      const s = new ControllerRegistry();
+      @controller()
+      class MyController {
+        @get('/myAction')
+        myAction() {}
+      }
+      s.addController(MyController, {pathPrefix: '/myPrefix'});
+      const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+      const req = createRequestMock({
+        method: HttpMethod.GET,
+        path: '/myPrefix/myAction',
+      });
+      const matching = routeReg.matchRouteByRequest(req);
+      expect(matching).to.be.not.empty;
+    });
+
+    it('uses path prefix of @controller metadata', function () {
+      const s = new ControllerRegistry();
+      @controller('/myController')
+      class MyController {
+        @get('/myAction')
+        myAction() {}
+      }
+      s.addController(MyController);
+      const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+      const req = createRequestMock({
+        method: HttpMethod.GET,
+        path: '/myController/myAction',
+      });
+      const matching = routeReg.matchRouteByRequest(req);
+      expect(matching).to.be.not.empty;
+    });
+
+    it('uses path prefix of controller root options and @controller metadata', function () {
+      const s = new ControllerRegistry();
+      @controller('/myController')
+      class MyController {
+        @get('/myAction')
+        myAction() {}
+      }
+      s.addController(MyController, {pathPrefix: '/myPrefix'});
+      const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+      const req = createRequestMock({
+        method: HttpMethod.GET,
+        path: '/myPrefix/myController/myAction',
+      });
+      const matching = routeReg.matchRouteByRequest(req);
+      expect(matching).to.be.not.empty;
+    });
+
     describe('single pre-handler', function () {
-      it('passes pre-handler of a given options to the route', function () {
+      it('uses pre-handler of controller root options', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -109,7 +161,27 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
-      it('passes pre-handler of a given controller to the route', function () {
+      it('uses pre-handler of @before metadata', function () {
+        const s = new ControllerRegistry();
+        @controller()
+        class MyController {
+          @get('/myAction')
+          @before(PRE_HANDLER_1)
+          myAction() {}
+        }
+        s.addController(MyController);
+        const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+        const req = createRequestMock({
+          method: HttpMethod.GET,
+          path: '/myAction',
+        });
+        const matching = routeReg.matchRouteByRequest(req);
+        expect(matching).to.be.not.empty;
+        const res = matching!.route.hookRegistry.getHooks(HookName.PRE_HANDLER);
+        expect(res).to.be.eql([PRE_HANDLER_1]);
+      });
+
+      it('uses pre-handler of @controller metadata', function () {
         const s = new ControllerRegistry();
         @controller({before: PRE_HANDLER_1})
         class MyController {
@@ -128,7 +200,7 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
-      it('passes action pre-handler of a given controller to the route', function () {
+      it('uses pre-handler of @action metadata', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -149,7 +221,7 @@ describe('ControllerRegistry', function () {
     });
 
     describe('multiple pre-handlers', function () {
-      it('passes pre-handlers of a given options to the route', function () {
+      it('uses pre-handlers of controller root options', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -170,7 +242,27 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
-      it('passes pre-handlers of a given controller to the route', function () {
+      it('uses pre-handlers of @before metadata', function () {
+        const s = new ControllerRegistry();
+        @controller()
+        class MyController {
+          @get('/myAction')
+          @before([PRE_HANDLER_1, PRE_HANDLER_2])
+          myAction() {}
+        }
+        s.addController(MyController);
+        const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+        const req = createRequestMock({
+          method: HttpMethod.GET,
+          path: '/myAction',
+        });
+        const matching = routeReg.matchRouteByRequest(req);
+        expect(matching).to.be.not.empty;
+        const res = matching!.route.hookRegistry.getHooks(HookName.PRE_HANDLER);
+        expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
+      });
+
+      it('uses pre-handlers of @controller metadata', function () {
         const s = new ControllerRegistry();
         @controller({
           before: [PRE_HANDLER_1, PRE_HANDLER_2],
@@ -191,7 +283,7 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
-      it('passes action pre-handlers of a given controller to the route', function () {
+      it('uses pre-handlers of @action metadata', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -214,7 +306,7 @@ describe('ControllerRegistry', function () {
     });
 
     describe('single post-handler', function () {
-      it('passes post-handler of a given options to the route', function () {
+      it('uses post-handler of controller root options', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -235,7 +327,29 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
 
-      it('passes post-handler of a given controller to the route', function () {
+      it('uses pre-handler of @after metadata', function () {
+        const s = new ControllerRegistry();
+        @controller()
+        class MyController {
+          @get('/myAction')
+          @after(POST_HANDLER_1)
+          myAction() {}
+        }
+        s.addController(MyController);
+        const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+        const req = createRequestMock({
+          method: HttpMethod.GET,
+          path: '/myAction',
+        });
+        const matching = routeReg.matchRouteByRequest(req);
+        expect(matching).to.be.not.empty;
+        const res = matching!.route.hookRegistry.getHooks(
+          HookName.POST_HANDLER,
+        );
+        expect(res).to.be.eql([POST_HANDLER_1]);
+      });
+
+      it('uses post-handler of @controller metadata', function () {
         const s = new ControllerRegistry();
         @controller({after: POST_HANDLER_1})
         class MyController {
@@ -256,7 +370,7 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
 
-      it('passes action post-handler of a given controller to the route', function () {
+      it('uses post-handler of @action metadata', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -279,7 +393,7 @@ describe('ControllerRegistry', function () {
     });
 
     describe('multiple post-handlers', function () {
-      it('passes post-handlers of a given options to the route', function () {
+      it('uses post-handlers of controller root options', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -302,7 +416,29 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
 
-      it('passes post-handlers of a given controller to the route', function () {
+      it('uses pre-handlers of @after metadata', function () {
+        const s = new ControllerRegistry();
+        @controller()
+        class MyController {
+          @get('/myAction')
+          @after([POST_HANDLER_1, POST_HANDLER_2])
+          myAction() {}
+        }
+        s.addController(MyController);
+        const routeReg = s.getService(TrieRouter).getService(RouteRegistry);
+        const req = createRequestMock({
+          method: HttpMethod.GET,
+          path: '/myAction',
+        });
+        const matching = routeReg.matchRouteByRequest(req);
+        expect(matching).to.be.not.empty;
+        const res = matching!.route.hookRegistry.getHooks(
+          HookName.POST_HANDLER,
+        );
+        expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
+      });
+
+      it('uses post-handlers of @controller metadata', function () {
         const s = new ControllerRegistry();
         @controller({
           after: [POST_HANDLER_1, POST_HANDLER_2],
@@ -325,7 +461,7 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
 
-      it('passes action post-handlers of a given controller to the route', function () {
+      it('uses post-handlers of @action metadata', function () {
         const s = new ControllerRegistry();
         @controller()
         class MyController {
@@ -365,228 +501,6 @@ describe('ControllerRegistry', function () {
       expect(s.hasController(MyController)).to.be.false;
       s.addController(MyController);
       expect(s.hasController(MyController)).to.be.true;
-    });
-  });
-
-  describe('getPathPrefixByControllerMetadata', function () {
-    it('returns an empty string if no prefix is specified', function () {
-      const s = new ControllerRegistry();
-      @controller()
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPathPrefixByControllerMetadata(md);
-      expect(res).to.be.eq('');
-    });
-
-    it('returns controller path prefix that starts with slash', function () {
-      const s = new ControllerRegistry();
-      @controller({path: 'myPrefix'})
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPathPrefixByControllerMetadata(md);
-      expect(res).to.be.eq('/myPrefix');
-    });
-
-    it('returns path prefix from options that starts with slash', function () {
-      const s = new ControllerRegistry();
-      @controller()
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPathPrefixByControllerMetadata(md, {
-        pathPrefix: 'myPrefix',
-      });
-      expect(res).to.be.eq('/myPrefix');
-    });
-
-    it('combines a path prefix from options and controller', function () {
-      const s = new ControllerRegistry();
-      @controller({path: 'controller'})
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPathPrefixByControllerMetadata(md, {
-        pathPrefix: 'root',
-      });
-      expect(res).to.be.eq('/root/controller');
-    });
-  });
-
-  describe('getPreHandlersByControllerMetadata', function () {
-    it('returns an empty array if no handlers are specified', function () {
-      const s = new ControllerRegistry();
-      @controller()
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPreHandlersByControllerMetadata(md);
-      expect(res).to.be.eql([]);
-    });
-
-    describe('single handler', function () {
-      it('returns pre-handlers from a given controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          before: PRE_HANDLER_1,
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md);
-        expect(res).to.be.eql([PRE_HANDLER_1]);
-      });
-
-      it('returns pre-handlers from a given options', function () {
-        const s = new ControllerRegistry();
-        @controller()
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md, {
-          before: PRE_HANDLER_1,
-        });
-        expect(res).to.be.eql([PRE_HANDLER_1]);
-      });
-
-      it('combines pre-handlers from a given options and controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          before: PRE_HANDLER_2,
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md, {
-          before: PRE_HANDLER_1,
-        });
-        expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
-      });
-    });
-
-    describe('multiple handlers', function () {
-      it('returns pre-handlers from a given controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          before: [PRE_HANDLER_1, PRE_HANDLER_2],
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md);
-        expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
-      });
-
-      it('returns pre-handlers from a given options', function () {
-        const s = new ControllerRegistry();
-        @controller()
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md, {
-          before: [PRE_HANDLER_1, PRE_HANDLER_2],
-        });
-        expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
-      });
-
-      it('combines pre-handlers from a given options and controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          before: [PRE_HANDLER_3, PRE_HANDLER_4],
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPreHandlersByControllerMetadata(md, {
-          before: [PRE_HANDLER_1, PRE_HANDLER_2],
-        });
-        expect(res).to.be.eql([
-          PRE_HANDLER_1,
-          PRE_HANDLER_2,
-          PRE_HANDLER_3,
-          PRE_HANDLER_4,
-        ]);
-      });
-    });
-  });
-
-  describe('getPostHandlersByControllerMetadata', function () {
-    it('returns an empty array if no handlers are specified', function () {
-      const s = new ControllerRegistry();
-      @controller()
-      class MyController {}
-      const md = ControllerReflector.getMetadata(MyController)!;
-      const res = s.getPostHandlersByControllerMetadata(md);
-      expect(res).to.be.eql([]);
-    });
-
-    describe('single handler', function () {
-      it('returns pre-handlers from a given controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          after: POST_HANDLER_1,
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md);
-        expect(res).to.be.eql([POST_HANDLER_1]);
-      });
-
-      it('returns pre-handlers from a given options', function () {
-        const s = new ControllerRegistry();
-        @controller()
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md, {
-          after: POST_HANDLER_1,
-        });
-        expect(res).to.be.eql([POST_HANDLER_1]);
-      });
-
-      it('combines pre-handlers from a given options and controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          after: POST_HANDLER_2,
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md, {
-          after: POST_HANDLER_1,
-        });
-        expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
-      });
-    });
-
-    describe('multiple handlers', function () {
-      it('returns pre-handlers from a given controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          after: [POST_HANDLER_1, POST_HANDLER_2],
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md);
-        expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
-      });
-
-      it('returns pre-handlers from a given options', function () {
-        const s = new ControllerRegistry();
-        @controller()
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md, {
-          after: [POST_HANDLER_1, POST_HANDLER_2],
-        });
-        expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
-      });
-
-      it('combines pre-handlers from a given options and controller', function () {
-        const s = new ControllerRegistry();
-        @controller({
-          after: [POST_HANDLER_3, POST_HANDLER_4],
-        })
-        class MyController {}
-        const md = ControllerReflector.getMetadata(MyController)!;
-        const res = s.getPostHandlersByControllerMetadata(md, {
-          after: [POST_HANDLER_1, POST_HANDLER_2],
-        });
-        expect(res).to.be.eql([
-          POST_HANDLER_1,
-          POST_HANDLER_2,
-          POST_HANDLER_3,
-          POST_HANDLER_4,
-        ]);
-      });
     });
   });
 });

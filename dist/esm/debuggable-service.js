@@ -18,6 +18,6 @@ export class DebuggableService extends Service {
         super(container);
         const serviceName = toCamelCase(this.constructor.name);
         this.debug = createDebugger(serviceName);
-        this.debug('%v is created.', this.constructor);
+        this.debug.bind('constructor')('Service created.');
     }
 }

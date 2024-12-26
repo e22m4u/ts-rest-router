@@ -97,6 +97,11 @@ Controller and methods:
 - `@patch` - PATCH requests
 - `@del` - DELETE requests
 
+Request hooks:
+
+- `@before` - middleware before request handling
+- `@after` - middleware after request handling
+
 Request parameters:
 
 - `@param` - single URL parameter

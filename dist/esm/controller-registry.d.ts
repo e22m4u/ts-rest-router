@@ -2,7 +2,6 @@ import { Constructor } from './types.js';
 import { RouteHandler } from '@e22m4u/js-trie-router';
 import { RoutePreHandler } from '@e22m4u/js-trie-router';
 import { RoutePostHandler } from '@e22m4u/js-trie-router';
-import { ControllerMetadata } from './decorators/index.js';
 import { DebuggableService } from './debuggable-service.js';
 /**
  * Controller root options.
@@ -34,26 +33,69 @@ export declare class ControllerRegistry extends DebuggableService {
      */
     hasController<T extends object>(ctor: Constructor<T>): boolean;
     /**
-     * Get path prefix by controller metadata.
+     * Get path prefix from controller root options.
      *
-     * @param controllerMd
      * @param options
      */
-    getPathPrefixByControllerMetadata(controllerMd: ControllerMetadata, options?: ControllerRootOptions): string;
+    protected getPathPrefixFromControllerRootOptions(options?: ControllerRootOptions): string;
     /**
-     * Get pre-handlers by controller metadata.
+     * Get path prefix from controller metadata.
      *
-     * @param controllerMd
-     * @param options
+     * @param ctor
      */
-    getPreHandlersByControllerMetadata(controllerMd: ControllerMetadata, options?: ControllerRootOptions): RouteHandler[];
+    protected getPathPrefixFromControllerMetadata<T>(ctor: Constructor<T>): string;
     /**
-     * Get post-handlers by controller metadata.
+     * Getting pre-handlers from controller root options.
      *
-     * @param controllerMd
      * @param options
      */
-    getPostHandlersByControllerMetadata(controllerMd: ControllerMetadata, options?: ControllerRootOptions): RoutePostHandler[];
+    protected getPreHandlersFromControllerRootOptions(options?: ControllerRootOptions): RouteHandler[];
+    /**
+     * Getting post-handlers from controller root options.
+     *
+     * @param options
+     */
+    protected getPostHandlersFromControllerRootOptions(options?: ControllerRootOptions): RoutePostHandler[];
+    /**
+     * Get pre-handlers from before metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    protected getPreHandlersFromBeforeMetadata<T>(ctor: Constructor<T>, actionName?: string): RouteHandler[];
+    /**
+     * Get post-handlers from after metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    protected getPostHandlersFromAfterMetadata<T>(ctor: Constructor<T>, actionName?: string): RoutePostHandler[];
+    /**
+     * Get pre-handlers from controller metadata.
+     *
+     * @param ctor
+     */
+    protected getPreHandlersFromControllerMetadata<T>(ctor: Constructor<T>): RouteHandler[];
+    /**
+     * Get post-handlers from controller metadata.
+     *
+     * @param ctor
+     */
+    protected getPostHandlersFromControllerMetadata<T>(ctor: Constructor<T>): RoutePostHandler[];
+    /**
+     * Get pre-handlers from action metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    protected getPreHandlersFromActionMetadata<T>(ctor: Constructor<T>, actionName: string): RouteHandler[];
+    /**
+     * Get post-handlers from action metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    protected getPostHandlersFromActionMetadata<T>(ctor: Constructor<T>, actionName: string): RoutePostHandler[];
     /**
      * Create route handler.
      *
@@ -61,5 +103,5 @@ export declare class ControllerRegistry extends DebuggableService {
      * @param actionName
      * @protected
      */
-    createRouteHandler<T extends object>(controllerCtor: Constructor<T>, actionName: string): RouteHandler;
+    protected createRouteHandler<T extends object>(controllerCtor: Constructor<T>, actionName: string): RouteHandler;
 }

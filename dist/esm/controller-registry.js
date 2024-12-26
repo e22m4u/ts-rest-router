@@ -1,8 +1,10 @@
 import { Errorf } from '@e22m4u/js-format';
 import { TrieRouter } from '@e22m4u/js-trie-router';
 import { DataValidator } from '@e22m4u/ts-data-schema';
+import { AfterReflector } from './decorators/index.js';
 import { DataTypeCaster } from '@e22m4u/ts-data-schema';
 import { ActionReflector } from './decorators/index.js';
+import { BeforeReflector } from './decorators/index.js';
 import { NotAControllerError } from './errors/index.js';
 import { RequestDataSource } from './decorators/index.js';
 import { DebuggableService } from './debuggable-service.js';
@@ -24,6 +26,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param options
      */
     addController(ctor, options) {
+        const debug = this.debug.bind(this.addController.name);
         // проверка повторной регистрации помогает
         // заметить ошибку в коде, который использует
         // интерфейс данного сервиса
@@ -35,54 +38,66 @@ export class ControllerRegistry extends DebuggableService {
         const controllerMd = ControllerReflector.getMetadata(ctor);
         if (!controllerMd)
             throw new NotAControllerError(ctor);
-        this.debug('Adding controller %s.', ctor.name);
+        debug('Adding controller %s.', ctor.name);
         // определение префикса применяемого
         // к маршрутам контроллера
-        const pathPrefix = this.getPathPrefixByControllerMetadata(controllerMd, options);
-        this.debug('Path prefix is %v.', pathPrefix);
+        let pathPrefix = '';
+        pathPrefix += this.getPathPrefixFromControllerRootOptions(options);
+        pathPrefix += '/';
+        pathPrefix += this.getPathPrefixFromControllerMetadata(ctor);
+        pathPrefix = pathPrefix.replace(/\/{2,}/g, '/').replace(/\/$/, '');
+        debug('Controller path prefix is %v.', pathPrefix);
         // подготовка pre-обработчиков
-        const preHandlers = this.getPreHandlersByControllerMetadata(controllerMd, options);
-        this.debug('%v total pre-handlers found.', preHandlers.length);
+        const preHandlers = [
+            ...this.getPreHandlersFromControllerRootOptions(options),
+            ...this.getPreHandlersFromBeforeMetadata(ctor),
+            ...this.getPreHandlersFromControllerMetadata(ctor),
+        ];
+        debug('Controller has %v pre-handlers.', preHandlers.length);
         // подготовка post-обработчиков
-        const postHandlers = this.getPostHandlersByControllerMetadata(controllerMd, options);
-        this.debug('%v total post-handlers found.', postHandlers.length);
+        const postHandlers = [
+            ...this.getPostHandlersFromControllerRootOptions(options),
+            ...this.getPostHandlersFromAfterMetadata(ctor),
+            ...this.getPostHandlersFromControllerMetadata(ctor),
+        ];
+        debug('Controller has %v post-handlers.', postHandlers.length);
         // обход всех операций контроллера
         // для определения маршрутов
         const actionsMd = ActionReflector.getMetadata(ctor);
-        this.debug('%v actions found.', actionsMd.size);
+        debug('%v actions found.', actionsMd.size);
         const router = this.getService(TrieRouter);
         actionsMd.forEach((actionMd, actionName) => {
-            this.debug('Adding route for %s.%s.', ctor.name, actionName);
+            debug('Adding route for %s.%s.', ctor.name, actionName);
             // подготовка пути маршрута с префиксом
-            this.debug('Route path is %v.', actionMd.path);
-            const prefixedRoutePath = `${pathPrefix}/${actionMd.path}`.replace(/\/\//g, '/');
-            this.debug('Prefixed route path is %v.', prefixedRoutePath);
+            debug('Route path is %v.', actionMd.path);
+            const prefixedRoutePath = `${pathPrefix}/${actionMd.path}`
+                .replace(/\/{2,}/g, '/')
+                .replace(/\/$/, '');
+            debug('Prefixed route path is %v.', prefixedRoutePath);
             // подготовка pre-обработчиков операции
-            const actionPreHandlers = Array.isArray(actionMd.before)
-                ? actionMd.before
-                : actionMd.before
-                    ? [actionMd.before]
-                    : [];
-            this.debug('%v action pre-handlers found.', actionPreHandlers.length);
-            const mergedPreHandlers = [...preHandlers, ...actionPreHandlers];
+            const actionPreHandlers = [
+                ...preHandlers,
+                ...this.getPreHandlersFromBeforeMetadata(ctor, actionName),
+                ...this.getPreHandlersFromActionMetadata(ctor, actionName),
+            ];
+            debug('%v action pre-handlers in total.', actionPreHandlers.length);
             // подготовка post-обработчиков операции
-            const actionPostHandlers = Array.isArray(actionMd.after)
-                ? actionMd.after
-                : actionMd.after
-                    ? [actionMd.after]
-                    : [];
-            this.debug('%v action post-handlers found.', actionPostHandlers.length);
-            const mergedPostHandlers = [...postHandlers, ...actionPostHandlers];
+            const actionPostHandlers = [
+                ...postHandlers,
+                ...this.getPostHandlersFromAfterMetadata(ctor, actionName),
+                ...this.getPostHandlersFromActionMetadata(ctor, actionName),
+            ];
+            debug('%v action post-handlers in total.', actionPostHandlers.length);
             // подготовка обработчика маршрута
             const routeHandler = this.createRouteHandler(ctor, actionName);
             router.defineRoute({
                 method: actionMd.method,
                 path: prefixedRoutePath,
-                preHandler: mergedPreHandlers,
+                preHandler: actionPreHandlers,
                 handler: routeHandler,
-                postHandler: mergedPostHandlers,
+                postHandler: actionPostHandlers,
             });
-            this.debug('Route %s %v is added.', actionMd.method.toUpperCase(), prefixedRoutePath);
+            debug('Route %s %v is added.', actionMd.method.toUpperCase(), prefixedRoutePath);
         });
         this.controllers.add(ctor);
         return this;
@@ -96,79 +111,201 @@ export class ControllerRegistry extends DebuggableService {
         return this.controllers.has(ctor);
     }
     /**
-     * Get path prefix by controller metadata.
+     * Get path prefix from controller root options.
      *
-     * @param controllerMd
      * @param options
      */
-    getPathPrefixByControllerMetadata(controllerMd, options) {
-        const rootPathPrefix = options?.pathPrefix || '';
-        this.debug('Root path prefix is %v.', rootPathPrefix);
-        const controllerPathPrefix = controllerMd.path || '';
-        this.debug('Controller path prefix is %v.', controllerPathPrefix);
-        const mergedPathPrefix = `/${rootPathPrefix}/${controllerPathPrefix}`
-            .replace(/\/\//g, '/')
-            .replace(/\/$/, '');
-        this.debug('Merged path prefix is %v.', mergedPathPrefix);
-        return mergedPathPrefix;
+    getPathPrefixFromControllerRootOptions(options) {
+        const debug = this.debug.bind(this.getPathPrefixFromControllerRootOptions.name);
+        debug('Getting path prefix from controller root options.');
+        const res = options?.pathPrefix || '';
+        debug('Controller path prefix is %v.', res);
+        return res;
     }
     /**
-     * Get pre-handlers by controller metadata.
+     * Get path prefix from controller metadata.
      *
-     * @param controllerMd
+     * @param ctor
+     */
+    getPathPrefixFromControllerMetadata(ctor) {
+        const debug = this.debug.bind(this.getPathPrefixFromControllerMetadata.name);
+        debug('Getting path prefix from @controller metadata.');
+        debug('Metadata target is %s.', ctor.name);
+        const md = ControllerReflector.getMetadata(ctor);
+        if (!md)
+            throw new Errorf('Controller %v has no metadata.', ctor);
+        const res = md.path || '';
+        debug('Controller path prefix is %v.', res);
+        return md.path || '';
+    }
+    /**
+     * Getting pre-handlers from controller root options.
+     *
      * @param options
      */
-    getPreHandlersByControllerMetadata(controllerMd, options) {
-        // подготовка дополнительных
-        // pre-обработчиков запроса
-        let rootPreHandlers = [];
+    getPreHandlersFromControllerRootOptions(options) {
+        const debug = this.debug.bind(this.getPreHandlersFromControllerRootOptions.name);
+        debug('Getting pre-handlers from controller root options.');
+        let res = [];
         if (options?.before)
-            rootPreHandlers = Array.isArray(options?.before)
-                ? options.before
-                : [options.before];
-        this.debug('%v root pre-handlers found.', rootPreHandlers.length);
-        // подготовка pre-обработчиков
-        // запроса контроллера
-        let ctlPreHandlers = [];
-        if (controllerMd.before)
-            ctlPreHandlers = Array.isArray(controllerMd.before)
-                ? controllerMd.before
-                : [controllerMd.before];
-        this.debug('%v controller pre-handlers found.', ctlPreHandlers.length);
-        // подготовка объединенного набора
-        // pre-обработчиков запроса
-        const mergedPreHandlers = [...rootPreHandlers, ...ctlPreHandlers];
-        this.debug('%v merged pre-handlers.', mergedPreHandlers.length);
-        return mergedPreHandlers;
+            res = Array.isArray(options.before) ? options.before : [options.before];
+        debug('%v pre-handlers found.', res.length);
+        return res;
     }
     /**
-     * Get post-handlers by controller metadata.
+     * Getting post-handlers from controller root options.
      *
-     * @param controllerMd
      * @param options
      */
-    getPostHandlersByControllerMetadata(controllerMd, options) {
-        // подготовка дополнительных
-        // post-обработчиков запроса
-        let rootPostHandlers = [];
+    getPostHandlersFromControllerRootOptions(options) {
+        const debug = this.debug.bind(this.getPostHandlersFromControllerRootOptions.name);
+        debug('Getting post-handlers from controller root options.');
+        let res = [];
         if (options?.after)
-            rootPostHandlers = Array.isArray(options.after)
-                ? options.after
-                : [options.after];
-        this.debug('%v root post-handlers found.', rootPostHandlers.length);
-        // подготовка post-обработчиков
-        // запроса контроллера
-        let ctlPostHandlers = [];
-        if (controllerMd.after)
-            ctlPostHandlers = Array.isArray(controllerMd.after)
-                ? controllerMd.after
-                : [controllerMd.after];
-        this.debug('%v controller post-handlers found.', ctlPostHandlers.length);
-        // подготовка объединенного набора
-        // post-обработчиков запроса
-        const mergedPostHandlers = [...rootPostHandlers, ...ctlPostHandlers];
-        this.debug('%v merged post-handlers.', mergedPostHandlers.length);
-        return mergedPostHandlers;
+            res = Array.isArray(options.after) ? options.after : [options.after];
+        debug('%v post-handlers found.', res.length);
+        return res;
+    }
+    /**
+     * Get pre-handlers from before metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    getPreHandlersFromBeforeMetadata(ctor, actionName) {
+        const debug = this.debug.bind(this.getPreHandlersFromBeforeMetadata.name);
+        debug('Getting pre-handlers from @before metadata.');
+        if (actionName) {
+            debug('Target is %s.%s.', ctor.name, actionName);
+        }
+        else {
+            debug('Target is %s.', ctor.name);
+        }
+        let preHandlers = [];
+        const mdArray = BeforeReflector.getMetadata(ctor, actionName);
+        mdArray.forEach(md => {
+            if (Array.isArray(md.middleware)) {
+                preHandlers = [...preHandlers, ...md.middleware];
+            }
+            else {
+                preHandlers.push(md.middleware);
+            }
+        });
+        if (mdArray.length) {
+            debug('%v pre-handlers found.', mdArray.length);
+        }
+        else {
+            debug('No pre-handlers found.');
+        }
+        return preHandlers;
+    }
+    /**
+     * Get post-handlers from after metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    getPostHandlersFromAfterMetadata(ctor, actionName) {
+        const debug = this.debug.bind(this.getPostHandlersFromAfterMetadata.name);
+        debug('Getting post-handlers from @after metadata.');
+        if (actionName) {
+            debug('Target is %s.%s.', ctor.name, actionName);
+        }
+        else {
+            debug('Target is %s.', ctor.name);
+        }
+        let res = [];
+        const mdArray = AfterReflector.getMetadata(ctor, actionName);
+        mdArray.forEach(md => {
+            if (Array.isArray(md.middleware)) {
+                res = [...res, ...md.middleware];
+            }
+            else {
+                res.push(md.middleware);
+            }
+        });
+        if (mdArray.length) {
+            debug('%v post-handlers found.', mdArray.length);
+        }
+        else {
+            debug('No post-handlers found.');
+        }
+        return res;
+    }
+    /**
+     * Get pre-handlers from controller metadata.
+     *
+     * @param ctor
+     */
+    getPreHandlersFromControllerMetadata(ctor) {
+        const debug = this.debug.bind(this.getPreHandlersFromControllerMetadata.name);
+        debug('Getting pre-handlers from @controller metadata.');
+        debug('Target is %s.', ctor.name);
+        const md = ControllerReflector.getMetadata(ctor);
+        if (!md)
+            throw new Errorf('Controller %v has no metadata.', ctor);
+        let res = [];
+        if (md.before)
+            res = Array.isArray(md.before) ? md.before : [md.before];
+        debug('%v pre-handlers found.', res.length);
+        return res;
+    }
+    /**
+     * Get post-handlers from controller metadata.
+     *
+     * @param ctor
+     */
+    getPostHandlersFromControllerMetadata(ctor) {
+        const debug = this.debug.bind(this.getPostHandlersFromControllerMetadata.name);
+        debug('Getting post-handlers from @controller metadata.');
+        const md = ControllerReflector.getMetadata(ctor);
+        if (!md)
+            throw new Errorf('Controller %v has no metadata.', ctor);
+        let res = [];
+        if (md.after)
+            res = Array.isArray(md.after) ? md.after : [md.after];
+        debug('%v post-handlers found.', res.length);
+        return res;
+    }
+    /**
+     * Get pre-handlers from action metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    getPreHandlersFromActionMetadata(ctor, actionName) {
+        const debug = this.debug.bind(this.getPreHandlersFromActionMetadata.name);
+        debug('Getting pre-handlers from @action metadata.');
+        const actionsMd = ActionReflector.getMetadata(ctor);
+        const actionMd = actionsMd.get(actionName);
+        if (!actionMd)
+            throw new Errorf('Action %s.%s has no metadata.', ctor.name, actionName);
+        let res = [];
+        if (actionMd.before)
+            res = Array.isArray(actionMd.before)
+                ? actionMd.before
+                : [actionMd.before];
+        debug('%v pre-handlers found.', res.length);
+        return res;
+    }
+    /**
+     * Get post-handlers from action metadata.
+     *
+     * @param ctor
+     * @param actionName
+     */
+    getPostHandlersFromActionMetadata(ctor, actionName) {
+        const debug = this.debug.bind(this.getPreHandlersFromActionMetadata.name);
+        debug('Getting post-handlers from @action metadata.');
+        const actionsMd = ActionReflector.getMetadata(ctor);
+        const actionMd = actionsMd.get(actionName);
+        if (!actionMd)
+            throw new Errorf('Action %s.%s has no metadata.', ctor.name, actionName);
+        let res = [];
+        if (actionMd.after)
+            res = Array.isArray(actionMd.after) ? actionMd.after : [actionMd.after];
+        debug('%v pre-handlers found.', res.length);
+        return res;
     }
     /**
      * Create route handler.
@@ -178,14 +315,15 @@ export class ControllerRegistry extends DebuggableService {
      * @protected
      */
     createRouteHandler(controllerCtor, actionName) {
-        this.debug('Creating route handler for %s.%s.', controllerCtor.name, actionName);
+        const debug = this.debug.bind(this.createRouteHandler.name);
+        debug('Creating route handler for %s.%s.', controllerCtor.name, actionName);
         const requestContextMetadataMap = RequestContextReflector.getMetadata(controllerCtor, actionName);
         const requestDataMetadataMap = RequestDataReflector.getMetadata(controllerCtor, actionName);
         const argsNumber = controllerCtor.prototype[actionName].length;
         const dataTypeCaster = this.getService(DataTypeCaster);
         const dataValidator = this.getService(DataValidator);
         return (requestContext) => {
-            this.debug('Executing route handler for %s.%s.', controllerCtor.name, actionName);
+            debug('Executing route handler for %s.%s.', controllerCtor.name, actionName);
             const args = Array(argsNumber)
                 .fill(undefined)
                 .map((_, index) => {
@@ -193,13 +331,13 @@ export class ControllerRegistry extends DebuggableService {
                 // значениями из контекста запроса
                 const requestContextMd = requestContextMetadataMap.get(index);
                 if (requestContextMd != null) {
-                    this.debug('Argument %v has request context metadata.', index);
+                    debug('Argument %v has request context metadata.', index);
                     // если свойство контекста не определено,
                     // то используем весь объект контекста
                     // в качестве значения текущего аргумента
                     if (requestContextMd.property == null) {
-                        this.debug('Request context property is not specified.');
-                        this.debug('Argument %v is set to %v.', index, requestContext);
+                        debug('Request context property is not specified.');
+                        debug('Argument %v is set to %v.', index, requestContext);
                         return requestContext;
                     }
                     // если свойство контекста определено,
@@ -207,18 +345,18 @@ export class ControllerRegistry extends DebuggableService {
                     // в качестве текущего аргумента
                     const propName = requestContextMd.property;
                     const propValue = requestContext[propName];
-                    this.debug('Request context property is %v.', propName);
-                    this.debug('Argument %v is set to %v.', index, propValue);
+                    debug('Request context property is %v.', propName);
+                    debug('Argument %v is set to %v.', index, propValue);
                     return propValue;
                 }
                 else {
-                    this.debug('No RequestContextMetadata specified for %v argument.', index);
+                    debug('No RequestContextMetadata specified for %v argument.', index);
                 }
                 // заполнение аргументов операции
                 // значениями из данных запроса
                 const requestDataMd = requestDataMetadataMap.get(index);
                 if (requestDataMd != null) {
-                    this.debug('Argument %v has request data metadata.', index);
+                    debug('Argument %v has request data metadata.', index);
                     // получение данных
                     // согласно источнику
                     let data;
@@ -239,7 +377,7 @@ export class ControllerRegistry extends DebuggableService {
                             data = requestContext.body;
                             break;
                     }
-                    this.debug('Request data source is %v.', requestDataMd.source);
+                    debug('Request data source is %v.', requestDataMd.source);
                     // при наличии схемы данных выполняется
                     // их конвертация и валидация
                     if (requestDataMd.schema) {
@@ -247,16 +385,16 @@ export class ControllerRegistry extends DebuggableService {
                             noTypeCastError: true,
                             sourcePath: requestDataMd.source,
                         });
-                        this.debug('Data type casting is passed.');
+                        debug('Data type casting is passed.');
                         dataValidator.validate(data, requestDataMd.schema, requestDataMd.source);
-                        this.debug('Data validation is passed.');
+                        debug('Data validation is passed.');
                     }
                     // если свойство данных не определено,
                     // то используем весь объекта данных
                     // в качестве значения текущего аргумента
                     if (requestDataMd.property == null) {
-                        this.debug('Request data property is not specified.');
-                        this.debug('Argument %v is set to %v.', index, data);
+                        debug('Request data property is not specified.');
+                        debug('Argument %v is set to %v.', index, data);
                         return data;
                     }
                     // если свойство данных определено,
@@ -265,12 +403,12 @@ export class ControllerRegistry extends DebuggableService {
                     const dataAsObject = data;
                     const propName = requestDataMd.property;
                     const propValue = dataAsObject[propName];
-                    this.debug('Request data property is %v.', propName);
-                    this.debug('Argument %v is set to %v.', index, propValue);
+                    debug('Request data property is %v.', propName);
+                    debug('Argument %v is set to %v.', index, propValue);
                     return propValue;
                 }
                 else {
-                    this.debug('No RequestDataMetadata specified for %v argument.', index);
+                    debug('No RequestDataMetadata specified for %v argument.', index);
                 }
             });
             // выполнение операции контроллера
