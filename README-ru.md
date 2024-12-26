@@ -32,57 +32,34 @@ npm install @e22m4u/ts-rest-router
 
 ## Базовое использование
 
-Создание контроллера
+Создание контроллера и методов
 
 ```ts
-import {controller, get, post} from '@e22m4u/ts-rest-router';
+import {get} from '@e22m4u/ts-rest-router';
+import {post} from '@e22m4u/ts-rest-router';
+import {DataType} from '@e22m4u/ts-rest-router';
+import {controller} from '@e22m4u/ts-rest-router';
 
-@controller()
-class UserController {
-  @get('/users')
-  async getUsers() {
-    return { users: [] };
-  }
-
-  @post('/users')
-  async createUser(
-    @body() userData: UserDTO,
+@controller('/users')           // путь контроллера
+class UserController {          // класс контроллера
+  @post('/login')               // метод POST /users/login
+  async login(
+    @bodyParam('username', {    // параметр тела запроса "username"
+      type: DataType.STRING,    // тип параметра допускает только строки
+      required: true,           // параметр является обязательным
+    })
+    username: string,
+    @bodyParam('password', {    // параметр тела запроса "password"
+      type: DataType.STRING,    // тип параметра допускает только строки
+      required: true,           // параметр является обязательным
+    )
+    password: string,
   ) {
-    return { success: true };
-  }
-}
-```
-
-Работа с параметрами запроса
-
-```ts
-@controller()
-class ProductController {
-  @get('/products/:id')
-  async getProduct(
-    @param('id') productId: string,
-    @query('fields') fields?: string,
-    @header('authorization') auth?: string,
-  ) {
-    // ...
-  }
-}
-```
-
-Middleware и хуки
-
-```ts
-@controller({
-  path: '/api',
-  before: [authMiddleware],
-  after: [loggerMiddleware],
-})
-class ApiController {
-  @get('/secure', {
-    before: [checkPermissions],
-  })
-  secureEndpoint() {
-    // ...
+    return {                    // если метод возвращает объект,
+      id: '123',                // то результат будет представлен как
+      firstName: 'John',        // "Content-Type: application/json"
+      lastName: 'Doe',
+    };
   }
 }
 ```
@@ -137,10 +114,19 @@ server.listen('8080', '0.0.0.0', () => {
 
 #### `@controller(options?: ControllerOptions)`
 
-Декоратор для определения класса как REST API контроллера.
+Определение контроллера.
 
-```typescript
+```ts
 @controller()
+class UserController {
+  // методы контроллера
+}
+```
+
+Определение пути контроллера.
+
+```ts
+@controller('/users')  // путь контроллера
 class UserController {
   // методы контроллера
 }
@@ -148,11 +134,11 @@ class UserController {
 
 Дополнительные параметры декоратора.
 
-```typescript
+```ts
 @controller({
-  path: '/api'
-  before: [authMiddleware],
-  after: [loggerMiddleware],
+  path: '/api'               // путь контроллера
+  before: [authMiddleware],  // middleware до обработки запроса
+  after: [loggerMiddleware], // middleware после обработки запроса
 })
 class UserController {
   // методы контроллера
@@ -161,58 +147,89 @@ class UserController {
 
 #### `@get(path: string, options?: ActionOptions)`
 
-Декоратор для определения метода GET.
+Определение метода GET.
 
-```typescript
-@controller()
-class UserController {
-  @get('/users')
-  async getUsers() {
-    return {users: []};
-  }
-
-  @get('/users/:id') 
-  getUser(
-    @param('id') userId: string,
-  ) {
-    return {user: {id: userId}};
+```ts
+@controller('/users')  // путь контроллера
+class UserController { // класс контроллера
+  @get('/whoAmI')      // маршрут GET /users/whoAmI
+  async whoAmI() {
+    return {           // если метод возвращает объект,
+      name: 'John',    // то результат будет представлен
+      surname: 'Doe',  // как "Content-Type: application/json"
+    };
   }
 }
 ```
 
 Дополнительные параметры декоратора.
 
-```typescript
-@controller()
-class UserController {
-  @get('/users', {
-    before: [authMiddleware],
-    after: [loggerMiddleware],
+```ts
+@controller('/users')          // путь контроллера
+class UserController {         // класс контроллера
+  @get('/whoAmI', {            // маршрут GET /users/whoAmI
+    before: [authMiddleware],  // middleware до обработки запроса
+    after: [loggerMiddleware], // middleware после обработки запроса
   })
-  async getUsers() {
-    return {users: []};
+  async whoAmI() {
+    return {
+      name: 'John',
+      surname: 'Doe',
+    };
   }
 }
 ```
 
 #### `@requestContext(propertyName?: string)`
 
-Декоратор для доступа к контексту запроса.
+Доступ к контексту запроса.
 
-```typescript
-@controller()
-class UserController {
-  @get('/users')
-  getUsers(
-    @requestContext('req') req: IncomingMessage,
-    @requestContext('res') res: ServerResponse,
+```ts
+import {RequestContext} from '@e22m4u/js-trie-router';
+
+@controller('/users')          // путь контроллера
+class UserController {         // класс контроллера
+  @get('/:id')                 // маршрут GET /users/:id
+  findById(
+    @requestContext()          // включениее контекста запроса
+    ctx: RequestContext,       // в качестве параметра метода
   ) {
-    // Доступ к оригинальным объектам запроса/ответа
+    console.log(ctx.req);      // IncomingMessage
+    console.log(ctx.res);      // ServerResponse
+    console.log(ctx.params);   // {id: 10}
+    console.log(ctx.query);    // {include: 'city'}
+    console.log(ctx.headers);  // {cookie: 'foo=bar; baz=qux;'}
+    console.log(ctx.cookie);   // {foo: 'bar', baz: 'qux'}
+    console.log(ctx.method);   // "GET"
+    console.log(ctx.path);     // "/users/10?include=city"
+    console.log(ctx.pathname); // "/users/10"
+    // ...
   }
 }
 ```
 
-Допустимые свойства:
+Доступ к свойствам контекста.
+
+```ts
+import {ServerResponse} from 'http';
+import {IncomingMessage} from 'http';
+
+@controller('/users')      // путь контроллера
+class UserController {     // класс контроллера
+  @get('/:id')             // маршрут GET /users/:id
+  findById(
+    @requestContext('req') // декоратор контекста запроса
+    req: IncomingMessage,  // включающий свойство "req"
+    @requestContext('res') // декоратор контекста запроса
+    res: ServerResponse,   // включающий свойство "res"
+  ) {
+    console.log(req);      // IncomingMessage
+    console.log(res);      // ServerResponse
+  }
+}
+```
+
+Свойства контекста:
 
 - `container: ServiceContainer` экземпляр [сервис-контейнера](https://npmjs.com/package/@e22m4u/js-service)
 - `req: IncomingMessage` нативный поток входящего запроса

@@ -8,6 +8,7 @@ export type ControllerOptions = Flatten<Omit<ControllerMetadata, 'className'>>;
 /**
  * Controller decorator.
  *
+ * @param pathOrOptions
  * @param options
  */
-export declare function controller<T extends object>(options?: ControllerOptions): (target: Constructor<T>) => void;
+export declare function controller<T extends object>(pathOrOptions?: string | ControllerOptions, options?: ControllerOptions): (target: Constructor<T>) => void;

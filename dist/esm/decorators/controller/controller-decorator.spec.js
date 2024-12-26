@@ -44,4 +44,32 @@ describe('controller', function () {
         const res = ControllerReflector.getMetadata(Target);
         expect(res).to.be.eql({ className: 'Target' });
     });
+    it('allows to pass the path option to the first parameter', function () {
+        let Target = class Target {
+        };
+        Target = __decorate([
+            controller('myPath')
+        ], Target);
+        const res = ControllerReflector.getMetadata(Target);
+        expect(res).to.be.eql({ className: 'Target', path: 'myPath' });
+    });
+    it('merges two given arguments in the target metadata', function () {
+        const before = () => undefined;
+        let Target = class Target {
+        };
+        Target = __decorate([
+            controller('myPath', { before })
+        ], Target);
+        const res = ControllerReflector.getMetadata(Target);
+        expect(res).to.be.eql({ className: 'Target', path: 'myPath', before });
+    });
+    it('overrides the path option by the first argument', function () {
+        let Target = class Target {
+        };
+        Target = __decorate([
+            controller('myPath1', { path: 'myPath2' })
+        ], Target);
+        const res = ControllerReflector.getMetadata(Target);
+        expect(res).to.be.eql({ className: 'Target', path: 'myPath1' });
+    });
 });

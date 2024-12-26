@@ -229,11 +229,20 @@ __name(_ControllerReflector, "ControllerReflector");
 var ControllerReflector = _ControllerReflector;
 
 // dist/esm/decorators/controller/controller-decorator.js
-function controller(options) {
+function controller(pathOrOptions, options) {
   return function(target) {
     const decoratorType = (0, import_ts_reflector8.getDecoratorTargetType)(target);
     if (decoratorType !== import_ts_reflector7.DecoratorTargetType.CONSTRUCTOR)
       throw new Error("@controller decorator is only supported on a class.");
+    if (typeof pathOrOptions === "string") {
+      if (!options) {
+        options = { path: pathOrOptions };
+      } else {
+        options.path = pathOrOptions;
+      }
+    } else if (typeof pathOrOptions === "object") {
+      options = pathOrOptions;
+    }
     ControllerReflector.setMetadata({ ...options, className: target.name }, target);
   };
 }

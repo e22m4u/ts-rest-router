@@ -32,57 +32,34 @@ options to your `tsconfig.json` file.
 
 ## Basic Usage
 
-Creating a controller.
+Creating a controller and methods.
 
 ```ts
-import {controller, get, post} from '@e22m4u/ts-rest-router';
+import {get} from '@e22m4u/ts-rest-router';
+import {post} from '@e22m4u/ts-rest-router';
+import {DataType} from '@e22m4u/ts-rest-router';
+import {controller} from '@e22m4u/ts-rest-router';
 
-@controller()
-class UserController {
-  @get('/users')
-  async getUsers() {
-    return { users: [] };
-  }
-
-  @post('/users')
-  async createUser(
-    @body() userData: UserDTO,
+@controller('/users')           // controller path
+class UserController {          // controller class
+  @post('/login')               // POST /users/login method
+  async login(
+    @bodyParam('username', {    // "username" is request body parameter
+      type: DataType.STRING,    // parameter type allows only strings
+      required: true,           // parameter is required
+    })
+    username: string,
+    @bodyParam('password', {    // "password" is request body parameter
+      type: DataType.STRING,    // parameter type allows only strings
+      required: true,           // parameter is required
+    })
+    password: string,
   ) {
-    return { success: true };
-  }
-}
-```
-
-Request parameters.
-
-```ts
-@controller()
-class ProductController {
-  @get('/products/:id')
-  async getProduct(
-    @param('id') productId: string,
-    @query('fields') fields?: string,
-    @header('authorization') auth?: string,
-  ) {
-    // ...
-  }
-}
-```
-
-Middleware and hooks.
-
-```ts
-@controller({
-  path: '/api',
-  before: [authMiddleware],
-  after: [loggerMiddleware],
-})
-class ApiController {
-  @get('/secure', {
-    before: [checkPermissions],
-  })
-  secureEndpoint() {
-    // ...
+    return {                    // if method returns an object,
+      id: '123',                // the result will be presented as
+      firstName: 'John',        // "Content-Type: application/json"
+      lastName: 'Doe',
+    };
   }
 }
 ```
@@ -137,10 +114,19 @@ Request parameters:
 
 #### `@controller(options?: ControllerOptions)`
 
-Decorator for defining a class as a REST API controller.
+Defining a controller.
 
 ```ts
 @controller()
+class UserController {
+  // controller methods
+}
+```
+
+Defining controller path.
+
+```ts
+@controller('/users')  // controller path
 class UserController {
   // controller methods
 }
@@ -150,9 +136,9 @@ Additional decorator parameters.
 
 ```ts
 @controller({
-  path: '/api'
-  before: [authMiddleware],
-  after: [loggerMiddleware],
+  path: '/api'               // controller path
+  before: [authMiddleware],  // middleware before request processing
+  after: [loggerMiddleware], // middleware after request processing
 })
 class UserController {
   // controller methods
@@ -161,21 +147,17 @@ class UserController {
 
 #### `@get(path: string, options?: ActionOptions)`
 
-Decorator for defining GET method.
+Defining GET method.
 
 ```ts
-@controller()
-class UserController {
-  @get('/users')
-  async getUsers() {
-    return {users: []};
-  }
-
-  @get('/users/:id') 
-  getUser(
-    @param('id') userId: string,
-  ) {
-    return {user: {id: userId}};
+@controller('/users')  // controller path
+class UserController { // controller class
+  @get('/whoAmI')      // GET /users/whoAmI route
+  async whoAmI() {
+    return {           // if method returns an object,
+      name: 'John',    // the result will be presented
+      surname: 'Doe',  // as "Content-Type: application/json"
+    };
   }
 }
 ```
@@ -183,38 +165,71 @@ class UserController {
 Additional decorator parameters.
 
 ```ts
-@controller()
-class UserController {
-  @get('/users', {
-    before: [authMiddleware],
-    after: [loggerMiddleware],
+@controller('/users')          // controller path
+class UserController {         // controller class
+  @get('/whoAmI', {            // GET /users/whoAmI route
+    before: [authMiddleware],  // middleware before request processing
+    after: [loggerMiddleware], // middleware after request processing
   })
-  async getUsers() {
-    return {users: []};
+  async whoAmI() {
+    return {
+      name: 'John',
+      surname: 'Doe',
+    };
   }
 }
 ```
 
 #### `@requestContext(propertyName?: string)`
 
-Decorator for accessing request context.
+Access to request context.
 
 ```ts
-import {IncomingMessage, ServerResponse} from 'http';
+import {RequestContext} from '@e22m4u/js-trie-router';
 
-@controller()
-class UserController {
-  @get('/users')
-  getUsers(
-    @requestContext('req') req: IncomingMessage,
-    @requestContext('res') res: ServerResponse,
+@controller('/users')          // controller path
+class UserController {         // controller class
+  @get('/:id')                 // GET /users/:id route
+  findById(
+    @requestContext()          // including request context
+    ctx: RequestContext,       // as method parameter
   ) {
-    // Access to original request/response objects
+    console.log(ctx.req);      // IncomingMessage
+    console.log(ctx.res);      // ServerResponse
+    console.log(ctx.params);   // {id: 10}
+    console.log(ctx.query);    // {include: 'city'}
+    console.log(ctx.headers);  // {cookie: 'foo=bar; baz=qux;'}
+    console.log(ctx.cookie);   // {foo: 'bar', baz: 'qux'}
+    console.log(ctx.method);   // "GET"
+    console.log(ctx.path);     // "/users/10?include=city"
+    console.log(ctx.pathname); // "/users/10"
+    // ...
   }
 }
 ```
 
-Available properties:
+Access to context properties.
+
+```ts
+import {ServerResponse} from 'http';
+import {IncomingMessage} from 'http';
+
+@controller('/users')      // controller path
+class UserController {     // controller class
+  @get('/:id')             // GET /users/:id route
+  findById(
+    @requestContext('req') // request context decorator
+    req: IncomingMessage,  // including "req" property
+    @requestContext('res') // request context decorator
+    res: ServerResponse,   // including "res" property
+  ) {
+    console.log(req);      // IncomingMessage
+    console.log(res);      // ServerResponse
+  }
+}
+```
+
+Context properties:
 
 - `container: ServiceContainer` instance of [service container](https://npmjs.com/package/@e22m4u/js-service)
 - `req: IncomingMessage` native incoming request stream
