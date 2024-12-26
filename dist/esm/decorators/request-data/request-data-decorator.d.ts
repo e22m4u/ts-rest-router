@@ -23,7 +23,7 @@ export declare const headers: () => (target: Prototype<object>, propertyKey: str
 export declare const header: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
 export declare const cookies: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
 export declare const cookie: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const bodyProp: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const field: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
  * Request body decorator.
  *

@@ -51,7 +51,6 @@ __export(index_exports, {
   after: () => after,
   before: () => before,
   body: () => body,
-  bodyProp: () => bodyProp,
   capitalize: () => capitalize,
   controller: () => controller,
   cookie: () => cookie,
@@ -59,6 +58,7 @@ __export(index_exports, {
   createDebugger: () => createDebugger,
   createError: () => createError,
   del: () => del,
+  field: () => field,
   get: () => get,
   header: () => header,
   headers: () => headers,
@@ -470,7 +470,7 @@ var headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
 var header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 var cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
 var cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-var bodyProp = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
+var field = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 function body(schemaOrType) {
   let schema;
   if (typeof schemaOrType === "object") {
@@ -959,7 +959,6 @@ var RestRouter = _RestRouter;
   after,
   before,
   body,
-  bodyProp,
   capitalize,
   controller,
   cookie,
@@ -967,6 +966,7 @@ var RestRouter = _RestRouter;
   createDebugger,
   createError,
   del,
+  field,
   get,
   header,
   headers,

@@ -37,7 +37,7 @@ npm install @e22m4u/ts-rest-router
 ```ts
 import {get} from '@e22m4u/ts-rest-router';
 import {post} from '@e22m4u/ts-rest-router';
-import {bodyProp} from '@e22m4u/ts-rest-router';
+import {field} from '@e22m4u/ts-rest-router';
 import {DataType} from '@e22m4u/ts-rest-router';
 import {controller} from '@e22m4u/ts-rest-router';
 
@@ -45,12 +45,12 @@ import {controller} from '@e22m4u/ts-rest-router';
 class UserController {        // класс контроллера
   @post('/login')             // метод POST /users/login
   async login(
-    @bodyProp('username', {   // свойство тела запроса "username"
+    @field('username', {      // поле "username" в теле запроса
       type: DataType.STRING,  // тип параметра допускает только строки
       required: true,         // параметр является обязательным
     })
     username: string,
-    @bodyProp('password', {   // свойство тела запроса "password"
+    @field('password', {      // поле "password" в теле запроса
       type: DataType.STRING,  // тип параметра допускает только строки
       required: true,         // параметр является обязательным
     })
@@ -110,7 +110,7 @@ server.listen('8080', '0.0.0.0', () => {
 - `@query` - один query параметр
 - `@queries` - все query параметры как объект
 - `@body` - тело запроса
-- `@bodyProp` - свойство из тела запроса
+- `@field` - поле в теле запроса
 - `@header` - один заголовок
 - `@headers` - все заголовки как объект
 - `@cookie` - одна cookie

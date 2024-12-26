@@ -16,13 +16,13 @@ import { DataType } from '@e22m4u/ts-data-schema';
 import { body } from './request-data-decorator.js';
 import { param } from './request-data-decorator.js';
 import { query } from './request-data-decorator.js';
+import { field } from './request-data-decorator.js';
 import { cookie } from './request-data-decorator.js';
 import { header } from './request-data-decorator.js';
 import { params } from './request-data-decorator.js';
 import { queries } from './request-data-decorator.js';
 import { cookies } from './request-data-decorator.js';
 import { headers } from './request-data-decorator.js';
-import { bodyProp } from './request-data-decorator.js';
 import { requestData } from './request-data-decorator.js';
 import { RequestDataSource } from './request-data-metadata.js';
 import { RequestDataReflector } from './request-data-reflector.js';
@@ -460,13 +460,13 @@ describe('requestData', function () {
                 });
             });
         });
-        describe('bodyProp', function () {
+        describe('field', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyProp('myPropertyKey')),
+                    __param(0, field('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -485,7 +485,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyProp(propertyKey, propertyType)),
+                    __param(0, field(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -514,7 +514,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, bodyProp(propertyKey, schema)),
+                    __param(0, field(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)

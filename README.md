@@ -37,7 +37,7 @@ Creating a controller and methods.
 ```ts
 import {get} from '@e22m4u/ts-rest-router';
 import {post} from '@e22m4u/ts-rest-router';
-import {bodyProp} from '@e22m4u/ts-rest-router';
+import {field} from '@e22m4u/ts-rest-router';
 import {DataType} from '@e22m4u/ts-rest-router';
 import {controller} from '@e22m4u/ts-rest-router';
 
@@ -45,12 +45,12 @@ import {controller} from '@e22m4u/ts-rest-router';
 class UserController {       // controller class
   @post('/login')            // POST /users/login method
   async login(
-    @bodyProp('username', {  // "username" is request body property
+    @field('username', {     // "username" is request body field
       type: DataType.STRING, // parameter type allows only strings
       required: true,        // parameter is required
     })
     username: string,
-    @bodyProp('password', {  // "password" is request body property
+    @field('password', {     // "password" is request body field
       type: DataType.STRING, // parameter type allows only strings
       required: true,        // parameter is required
     })
@@ -110,7 +110,7 @@ Request parameters:
 - `@query` - single query parameter
 - `@queries` - all query parameters as an object
 - `@body` - request body
-- `@bodyProp` - property from request body
+- `@field` - field in request body
 - `@header` - single header
 - `@headers` - all headers as an object
 - `@cookie` - single cookie

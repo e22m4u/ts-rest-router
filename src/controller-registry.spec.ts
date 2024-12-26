@@ -6,6 +6,7 @@ import {body} from './decorators/index.js';
 import {after} from './decorators/index.js';
 import {query} from './decorators/index.js';
 import {param} from './decorators/index.js';
+import {field} from './decorators/index.js';
 import {cookie} from './decorators/index.js';
 import {params} from './decorators/index.js';
 import {before} from './decorators/index.js';
@@ -13,7 +14,6 @@ import {header} from './decorators/index.js';
 import {cookies} from './decorators/index.js';
 import {queries} from './decorators/index.js';
 import {headers} from './decorators/index.js';
-import {bodyProp} from './decorators/index.js';
 import {HookName} from '@e22m4u/js-trie-router';
 import {controller} from './decorators/index.js';
 import {TrieRouter} from '@e22m4u/js-trie-router';
@@ -31,13 +31,9 @@ import {ControllerRegistry} from './controller-registry.js';
 
 const PRE_HANDLER_1 = () => undefined;
 const PRE_HANDLER_2 = () => undefined;
-// const PRE_HANDLER_3 = () => undefined;
-// const PRE_HANDLER_4 = () => undefined;
 
 const POST_HANDLER_1 = () => undefined;
 const POST_HANDLER_2 = () => undefined;
-// const POST_HANDLER_3 = () => undefined;
-// const POST_HANDLER_4 = () => undefined;
 
 describe('ControllerRegistry', function () {
   it('has a public property with set of controllers', function () {
@@ -872,7 +868,7 @@ describe('ControllerRegistry', function () {
       class MyController {
         @post('/myAction')
         myAction(
-          @bodyProp('foo')
+          @field('foo')
           foo: object,
         ) {
           expect(foo).to.be.eq('bar');
