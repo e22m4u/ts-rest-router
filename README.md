@@ -1,27 +1,25 @@
 # @e22m4u/ts-rest-router
 
-*English | [Русский](./README-ru.md)*
+REST маршрутизатор на основе контроллеров для TypeScript.
 
-Controllers-based REST router implementation for TypeScript.
+#### Основные возможности
 
-#### Key Features
+- Декларативное определение маршрутов через декораторы.
+- Типизированные параметры запросов (body, query, params).
+- Поддержка middleware до и после обработки запроса.
+- Валидация входящих данных.
+- Поддержка всех HTTP методов (GET, POST, PUT, DELETE и т.д.).
 
-- Declarative route definition using decorators.
-- Typed request parameters (body, query, params).
-- Pre and post request middleware support.
-- Input data validation.
-- Support for all HTTP methods (GET, POST, PUT, DELETE, etc.).
-
-## Installation
+## Установка
 
 ```bash
 npm install @e22m4u/ts-rest-router
 ```
 
-#### Decorators support
+#### Поддержка декораторов
 
-To enable decorators support add the following
-options to your `tsconfig.json` file.
+Для включения поддержки декораторов, добавьте указанные
+ниже опции в файл `tsconfig.json` вашего проекта.
 
 ```json
 {
@@ -30,9 +28,9 @@ options to your `tsconfig.json` file.
 }
 ```
 
-## Basic Usage
+## Базовое использование
 
-Creating a controller and methods.
+Создание контроллера и методов
 
 ```ts
 import {get} from '@e22m4u/ts-rest-router';
@@ -41,141 +39,141 @@ import {field} from '@e22m4u/ts-rest-router';
 import {DataType} from '@e22m4u/ts-rest-router';
 import {controller} from '@e22m4u/ts-rest-router';
 
-@controller('/users')        // controller path
-class UserController {       // controller class
-  @post('/login')            // POST /users/login method
+@controller('/users')         // путь контроллера
+class UserController {        // класс контроллера
+  @post('/login')             // метод POST /users/login
   async login(
-    @field('username', {     // "username" field in request body
-      type: DataType.STRING, // parameter type allows only strings
-      required: true,        // parameter is required
+    @field('username', {      // поле "username" в теле запроса
+      type: DataType.STRING,  // тип параметра допускает только строки
+      required: true,         // параметр является обязательным
     })
     username: string,
-    @field('password', {     // "password" field in request body
-      type: DataType.STRING, // parameter type allows only strings
-      required: true,        // parameter is required
+    @field('password', {      // поле "password" в теле запроса
+      type: DataType.STRING,  // тип параметра допускает только строки
+      required: true,         // параметр является обязательным
     })
     password: string,
   ) {
-    return {                 // if method returns an object,
-      id: '123',             // the result will be presented as
-      firstName: 'John',     // "Content-Type: application/json"
+    return {                  // если метод возвращает объект,
+      id: '123',              // то результат будет представлен как
+      firstName: 'John',      // "Content-Type: application/json"
       lastName: 'Doe',
     };
   }
 }
 ```
 
-Registering controllers and starting the server.
+Регистрация контроллеров и запуск сервера
 
 ```ts
 import http from 'http';
 import {RestRouter} from '@e22m4u/ts-rest-router';
 
-// create router and register controllers
+// создание роутера и регистрация контроллеров
 const router = new RestRouter();
 router.registerController(UserController);
 router.registerController(ProductController);
 
-// create server and register request handler
+// создание сервера и регистрация обработчика запросов
 const server = new http.Server();
 server.on('request', router.requestListener);
 
-// start server
+// запуск сервера
 server.listen('8080', '0.0.0.0', () => {
   console.log(`Server is running on http://localhost:8080`);
 });
 ```
 
-## Decorators
+## Декораторы
 
-Controller and methods:
+Контроллер и методы:
 
-- `@controller` - defines a class as a controller
-- `@action` - base decorator for methods
-- `@get` - GET requests
-- `@post` - POST requests
-- `@put` - PUT requests
-- `@patch` - PATCH requests
-- `@del` - DELETE requests
+- `@controller` - определяет класс как контроллер
+- `@action` - базовый декоратор для методов
+- `@get` - GET запросы
+- `@post` - POST запросы
+- `@put` - PUT запросы
+- `@patch` - PATCH запросы
+- `@del` - DELETE запросы
 
-Request hooks:
+Хуки запроса:
 
-- `@before` - middleware before request handling
-- `@after` - middleware after request handling
+- `@before` - middleware перед обработкой запроса
+- `@after` - middleware после обработки запроса
 
-Request parameters:
+Параметры запроса:
 
-- `@param` - single URL parameter
-- `@params` - all URL parameters as an object
-- `@query` - single query parameter
-- `@queries` - all query parameters as an object
-- `@body` - request body
-- `@field` - field in request body
-- `@header` - single header
-- `@headers` - all headers as an object
-- `@cookie` - single cookie
-- `@cookies` - all cookies as an object
-- `@requestContext` - access to request context
-- `@requestData` - universal decorator for accessing request data
+- `@param` - один параметр URL
+- `@params` - все параметры URL как объект
+- `@query` - один query параметр
+- `@queries` - все query параметры как объект
+- `@body` - тело запроса
+- `@field` - поле в теле запроса
+- `@header` - один заголовок
+- `@headers` - все заголовки как объект
+- `@cookie` - одна cookie
+- `@cookies` - все cookies как объект
+- `@requestContext` - доступ к контексту запроса
+- `@requestData` - универсальный декоратор для доступа к данным запроса
 
 #### `@controller(options?: ControllerOptions)`
 
-Defining a controller.
+Определение контроллера.
 
 ```ts
 @controller()
 class UserController {
-  // controller methods
+  // методы контроллера
 }
 ```
 
-Defining controller path.
+Определение пути контроллера.
 
 ```ts
-@controller('/users')  // controller path
+@controller('/users')  // путь контроллера
 class UserController {
-  // controller methods
+  // методы контроллера
 }
 ```
 
-Additional decorator parameters.
+Дополнительные параметры декоратора.
 
 ```ts
 @controller({
-  path: '/api',              // controller path
-  before: [authMiddleware],  // middleware before request processing
-  after: [loggerMiddleware], // middleware after request processing
+  path: '/api',              // путь контроллера
+  before: [authMiddleware],  // middleware до обработки запроса
+  after: [loggerMiddleware], // middleware после обработки запроса
 })
 class UserController {
-  // controller methods
+  // методы контроллера
 }
 ```
 
 #### `@get(path: string, options?: ActionOptions)`
 
-Defining GET method.
+Определение метода GET.
 
 ```ts
-@controller('/users')  // controller path
-class UserController { // controller class
-  @get('/whoAmI')      // GET /users/whoAmI route
+@controller('/users')  // путь контроллера
+class UserController { // класс контроллера
+  @get('/whoAmI')      // маршрут GET /users/whoAmI
   async whoAmI() {
-    return {           // if method returns an object,
-      name: 'John',    // the result will be presented
-      surname: 'Doe',  // as "Content-Type: application/json"
+    return {           // если метод возвращает объект,
+      name: 'John',    // то результат будет представлен
+      surname: 'Doe',  // как "Content-Type: application/json"
     };
   }
 }
 ```
 
-Additional decorator parameters.
+Дополнительные параметры декоратора.
 
 ```ts
-@controller('/users')          // controller path
-class UserController {         // controller class
-  @get('/whoAmI', {            // GET /users/whoAmI route
-    before: [authMiddleware],  // middleware before request processing
-    after: [loggerMiddleware], // middleware after request processing
+@controller('/users')          // путь контроллера
+class UserController {         // класс контроллера
+  @get('/whoAmI', {            // маршрут GET /users/whoAmI
+    before: [authMiddleware],  // middleware до обработки запроса
+    after: [loggerMiddleware], // middleware после обработки запроса
   })
   async whoAmI() {
     return {
@@ -188,17 +186,17 @@ class UserController {         // controller class
 
 #### `@requestContext(propertyName?: string)`
 
-Access to request context.
+Доступ к контексту запроса.
 
 ```ts
 import {RequestContext} from '@e22m4u/js-trie-router';
 
-@controller('/users')          // controller path
-class UserController {         // controller class
-  @get('/:id')                 // GET /users/:id route
+@controller('/users')          // путь контроллера
+class UserController {         // класс контроллера
+  @get('/:id')                 // маршрут GET /users/:id
   findById(
-    @requestContext()          // including request context
-    ctx: RequestContext,       // as method parameter
+    @requestContext()          // включениее контекста запроса
+    ctx: RequestContext,       // в качестве параметра метода
   ) {
     console.log(ctx.req);      // IncomingMessage
     console.log(ctx.res);      // ServerResponse
@@ -214,20 +212,20 @@ class UserController {         // controller class
 }
 ```
 
-Access to context properties.
+Доступ к свойствам контекста.
 
 ```ts
 import {ServerResponse} from 'http';
 import {IncomingMessage} from 'http';
 
-@controller('/users')      // controller path
-class UserController {     // controller class
-  @get('/:id')             // GET /users/:id route
+@controller('/users')      // путь контроллера
+class UserController {     // класс контроллера
+  @get('/:id')             // маршрут GET /users/:id
   findById(
-    @requestContext('req') // request context decorator
-    req: IncomingMessage,  // including "req" property
-    @requestContext('res') // request context decorator
-    res: ServerResponse,   // including "res" property
+    @requestContext('req') // декоратор контекста запроса
+    req: IncomingMessage,  // включающий свойство "req"
+    @requestContext('res') // декоратор контекста запроса
+    res: ServerResponse,   // включающий свойство "res"
   ) {
     console.log(req);      // IncomingMessage
     console.log(res);      // ServerResponse
@@ -235,34 +233,34 @@ class UserController {     // controller class
 }
 ```
 
-Context properties:
+Свойства контекста:
 
-- `container: ServiceContainer` instance of [service container](https://npmjs.com/package/@e22m4u/js-service)
-- `req: IncomingMessage` native incoming request stream
-- `res: ServerResponse` native server response stream
-- `params: ParsedParams` key-value object with path parameters
-- `query: ParsedQuery` key-value object with query string parameters
-- `headers: ParsedHeaders` key-value object with request headers
-- `cookie: ParsedCookie` key-value object of parsed `cookie` header
-- `method: string` request method in uppercase, e.g. `GET`, `POST`, etc.
-- `path: string` path including query string, e.g. `/myPath?foo=bar`
-- `pathname: string` request path, e.g. `/myMath`
-- `body: unknown` request body
+- `container: ServiceContainer` экземпляр [сервис-контейнера](https://npmjs.com/package/@e22m4u/js-service)
+- `req: IncomingMessage` нативный поток входящего запроса
+- `res: ServerResponse` нативный поток ответа сервера
+- `params: ParsedParams` объект ключ-значение с параметрами пути
+- `query: ParsedQuery` объект ключ-значение с параметрами строки запроса
+- `headers: ParsedHeaders` объект ключ-значение с заголовками запроса 
+- `cookie: ParsedCookie` объект ключ-значение разобранного заголовка `cookie`
+- `method: string` метод запроса в верхнем регистре, например `GET`, `POST` и т.д.
+- `path: string` путь включающий строку запроса, например `/myPath?foo=bar`
+- `pathname: string` путь запроса, например `/myMath`
+- `body: unknown` тело запроса
 
-## Debugging
+## Отладка
 
-Set the `DEBUG` variable to enable log output.
+Установка переменной `DEBUG` включает вывод логов.
 
 ```bash
 DEBUG=tsRestRouter* npm run test
 ```
 
-## Tests
+## Тесты
 
 ```bash
 npm run test
 ```
 
-## License
+## Лицензия
 
 MIT
