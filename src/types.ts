@@ -22,6 +22,11 @@ export type Prototype<T = unknown> = T &
   object & {bind?: never} & {call?: never} & {prototype?: object};
 
 /**
+ * Make a specific property as optional.
+ */
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+/**
  * A part of the Flatten type.
  */
 export type Identity<T> = T;

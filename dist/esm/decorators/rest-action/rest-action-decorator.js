@@ -3,7 +3,7 @@ import { DecoratorTargetType } from '@e22m4u/ts-reflector';
 import { getDecoratorTargetType } from '@e22m4u/ts-reflector';
 import { RestActionReflector } from './rest-action-reflector.js';
 /**
- * Rest action decorator.
+ * Rest action decorator factory.
  *
  * @param options
  */
@@ -15,48 +15,38 @@ export function restAction(options) {
         RestActionReflector.setMetadata({ ...options, propertyKey }, target.constructor, propertyKey);
     };
 }
-/**
- * Get action decorator.
- *
- * @param path
- * @param options
- */
-export const getAction = (path, options) => {
+export function getAction(pathOrOptions, options) {
+    let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+    options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+    if (typeof options === 'object' && !path && options.path != null)
+        path = options.path;
     return restAction({ ...options, path, method: HttpMethod.GET });
-};
-/**
- * Post action decorator.
- *
- * @param path
- * @param options
- */
-export const postAction = (path, options) => {
+}
+export function postAction(pathOrOptions, options) {
+    let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+    options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+    if (typeof options === 'object' && !path && options.path != null)
+        path = options.path;
     return restAction({ ...options, path, method: HttpMethod.POST });
-};
-/**
- * Put action decorator.
- *
- * @param path
- * @param options
- */
-export const putAction = (path, options) => {
+}
+export function putAction(pathOrOptions, options) {
+    let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+    options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+    if (typeof options === 'object' && !path && options.path != null)
+        path = options.path;
     return restAction({ ...options, path, method: HttpMethod.PUT });
-};
-/**
- * Patch action decorator.
- *
- * @param path
- * @param options
- */
-export const patchAction = (path, options) => {
+}
+export function patchAction(pathOrOptions, options) {
+    let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+    options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+    if (typeof options === 'object' && !path && options.path != null)
+        path = options.path;
     return restAction({ ...options, path, method: HttpMethod.PATCH });
-};
-/**
- * Delete action decorator.
- *
- * @param path
- * @param options
- */
-export const deleteAction = (path, options) => {
+}
+export function deleteAction(pathOrOptions, options) {
+    let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+    options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+    if (typeof options === 'object' && !path && options.path != null)
+        path = options.path;
     return restAction({ ...options, path, method: HttpMethod.DELETE });
-};
+}

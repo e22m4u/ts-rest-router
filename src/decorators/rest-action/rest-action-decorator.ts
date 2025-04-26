@@ -1,4 +1,4 @@
-import {Flatten} from '../../types.js';
+import {Flatten, PartialBy} from '../../types.js';
 import {Prototype} from '../../types.js';
 import {Constructor} from '../../types.js';
 import {HttpMethod} from '@e22m4u/js-trie-router';
@@ -16,6 +16,11 @@ export type RestActionOptions = Flatten<
 
 /**
  * Rest action decorator.
+ */
+type RestActionDecorator = ReturnType<typeof restAction>;
+
+/**
+ * Rest action decorator factory.
  *
  * @param options
  */
@@ -45,62 +50,117 @@ export function restAction<T extends object>(options: RestActionOptions) {
 /**
  * Rest action method options.
  */
-export type RestActionMethodOptions = Flatten<
-  Omit<RestActionOptions, 'method' | 'path'>
+export type RestActionAliasOptions = Flatten<
+  PartialBy<Omit<RestActionOptions, 'method'>, 'path'>
 >;
 
 /**
  * Get action decorator.
- *
- * @param path
- * @param options
  */
-export const getAction = (path: string, options?: RestActionMethodOptions) => {
+export function getAction(): RestActionDecorator;
+export function getAction(path: string): RestActionDecorator;
+export function getAction(options: RestActionAliasOptions): RestActionDecorator;
+export function getAction(
+  path: string,
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function getAction(
+  pathOrOptions?: string | RestActionAliasOptions,
+  options?: RestActionAliasOptions,
+) {
+  let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+  options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+  if (typeof options === 'object' && !path && options.path != null)
+    path = options.path;
   return restAction({...options, path, method: HttpMethod.GET});
-};
+}
 
 /**
  * Post action decorator.
- *
- * @param path
- * @param options
  */
-export const postAction = (path: string, options?: RestActionMethodOptions) => {
+export function postAction(): RestActionDecorator;
+export function postAction(path: string): RestActionDecorator;
+export function postAction(
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function postAction(
+  path: string,
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function postAction(
+  pathOrOptions?: string | RestActionAliasOptions,
+  options?: RestActionAliasOptions,
+) {
+  let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+  options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+  if (typeof options === 'object' && !path && options.path != null)
+    path = options.path;
   return restAction({...options, path, method: HttpMethod.POST});
-};
+}
 
 /**
  * Put action decorator.
- *
- * @param path
- * @param options
  */
-export const putAction = (path: string, options?: RestActionMethodOptions) => {
+export function putAction(): RestActionDecorator;
+export function putAction(path: string): RestActionDecorator;
+export function putAction(options: RestActionAliasOptions): RestActionDecorator;
+export function putAction(
+  path: string,
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function putAction(
+  pathOrOptions?: string | RestActionAliasOptions,
+  options?: RestActionAliasOptions,
+) {
+  let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+  options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+  if (typeof options === 'object' && !path && options.path != null)
+    path = options.path;
   return restAction({...options, path, method: HttpMethod.PUT});
-};
+}
 
 /**
  * Patch action decorator.
- *
- * @param path
- * @param options
  */
-export const patchAction = (
+export function patchAction(): RestActionDecorator;
+export function patchAction(path: string): RestActionDecorator;
+export function patchAction(
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function patchAction(
   path: string,
-  options?: RestActionMethodOptions,
-) => {
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function patchAction(
+  pathOrOptions?: string | RestActionAliasOptions,
+  options?: RestActionAliasOptions,
+) {
+  let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+  options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+  if (typeof options === 'object' && !path && options.path != null)
+    path = options.path;
   return restAction({...options, path, method: HttpMethod.PATCH});
-};
+}
 
 /**
  * Delete action decorator.
- *
- * @param path
- * @param options
  */
-export const deleteAction = (
+export function deleteAction(): RestActionDecorator;
+export function deleteAction(path: string): RestActionDecorator;
+export function deleteAction(
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function deleteAction(
   path: string,
-  options?: RestActionMethodOptions,
-) => {
+  options: RestActionAliasOptions,
+): RestActionDecorator;
+export function deleteAction(
+  pathOrOptions?: string | RestActionAliasOptions,
+  options?: RestActionAliasOptions,
+) {
+  let path = typeof pathOrOptions === 'string' ? pathOrOptions : '';
+  options = typeof pathOrOptions === 'object' ? pathOrOptions : options;
+  if (typeof options === 'object' && !path && options.path != null)
+    path = options.path;
   return restAction({...options, path, method: HttpMethod.DELETE});
-};
+}

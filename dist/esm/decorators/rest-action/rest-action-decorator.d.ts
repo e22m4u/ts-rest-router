@@ -1,4 +1,4 @@
-import { Flatten } from '../../types.js';
+import { Flatten, PartialBy } from '../../types.js';
 import { Prototype } from '../../types.js';
 import { RestActionMetadata } from './rest-action-metadata.js';
 /**
@@ -7,6 +7,10 @@ import { RestActionMetadata } from './rest-action-metadata.js';
 export type RestActionOptions = Flatten<Omit<RestActionMetadata, 'propertyKey'>>;
 /**
  * Rest action decorator.
+ */
+type RestActionDecorator = ReturnType<typeof restAction>;
+/**
+ * Rest action decorator factory.
  *
  * @param options
  */
@@ -14,39 +18,40 @@ export declare function restAction<T extends object>(options: RestActionOptions)
 /**
  * Rest action method options.
  */
-export type RestActionMethodOptions = Flatten<Omit<RestActionOptions, 'method' | 'path'>>;
+export type RestActionAliasOptions = Flatten<PartialBy<Omit<RestActionOptions, 'method'>, 'path'>>;
 /**
  * Get action decorator.
- *
- * @param path
- * @param options
  */
-export declare const getAction: (path: string, options?: RestActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare function getAction(): RestActionDecorator;
+export declare function getAction(path: string): RestActionDecorator;
+export declare function getAction(options: RestActionAliasOptions): RestActionDecorator;
+export declare function getAction(path: string, options: RestActionAliasOptions): RestActionDecorator;
 /**
  * Post action decorator.
- *
- * @param path
- * @param options
  */
-export declare const postAction: (path: string, options?: RestActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare function postAction(): RestActionDecorator;
+export declare function postAction(path: string): RestActionDecorator;
+export declare function postAction(options: RestActionAliasOptions): RestActionDecorator;
+export declare function postAction(path: string, options: RestActionAliasOptions): RestActionDecorator;
 /**
  * Put action decorator.
- *
- * @param path
- * @param options
  */
-export declare const putAction: (path: string, options?: RestActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare function putAction(): RestActionDecorator;
+export declare function putAction(path: string): RestActionDecorator;
+export declare function putAction(options: RestActionAliasOptions): RestActionDecorator;
+export declare function putAction(path: string, options: RestActionAliasOptions): RestActionDecorator;
 /**
  * Patch action decorator.
- *
- * @param path
- * @param options
  */
-export declare const patchAction: (path: string, options?: RestActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare function patchAction(): RestActionDecorator;
+export declare function patchAction(path: string): RestActionDecorator;
+export declare function patchAction(options: RestActionAliasOptions): RestActionDecorator;
+export declare function patchAction(path: string, options: RestActionAliasOptions): RestActionDecorator;
 /**
  * Delete action decorator.
- *
- * @param path
- * @param options
  */
-export declare const deleteAction: (path: string, options?: RestActionMethodOptions) => (target: Prototype<object>, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export declare function deleteAction(): RestActionDecorator;
+export declare function deleteAction(path: string): RestActionDecorator;
+export declare function deleteAction(options: RestActionAliasOptions): RestActionDecorator;
+export declare function deleteAction(path: string, options: RestActionAliasOptions): RestActionDecorator;
+export {};

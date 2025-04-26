@@ -68,4 +68,334 @@ describe('restAction', function () {
             propertyKey: 'method',
         });
     });
+    describe('getAction', function () {
+        it('allows no arguments', function () {
+            class Target {
+                method() { }
+            }
+            __decorate([
+                getAction(),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                propertyKey: 'method',
+                method: HttpMethod.GET,
+                path: '',
+            });
+        });
+        it('allows options as first argument', function () {
+            const options = {
+                path: 'myPath',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                getAction(options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.GET,
+            });
+        });
+        it('allows path and options arguments', function () {
+            const options = {
+                path: 'myPath2',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                getAction('myPath1', options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.GET,
+                path: 'myPath1',
+            });
+        });
+    });
+    describe('postAction', function () {
+        it('allows no arguments', function () {
+            class Target {
+                method() { }
+            }
+            __decorate([
+                postAction(),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                propertyKey: 'method',
+                method: HttpMethod.POST,
+                path: '',
+            });
+        });
+        it('allows options as first argument', function () {
+            const options = {
+                path: 'myPath',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                postAction(options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.POST,
+            });
+        });
+        it('allows path and options arguments', function () {
+            const options = {
+                path: 'myPath2',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                postAction('myPath1', options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.POST,
+                path: 'myPath1',
+            });
+        });
+    });
+    describe('putAction', function () {
+        it('allows no arguments', function () {
+            class Target {
+                method() { }
+            }
+            __decorate([
+                putAction(),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                propertyKey: 'method',
+                method: HttpMethod.PUT,
+                path: '',
+            });
+        });
+        it('allows options as first argument', function () {
+            const options = {
+                path: 'myPath',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                putAction(options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.PUT,
+            });
+        });
+        it('allows path and options arguments', function () {
+            const options = {
+                path: 'myPath2',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                putAction('myPath1', options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.PUT,
+                path: 'myPath1',
+            });
+        });
+    });
+    describe('patchAction', function () {
+        it('allows no arguments', function () {
+            class Target {
+                method() { }
+            }
+            __decorate([
+                patchAction(),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                propertyKey: 'method',
+                method: HttpMethod.PATCH,
+                path: '',
+            });
+        });
+        it('allows options as first argument', function () {
+            const options = {
+                path: 'myPath',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                patchAction(options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.PATCH,
+            });
+        });
+        it('allows path and options arguments', function () {
+            const options = {
+                path: 'myPath2',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                patchAction('myPath1', options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.PATCH,
+                path: 'myPath1',
+            });
+        });
+    });
+    describe('deleteAction', function () {
+        it('allows no arguments', function () {
+            class Target {
+                method() { }
+            }
+            __decorate([
+                deleteAction(),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                propertyKey: 'method',
+                method: HttpMethod.DELETE,
+                path: '',
+            });
+        });
+        it('allows options as first argument', function () {
+            const options = {
+                path: 'myPath',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                deleteAction(options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.DELETE,
+            });
+        });
+        it('allows path and options arguments', function () {
+            const options = {
+                path: 'myPath2',
+                before: () => undefined,
+                after: () => undefined,
+                customOption: 'customOption',
+            };
+            class Target {
+                method() { }
+            }
+            __decorate([
+                deleteAction('myPath1', options),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", []),
+                __metadata("design:returntype", void 0)
+            ], Target.prototype, "method", null);
+            const res = RestActionReflector.getMetadata(Target);
+            expect(res.get('method')).to.be.eql({
+                ...options,
+                propertyKey: 'method',
+                method: HttpMethod.DELETE,
+                path: 'myPath1',
+            });
+        });
+    });
 });

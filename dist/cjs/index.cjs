@@ -190,21 +190,46 @@ function restAction(options) {
   };
 }
 __name(restAction, "restAction");
-var getAction = /* @__PURE__ */ __name((path, options) => {
+function getAction(pathOrOptions, options) {
+  let path = typeof pathOrOptions === "string" ? pathOrOptions : "";
+  options = typeof pathOrOptions === "object" ? pathOrOptions : options;
+  if (typeof options === "object" && !path && options.path != null)
+    path = options.path;
   return restAction({ ...options, path, method: import_js_trie_router.HttpMethod.GET });
-}, "getAction");
-var postAction = /* @__PURE__ */ __name((path, options) => {
+}
+__name(getAction, "getAction");
+function postAction(pathOrOptions, options) {
+  let path = typeof pathOrOptions === "string" ? pathOrOptions : "";
+  options = typeof pathOrOptions === "object" ? pathOrOptions : options;
+  if (typeof options === "object" && !path && options.path != null)
+    path = options.path;
   return restAction({ ...options, path, method: import_js_trie_router.HttpMethod.POST });
-}, "postAction");
-var putAction = /* @__PURE__ */ __name((path, options) => {
+}
+__name(postAction, "postAction");
+function putAction(pathOrOptions, options) {
+  let path = typeof pathOrOptions === "string" ? pathOrOptions : "";
+  options = typeof pathOrOptions === "object" ? pathOrOptions : options;
+  if (typeof options === "object" && !path && options.path != null)
+    path = options.path;
   return restAction({ ...options, path, method: import_js_trie_router.HttpMethod.PUT });
-}, "putAction");
-var patchAction = /* @__PURE__ */ __name((path, options) => {
+}
+__name(putAction, "putAction");
+function patchAction(pathOrOptions, options) {
+  let path = typeof pathOrOptions === "string" ? pathOrOptions : "";
+  options = typeof pathOrOptions === "object" ? pathOrOptions : options;
+  if (typeof options === "object" && !path && options.path != null)
+    path = options.path;
   return restAction({ ...options, path, method: import_js_trie_router.HttpMethod.PATCH });
-}, "patchAction");
-var deleteAction = /* @__PURE__ */ __name((path, options) => {
+}
+__name(patchAction, "patchAction");
+function deleteAction(pathOrOptions, options) {
+  let path = typeof pathOrOptions === "string" ? pathOrOptions : "";
+  options = typeof pathOrOptions === "object" ? pathOrOptions : options;
+  if (typeof options === "object" && !path && options.path != null)
+    path = options.path;
   return restAction({ ...options, path, method: import_js_trie_router.HttpMethod.DELETE });
-}, "deleteAction");
+}
+__name(deleteAction, "deleteAction");
 
 // dist/esm/decorators/request-data/request-data-metadata.js
 var import_ts_reflector5 = require("@e22m4u/ts-reflector");
