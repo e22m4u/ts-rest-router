@@ -22,10 +22,6 @@ export type Prototype<T = unknown> = T & object & {
     prototype?: object;
 };
 /**
- * Make a specific property as optional.
- */
-export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-/**
  * A part of the Flatten type.
  */
 export type Identity<T> = T;
@@ -35,16 +31,6 @@ export type Identity<T> = T;
 export type Flatten<T> = Identity<{
     [k in keyof T]: T[k];
 }>;
-/**
- * A promise or value.
- */
-export type ValueOrPromise<T> = T | PromiseLike<T>;
-/**
- * Plain object.
- */
-export type PlainObject = {
-    [key: string]: unknown;
-};
 /**
  * Remove null and undefined from T.
  */

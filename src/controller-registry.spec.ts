@@ -1,26 +1,26 @@
 /* eslint mocha/no-sibling-hooks: 0 */
 import {expect} from 'chai';
-import {get} from './decorators/index.js';
-import {post} from './decorators/index.js';
-import {body} from './decorators/index.js';
-import {after} from './decorators/index.js';
-import {query} from './decorators/index.js';
-import {param} from './decorators/index.js';
-import {field} from './decorators/index.js';
-import {cookie} from './decorators/index.js';
-import {params} from './decorators/index.js';
-import {before} from './decorators/index.js';
-import {header} from './decorators/index.js';
-import {cookies} from './decorators/index.js';
-import {queries} from './decorators/index.js';
-import {headers} from './decorators/index.js';
 import {HookName} from '@e22m4u/js-trie-router';
-import {controller} from './decorators/index.js';
+import {getAction} from './decorators/index.js';
+import {postAction} from './decorators/index.js';
 import {TrieRouter} from '@e22m4u/js-trie-router';
 import {HttpMethod} from '@e22m4u/js-trie-router';
+import {requestBody} from './decorators/index.js';
+import {afterAction} from './decorators/index.js';
+import {requestQuery} from './decorators/index.js';
+import {requestParam} from './decorators/index.js';
+import {requestField} from './decorators/index.js';
+import {beforeAction} from './decorators/index.js';
 import {ParsedQuery} from '@e22m4u/js-trie-router';
 import {ParsedCookie} from '@e22m4u/js-trie-router';
 import {ParsedParams} from '@e22m4u/js-trie-router';
+import {requestCookie} from './decorators/index.js';
+import {requestParams} from './decorators/index.js';
+import {requestHeader} from './decorators/index.js';
+import {requestCookies} from './decorators/index.js';
+import {requestQueries} from './decorators/index.js';
+import {requestHeaders} from './decorators/index.js';
+import {restController} from './decorators/index.js';
 import {ParsedHeaders} from '@e22m4u/js-trie-router';
 import {RouteRegistry} from '@e22m4u/js-trie-router';
 import {RequestParser} from '@e22m4u/js-trie-router';
@@ -45,7 +45,7 @@ describe('ControllerRegistry', function () {
   describe('addController', function () {
     it('returns itself', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {}
       const res = S.addController(MyController);
       expect(res).to.be.eq(S);
@@ -53,7 +53,7 @@ describe('ControllerRegistry', function () {
 
     it('adds a given controller to controllers set', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {}
       expect(S.hasController(MyController)).to.be.false;
       S.addController(MyController);
@@ -62,9 +62,9 @@ describe('ControllerRegistry', function () {
 
     it('uses http method and action path for a new route', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         foo() {}
       }
       S.addController(MyController);
@@ -81,11 +81,11 @@ describe('ControllerRegistry', function () {
 
     it('adds multiple routes by the given controller', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/foo')
+        @getAction('/foo')
         foo() {}
-        @post('/bar')
+        @postAction('/bar')
         bar() {}
       }
       S.addController(MyController);
@@ -106,9 +106,9 @@ describe('ControllerRegistry', function () {
 
     it('uses path prefix of controller root options', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction() {}
       }
       S.addController(MyController, {pathPrefix: '/myPrefix'});
@@ -121,11 +121,11 @@ describe('ControllerRegistry', function () {
       expect(matching).to.be.not.empty;
     });
 
-    it('uses path prefix of @controller metadata', function () {
+    it('uses path prefix of @restController metadata', function () {
       const S = new ControllerRegistry();
-      @controller('/myController')
+      @restController('/myController')
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction() {}
       }
       S.addController(MyController);
@@ -138,11 +138,11 @@ describe('ControllerRegistry', function () {
       expect(matching).to.be.not.empty;
     });
 
-    it('uses path prefix of controller root options and @controller metadata', function () {
+    it('uses path prefix of controller root options and @restController metadata', function () {
       const S = new ControllerRegistry();
-      @controller('/myController')
+      @restController('/myController')
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction() {}
       }
       S.addController(MyController, {pathPrefix: '/myPrefix'});
@@ -158,9 +158,9 @@ describe('ControllerRegistry', function () {
     describe('single pre-handler', function () {
       it('uses pre-handler of controller root options', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController, {before: PRE_HANDLER_1});
@@ -175,12 +175,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
-      it('uses pre-handler of @before metadata applied to controller', function () {
+      it('uses pre-handler of @beforeAction metadata applied to controller', function () {
         const S = new ControllerRegistry();
-        @controller()
-        @before(PRE_HANDLER_1)
+        @restController()
+        @beforeAction(PRE_HANDLER_1)
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -195,12 +195,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
-      it('uses pre-handler of @before metadata applied to action', function () {
+      it('uses pre-handler of @beforeAction metadata applied to action', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
-          @before(PRE_HANDLER_1)
+          @getAction('/myAction')
+          @beforeAction(PRE_HANDLER_1)
           myAction() {}
         }
         S.addController(MyController);
@@ -215,11 +215,11 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
-      it('uses pre-handler of @controller metadata', function () {
+      it('uses pre-handler of @restController metadata', function () {
         const S = new ControllerRegistry();
-        @controller({before: PRE_HANDLER_1})
+        @restController({before: PRE_HANDLER_1})
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -236,9 +236,9 @@ describe('ControllerRegistry', function () {
 
       it('uses pre-handler of @action metadata', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction', {before: PRE_HANDLER_1})
+          @getAction('/myAction', {before: PRE_HANDLER_1})
           myAction() {}
         }
         S.addController(MyController);
@@ -257,9 +257,9 @@ describe('ControllerRegistry', function () {
     describe('multiple pre-handlers', function () {
       it('uses pre-handlers of controller root options', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController, {
@@ -276,12 +276,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
-      it('uses pre-handlers of @before metadata applied to controller', function () {
+      it('uses pre-handlers of @beforeAction metadata applied to controller', function () {
         const S = new ControllerRegistry();
-        @controller()
-        @before([PRE_HANDLER_1, PRE_HANDLER_2])
+        @restController()
+        @beforeAction([PRE_HANDLER_1, PRE_HANDLER_2])
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -296,12 +296,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
-      it('uses pre-handlers of @before metadata applied to action', function () {
+      it('uses pre-handlers of @beforeAction metadata applied to action', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
-          @before([PRE_HANDLER_1, PRE_HANDLER_2])
+          @getAction('/myAction')
+          @beforeAction([PRE_HANDLER_1, PRE_HANDLER_2])
           myAction() {}
         }
         S.addController(MyController);
@@ -316,13 +316,13 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
-      it('uses pre-handlers of @controller metadata', function () {
+      it('uses pre-handlers of @restController metadata', function () {
         const S = new ControllerRegistry();
-        @controller({
+        @restController({
           before: [PRE_HANDLER_1, PRE_HANDLER_2],
         })
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -339,9 +339,9 @@ describe('ControllerRegistry', function () {
 
       it('uses pre-handlers of @action metadata', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction', {
+          @getAction('/myAction', {
             before: [PRE_HANDLER_1, PRE_HANDLER_2],
           })
           myAction() {}
@@ -362,9 +362,9 @@ describe('ControllerRegistry', function () {
     describe('single post-handler', function () {
       it('uses post-handler of controller root options', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController, {after: POST_HANDLER_1});
@@ -381,12 +381,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
 
-      it('uses pre-handler of @after metadata applied to controller', function () {
+      it('uses pre-handler of @afterAction metadata applied to controller', function () {
         const S = new ControllerRegistry();
-        @controller()
-        @after(POST_HANDLER_1)
+        @restController()
+        @afterAction(POST_HANDLER_1)
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -403,12 +403,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
 
-      it('uses pre-handler of @after metadata applied to action', function () {
+      it('uses pre-handler of @afterAction metadata applied to action', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
-          @after(POST_HANDLER_1)
+          @getAction('/myAction')
+          @afterAction(POST_HANDLER_1)
           myAction() {}
         }
         S.addController(MyController);
@@ -425,11 +425,11 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
 
-      it('uses post-handler of @controller metadata', function () {
+      it('uses post-handler of @restController metadata', function () {
         const S = new ControllerRegistry();
-        @controller({after: POST_HANDLER_1})
+        @restController({after: POST_HANDLER_1})
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -448,9 +448,9 @@ describe('ControllerRegistry', function () {
 
       it('uses post-handler of @action metadata', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction', {after: POST_HANDLER_1})
+          @getAction('/myAction', {after: POST_HANDLER_1})
           myAction() {}
         }
         S.addController(MyController);
@@ -471,9 +471,9 @@ describe('ControllerRegistry', function () {
     describe('multiple post-handlers', function () {
       it('uses post-handlers of controller root options', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController, {
@@ -492,12 +492,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
 
-      it('uses pre-handlers of @after metadata applied to controller', function () {
+      it('uses pre-handlers of @afterAction metadata applied to controller', function () {
         const S = new ControllerRegistry();
-        @controller()
-        @after([POST_HANDLER_1, POST_HANDLER_2])
+        @restController()
+        @afterAction([POST_HANDLER_1, POST_HANDLER_2])
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -514,12 +514,12 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
 
-      it('uses pre-handlers of @after metadata applied to action', function () {
+      it('uses pre-handlers of @afterAction metadata applied to action', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction')
-          @after([POST_HANDLER_1, POST_HANDLER_2])
+          @getAction('/myAction')
+          @afterAction([POST_HANDLER_1, POST_HANDLER_2])
           myAction() {}
         }
         S.addController(MyController);
@@ -536,13 +536,13 @@ describe('ControllerRegistry', function () {
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
 
-      it('uses post-handlers of @controller metadata', function () {
+      it('uses post-handlers of @restController metadata', function () {
         const S = new ControllerRegistry();
-        @controller({
+        @restController({
           after: [POST_HANDLER_1, POST_HANDLER_2],
         })
         class MyController {
-          @get('/myAction')
+          @getAction('/myAction')
           myAction() {}
         }
         S.addController(MyController);
@@ -561,9 +561,9 @@ describe('ControllerRegistry', function () {
 
       it('uses post-handlers of @action metadata', function () {
         const S = new ControllerRegistry();
-        @controller()
+        @restController()
         class MyController {
-          @get('/myAction', {
+          @getAction('/myAction', {
             after: [POST_HANDLER_1, POST_HANDLER_2],
           })
           myAction() {}
@@ -586,11 +586,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed parameters', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction/:id')
+        @getAction('/myAction/:id')
         myAction(
-          @params()
+          @requestParams()
           params: ParsedParams,
         ) {
           expect(params).to.be.eql({id: '123'});
@@ -615,11 +615,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed parameter', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction/:id')
+        @getAction('/myAction/:id')
         myAction(
-          @param('id')
+          @requestParam('id')
           param: string,
         ) {
           expect(param).to.be.eq('123');
@@ -644,11 +644,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed queries', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @queries()
+          @requestQueries()
           queries: ParsedQuery,
         ) {
           expect(queries).to.be.eql({foo: 'bar'});
@@ -674,11 +674,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed query', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @query('foo')
+          @requestQuery('foo')
           foo: string,
         ) {
           expect(foo).to.be.eql('bar');
@@ -704,11 +704,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed headers', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @headers()
+          @requestHeaders()
           headers: ParsedHeaders,
         ) {
           expect(headers).to.be.eql({
@@ -739,11 +739,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed header', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @header('foo')
+          @requestHeader('foo')
           foo: string,
         ) {
           expect(foo).to.be.eq('bar');
@@ -770,11 +770,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed cookies', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @cookies()
+          @requestCookies()
           cookies: ParsedCookie,
         ) {
           expect(cookies).to.be.eql({foo: 'bar'});
@@ -801,11 +801,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed cookie', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @get('/myAction')
+        @getAction('/myAction')
         myAction(
-          @cookie('foo')
+          @requestCookie('foo')
           foo: string,
         ) {
           expect(foo).to.be.eq('bar');
@@ -832,11 +832,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed body', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @post('/myAction')
+        @postAction('/myAction')
         myAction(
-          @body()
+          @requestBody()
           body: object,
         ) {
           expect(body).to.be.eql({foo: 'bar'});
@@ -864,11 +864,11 @@ describe('ControllerRegistry', function () {
     it('injects parsed body parameter', async function () {
       let checked = false;
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {
-        @post('/myAction')
+        @postAction('/myAction')
         myAction(
-          @field('foo')
+          @requestField('foo')
           foo: object,
         ) {
           expect(foo).to.be.eq('bar');
@@ -897,14 +897,14 @@ describe('ControllerRegistry', function () {
   describe('hasController', function () {
     it('returns false if a given controller is not registered', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {}
       expect(S.hasController(MyController)).to.be.false;
     });
 
     it('returns true if a given controller is registered', function () {
       const S = new ControllerRegistry();
-      @controller()
+      @restController()
       class MyController {}
       expect(S.hasController(MyController)).to.be.false;
       S.addController(MyController);

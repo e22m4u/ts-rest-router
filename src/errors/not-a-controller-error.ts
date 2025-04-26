@@ -10,6 +10,9 @@ export class NotAControllerError extends Errorf {
    * @param value
    */
   constructor(value: unknown) {
-    super('%v is not a controller, do use @controller decorator on it.', value);
+    super(
+      '%v is not a controller, do use @restController decorator on it.',
+      value,
+    );
   }
 }

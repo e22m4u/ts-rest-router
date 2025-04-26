@@ -7,10 +7,10 @@ import { RequestContext } from '@e22m4u/js-trie-router';
  */
 export declare function requestContext<T extends object>(propertyName?: keyof RequestContext): (target: Prototype<T>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
- * Request decorator.
+ * HttpRequest decorator.
  */
-export declare function request(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare function httpRequest(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
- * Response decorator.
+ * HttpResponse decorator.
  */
-export declare function response(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare function httpResponse(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;

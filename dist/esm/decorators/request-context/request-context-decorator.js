@@ -16,14 +16,14 @@ export function requestContext(propertyName) {
     };
 }
 /**
- * Request decorator.
+ * HttpRequest decorator.
  */
-export function request() {
+export function httpRequest() {
     return requestContext('req');
 }
 /**
- * Response decorator.
+ * HttpResponse decorator.
  */
-export function response() {
+export function httpResponse() {
     return requestContext('res');
 }

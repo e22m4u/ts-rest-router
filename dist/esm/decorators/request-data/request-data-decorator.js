@@ -55,21 +55,21 @@ function createRequestDataPropertyDecoratorWithSource(source) {
 /**
  * Decorator aliases.
  */
-export const params = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
-export const param = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
-export const queries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
-export const query = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
-export const headers = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
-export const header = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
-export const cookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
-export const cookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
-export const field = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
+export const requestParams = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
+export const requestParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+export const requestQueries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
+export const requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
+export const requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
+export const requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+export const requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
+export const requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+export const requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 /**
  * Request body decorator.
  *
  * @param schemaOrType
  */
-export function body(schemaOrType) {
+export function requestBody(schemaOrType) {
     let schema;
     if (typeof schemaOrType === 'object') {
         schema = schemaOrType;

@@ -1,15 +1,15 @@
 import { Errorf } from '@e22m4u/js-format';
 import { TrieRouter } from '@e22m4u/js-trie-router';
 import { DataValidator } from '@e22m4u/ts-data-schema';
-import { AfterReflector } from './decorators/index.js';
 import { DataTypeCaster } from '@e22m4u/ts-data-schema';
-import { ActionReflector } from './decorators/index.js';
-import { BeforeReflector } from './decorators/index.js';
 import { NotAControllerError } from './errors/index.js';
 import { RequestDataSource } from './decorators/index.js';
 import { DebuggableService } from './debuggable-service.js';
-import { ControllerReflector } from './decorators/index.js';
+import { RestActionReflector } from './decorators/index.js';
 import { RequestDataReflector } from './decorators/index.js';
+import { AfterActionReflector } from './decorators/index.js';
+import { BeforeActionReflector } from './decorators/index.js';
+import { RestControllerReflector } from './decorators/index.js';
 import { RequestContextReflector } from './decorators/index.js';
 /**
  * Controller registry.
@@ -26,7 +26,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param options
      */
     addController(ctor, options) {
-        const debug = this.debug.bind(this.addController.name);
+        const debug = this.getDebuggerFor(this.addController);
         // проверка повторной регистрации помогает
         // заметить ошибку в коде, который использует
         // интерфейс данного сервиса
@@ -35,7 +35,7 @@ export class ControllerRegistry extends DebuggableService {
         // так как контроллером может быть любой
         // класс, выполняется проверка на наличие
         // метаданных применяемых декоратором
-        const controllerMd = ControllerReflector.getMetadata(ctor);
+        const controllerMd = RestControllerReflector.getMetadata(ctor);
         if (!controllerMd)
             throw new NotAControllerError(ctor);
         debug('Adding controller %s.', ctor.name);
@@ -63,7 +63,7 @@ export class ControllerRegistry extends DebuggableService {
         debug('Controller has %v post-handlers.', postHandlers.length);
         // обход всех операций контроллера
         // для определения маршрутов
-        const actionsMd = ActionReflector.getMetadata(ctor);
+        const actionsMd = RestActionReflector.getMetadata(ctor);
         debug('%v actions found.', actionsMd.size);
         const router = this.getService(TrieRouter);
         actionsMd.forEach((actionMd, actionName) => {
@@ -116,7 +116,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param options
      */
     getPathPrefixFromControllerRootOptions(options) {
-        const debug = this.debug.bind(this.getPathPrefixFromControllerRootOptions.name);
+        const debug = this.getDebuggerFor(this.getPathPrefixFromControllerRootOptions);
         debug('Getting path prefix from controller root options.');
         const res = options?.pathPrefix || '';
         debug('Controller path prefix is %v.', res);
@@ -128,10 +128,10 @@ export class ControllerRegistry extends DebuggableService {
      * @param ctor
      */
     getPathPrefixFromControllerMetadata(ctor) {
-        const debug = this.debug.bind(this.getPathPrefixFromControllerMetadata.name);
-        debug('Getting path prefix from @controller metadata.');
+        const debug = this.getDebuggerFor(this.getPathPrefixFromControllerMetadata);
+        debug('Getting path prefix from @restController metadata.');
         debug('Metadata target is %s.', ctor.name);
-        const md = ControllerReflector.getMetadata(ctor);
+        const md = RestControllerReflector.getMetadata(ctor);
         if (!md)
             throw new Errorf('Controller %v has no metadata.', ctor);
         const res = md.path || '';
@@ -144,7 +144,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param options
      */
     getPreHandlersFromControllerRootOptions(options) {
-        const debug = this.debug.bind(this.getPreHandlersFromControllerRootOptions.name);
+        const debug = this.getDebuggerFor(this.getPreHandlersFromControllerRootOptions);
         debug('Getting pre-handlers from controller root options.');
         let res = [];
         if (options?.before)
@@ -158,7 +158,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param options
      */
     getPostHandlersFromControllerRootOptions(options) {
-        const debug = this.debug.bind(this.getPostHandlersFromControllerRootOptions.name);
+        const debug = this.getDebuggerFor(this.getPostHandlersFromControllerRootOptions);
         debug('Getting post-handlers from controller root options.');
         let res = [];
         if (options?.after)
@@ -173,7 +173,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param actionName
      */
     getPreHandlersFromBeforeMetadata(ctor, actionName) {
-        const debug = this.debug.bind(this.getPreHandlersFromBeforeMetadata.name);
+        const debug = this.getDebuggerFor(this.getPreHandlersFromBeforeMetadata);
         debug('Getting pre-handlers from @before metadata.');
         if (actionName) {
             debug('Target is %s.%s.', ctor.name, actionName);
@@ -182,7 +182,7 @@ export class ControllerRegistry extends DebuggableService {
             debug('Target is %s.', ctor.name);
         }
         let preHandlers = [];
-        const mdArray = BeforeReflector.getMetadata(ctor, actionName);
+        const mdArray = BeforeActionReflector.getMetadata(ctor, actionName);
         mdArray.forEach(md => {
             if (Array.isArray(md.middleware)) {
                 preHandlers = [...preHandlers, ...md.middleware];
@@ -206,7 +206,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param actionName
      */
     getPostHandlersFromAfterMetadata(ctor, actionName) {
-        const debug = this.debug.bind(this.getPostHandlersFromAfterMetadata.name);
+        const debug = this.getDebuggerFor(this.getPostHandlersFromAfterMetadata);
         debug('Getting post-handlers from @after metadata.');
         if (actionName) {
             debug('Target is %s.%s.', ctor.name, actionName);
@@ -215,7 +215,7 @@ export class ControllerRegistry extends DebuggableService {
             debug('Target is %s.', ctor.name);
         }
         let res = [];
-        const mdArray = AfterReflector.getMetadata(ctor, actionName);
+        const mdArray = AfterActionReflector.getMetadata(ctor, actionName);
         mdArray.forEach(md => {
             if (Array.isArray(md.middleware)) {
                 res = [...res, ...md.middleware];
@@ -238,10 +238,10 @@ export class ControllerRegistry extends DebuggableService {
      * @param ctor
      */
     getPreHandlersFromControllerMetadata(ctor) {
-        const debug = this.debug.bind(this.getPreHandlersFromControllerMetadata.name);
-        debug('Getting pre-handlers from @controller metadata.');
+        const debug = this.getDebuggerFor(this.getPreHandlersFromControllerMetadata);
+        debug('Getting pre-handlers from @restController metadata.');
         debug('Target is %s.', ctor.name);
-        const md = ControllerReflector.getMetadata(ctor);
+        const md = RestControllerReflector.getMetadata(ctor);
         if (!md)
             throw new Errorf('Controller %v has no metadata.', ctor);
         let res = [];
@@ -256,9 +256,9 @@ export class ControllerRegistry extends DebuggableService {
      * @param ctor
      */
     getPostHandlersFromControllerMetadata(ctor) {
-        const debug = this.debug.bind(this.getPostHandlersFromControllerMetadata.name);
-        debug('Getting post-handlers from @controller metadata.');
-        const md = ControllerReflector.getMetadata(ctor);
+        const debug = this.getDebuggerFor(this.getPostHandlersFromControllerMetadata);
+        debug('Getting post-handlers from @restController metadata.');
+        const md = RestControllerReflector.getMetadata(ctor);
         if (!md)
             throw new Errorf('Controller %v has no metadata.', ctor);
         let res = [];
@@ -274,9 +274,9 @@ export class ControllerRegistry extends DebuggableService {
      * @param actionName
      */
     getPreHandlersFromActionMetadata(ctor, actionName) {
-        const debug = this.debug.bind(this.getPreHandlersFromActionMetadata.name);
+        const debug = this.getDebuggerFor(this.getPreHandlersFromActionMetadata);
         debug('Getting pre-handlers from @action metadata.');
-        const actionsMd = ActionReflector.getMetadata(ctor);
+        const actionsMd = RestActionReflector.getMetadata(ctor);
         const actionMd = actionsMd.get(actionName);
         if (!actionMd)
             throw new Errorf('Action %s.%s has no metadata.', ctor.name, actionName);
@@ -295,9 +295,9 @@ export class ControllerRegistry extends DebuggableService {
      * @param actionName
      */
     getPostHandlersFromActionMetadata(ctor, actionName) {
-        const debug = this.debug.bind(this.getPreHandlersFromActionMetadata.name);
+        const debug = this.getDebuggerFor(this.getPreHandlersFromActionMetadata);
         debug('Getting post-handlers from @action metadata.');
-        const actionsMd = ActionReflector.getMetadata(ctor);
+        const actionsMd = RestActionReflector.getMetadata(ctor);
         const actionMd = actionsMd.get(actionName);
         if (!actionMd)
             throw new Errorf('Action %s.%s has no metadata.', ctor.name, actionName);
@@ -315,7 +315,7 @@ export class ControllerRegistry extends DebuggableService {
      * @protected
      */
     createRouteHandler(controllerCtor, actionName) {
-        const debug = this.debug.bind(this.createRouteHandler.name);
+        const debug = this.getDebuggerFor(this.createRouteHandler);
         debug('Creating route handler for %s.%s.', controllerCtor.name, actionName);
         const requestContextMetadataMap = RequestContextReflector.getMetadata(controllerCtor, actionName);
         const requestDataMetadataMap = RequestDataReflector.getMetadata(controllerCtor, actionName);

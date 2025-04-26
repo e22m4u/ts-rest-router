@@ -85,31 +85,31 @@ function createRequestDataPropertyDecoratorWithSource(
 /**
  * Decorator aliases.
  */
-export const params = createRequestDataDecoratorWithSource(
+export const requestParams = createRequestDataDecoratorWithSource(
   RequestDataSource.PARAMS,
 );
-export const param = createRequestDataPropertyDecoratorWithSource(
+export const requestParam = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.PARAMS,
 );
-export const queries = createRequestDataDecoratorWithSource(
+export const requestQueries = createRequestDataDecoratorWithSource(
   RequestDataSource.QUERY,
 );
-export const query = createRequestDataPropertyDecoratorWithSource(
+export const requestQuery = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.QUERY,
 );
-export const headers = createRequestDataDecoratorWithSource(
+export const requestHeaders = createRequestDataDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
-export const header = createRequestDataPropertyDecoratorWithSource(
+export const requestHeader = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
-export const cookies = createRequestDataDecoratorWithSource(
+export const requestCookies = createRequestDataDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
-export const cookie = createRequestDataPropertyDecoratorWithSource(
+export const requestCookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
-export const field = createRequestDataPropertyDecoratorWithSource(
+export const requestField = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,
 );
 
@@ -118,7 +118,7 @@ export const field = createRequestDataPropertyDecoratorWithSource(
  *
  * @param schemaOrType
  */
-export function body(schemaOrType?: DataSchema | DataType) {
+export function requestBody(schemaOrType?: DataSchema | DataType) {
   let schema: DataSchema;
   if (typeof schemaOrType === 'object') {
     schema = schemaOrType;

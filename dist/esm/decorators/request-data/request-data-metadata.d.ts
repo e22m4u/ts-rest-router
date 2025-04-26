@@ -1,5 +1,5 @@
-import { DataSchema } from '@e22m4u/ts-data-schema';
 import { MetadataKey } from '@e22m4u/ts-reflector';
+import { DataSchema } from '@e22m4u/ts-data-schema';
 /**
  * Request data source.
  */

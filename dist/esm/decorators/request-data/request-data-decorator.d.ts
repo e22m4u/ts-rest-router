@@ -15,18 +15,18 @@ export declare function requestData<T extends object>(options: RequestDataOption
 /**
  * Decorator aliases.
  */
-export declare const params: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const param: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const queries: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const query: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const headers: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const header: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const cookies: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const cookie: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
-export declare const field: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestParams: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestParam: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestQueries: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestQuery: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestHeaders: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestHeader: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestCookies: () => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestCookie: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare const requestField: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
 /**
  * Request body decorator.
  *
  * @param schemaOrType
  */
-export declare function body(schemaOrType?: DataSchema | DataType): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+export declare function requestBody(schemaOrType?: DataSchema | DataType): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;

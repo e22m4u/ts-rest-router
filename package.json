@@ -41,12 +41,12 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@e22m4u/js-debug": "~0.0.6",
     "@e22m4u/js-format": "~0.1.0",
     "@e22m4u/js-service": "~0.2.0",
     "@e22m4u/js-trie-router": "~0.0.1",
     "@e22m4u/ts-data-schema": "~0.0.1",
     "@e22m4u/ts-reflector": "~0.1.0",
-    "debug": "~4.4.0",
     "http-errors": "~2.0.0"
   },
   "devDependencies": {

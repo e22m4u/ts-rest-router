@@ -1,21 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {expect} from 'chai';
 import {DataType} from '@e22m4u/ts-data-schema';
-import {body} from './request-data-decorator.js';
-import {param} from './request-data-decorator.js';
-import {query} from './request-data-decorator.js';
-import {field} from './request-data-decorator.js';
-import {cookie} from './request-data-decorator.js';
-import {header} from './request-data-decorator.js';
-import {params} from './request-data-decorator.js';
-import {queries} from './request-data-decorator.js';
-import {cookies} from './request-data-decorator.js';
-import {headers} from './request-data-decorator.js';
 import {requestData} from './request-data-decorator.js';
+import {requestBody} from './request-data-decorator.js';
+import {requestField} from './request-data-decorator.js';
+import {requestParam} from './request-data-decorator.js';
+import {requestQuery} from './request-data-decorator.js';
+import {requestCookie} from './request-data-decorator.js';
+import {requestHeader} from './request-data-decorator.js';
+import {requestParams} from './request-data-decorator.js';
+import {requestQueries} from './request-data-decorator.js';
+import {requestHeaders} from './request-data-decorator.js';
+import {requestCookies} from './request-data-decorator.js';
 import {RequestDataSource} from './request-data-metadata.js';
 import {RequestDataReflector} from './request-data-reflector.js';
 
 describe('requestData', function () {
+  it('has aliases', function () {
+    expect(requestParams).to.be.instanceOf(Function);
+    expect(requestParam).to.be.instanceOf(Function);
+    expect(requestQueries).to.be.instanceOf(Function);
+    expect(requestQuery).to.be.instanceOf(Function);
+    expect(requestHeaders).to.be.instanceOf(Function);
+    expect(requestHeader).to.be.instanceOf(Function);
+    expect(requestCookies).to.be.instanceOf(Function);
+    expect(requestCookie).to.be.instanceOf(Function);
+    expect(requestField).to.be.instanceOf(Function);
+    expect(requestBody).to.be.instanceOf(Function);
+  });
+
   it('sets given options to the target metadata', function () {
     const options = {
       source: RequestDataSource.BODY,
@@ -38,7 +51,7 @@ describe('requestData', function () {
       it('sets metadata with specified source and schema', function () {
         class Target {
           myMethod(
-            @params()
+            @requestParams()
             prop: unknown,
           ) {}
         }
@@ -54,7 +67,7 @@ describe('requestData', function () {
       it('sets metadata with specified source and schema', function () {
         class Target {
           myMethod(
-            @queries()
+            @requestQueries()
             prop: unknown,
           ) {}
         }
@@ -70,7 +83,7 @@ describe('requestData', function () {
       it('sets metadata with specified source and schema', function () {
         class Target {
           myMethod(
-            @headers()
+            @requestHeaders()
             prop: unknown,
           ) {}
         }
@@ -86,7 +99,7 @@ describe('requestData', function () {
       it('sets metadata with specified source and schema', function () {
         class Target {
           myMethod(
-            @cookies()
+            @requestCookies()
             prop: unknown,
           ) {}
         }
@@ -102,7 +115,7 @@ describe('requestData', function () {
       it('sets metadata with specified source and schema', function () {
         class Target {
           myMethod(
-            @body()
+            @requestBody()
             prop: unknown,
           ) {}
         }
@@ -116,7 +129,7 @@ describe('requestData', function () {
       it('sets a given DataType to the target metadata', function () {
         class Target {
           myMethod(
-            @body(DataType.STRING)
+            @requestBody(DataType.STRING)
             prop: unknown,
           ) {}
         }
@@ -131,7 +144,7 @@ describe('requestData', function () {
         const schema = {type: DataType.STRING, required: true};
         class Target {
           myMethod(
-            @body(schema)
+            @requestBody(schema)
             prop: unknown,
           ) {}
         }
@@ -149,7 +162,7 @@ describe('requestData', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
         class Target {
           myMethod(
-            @param('myPropertyKey')
+            @requestParam('myPropertyKey')
             prop: unknown,
           ) {}
         }
@@ -166,7 +179,7 @@ describe('requestData', function () {
         const propertyType = DataType.STRING;
         class Target {
           myMethod(
-            @param(propertyKey, propertyType)
+            @requestParam(propertyKey, propertyType)
             prop: unknown,
           ) {}
         }
@@ -193,7 +206,7 @@ describe('requestData', function () {
         const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @param(propertyKey, schema)
+            @requestParam(propertyKey, schema)
             prop: unknown,
           ) {}
         }
@@ -215,7 +228,7 @@ describe('requestData', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
         class Target {
           myMethod(
-            @query('myPropertyKey')
+            @requestQuery('myPropertyKey')
             prop: unknown,
           ) {}
         }
@@ -232,7 +245,7 @@ describe('requestData', function () {
         const propertyType = DataType.STRING;
         class Target {
           myMethod(
-            @query(propertyKey, propertyType)
+            @requestQuery(propertyKey, propertyType)
             prop: unknown,
           ) {}
         }
@@ -259,7 +272,7 @@ describe('requestData', function () {
         const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @query(propertyKey, schema)
+            @requestQuery(propertyKey, schema)
             prop: unknown,
           ) {}
         }
@@ -281,7 +294,7 @@ describe('requestData', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
         class Target {
           myMethod(
-            @header('myPropertyKey')
+            @requestHeader('myPropertyKey')
             prop: unknown,
           ) {}
         }
@@ -298,7 +311,7 @@ describe('requestData', function () {
         const propertyType = DataType.STRING;
         class Target {
           myMethod(
-            @header(propertyKey, propertyType)
+            @requestHeader(propertyKey, propertyType)
             prop: unknown,
           ) {}
         }
@@ -325,7 +338,7 @@ describe('requestData', function () {
         const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @header(propertyKey, schema)
+            @requestHeader(propertyKey, schema)
             prop: unknown,
           ) {}
         }
@@ -347,7 +360,7 @@ describe('requestData', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
         class Target {
           myMethod(
-            @cookie('myPropertyKey')
+            @requestCookie('myPropertyKey')
             prop: unknown,
           ) {}
         }
@@ -364,7 +377,7 @@ describe('requestData', function () {
         const propertyType = DataType.STRING;
         class Target {
           myMethod(
-            @cookie(propertyKey, propertyType)
+            @requestCookie(propertyKey, propertyType)
             prop: unknown,
           ) {}
         }
@@ -391,7 +404,7 @@ describe('requestData', function () {
         const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @cookie(propertyKey, schema)
+            @requestCookie(propertyKey, schema)
             prop: unknown,
           ) {}
         }
@@ -413,7 +426,7 @@ describe('requestData', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
         class Target {
           myMethod(
-            @field('myPropertyKey')
+            @requestField('myPropertyKey')
             prop: unknown,
           ) {}
         }
@@ -430,7 +443,7 @@ describe('requestData', function () {
         const propertyType = DataType.STRING;
         class Target {
           myMethod(
-            @field(propertyKey, propertyType)
+            @requestField(propertyKey, propertyType)
             prop: unknown,
           ) {}
         }
@@ -457,7 +470,7 @@ describe('requestData', function () {
         const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @field(propertyKey, schema)
+            @requestField(propertyKey, schema)
             prop: unknown,
           ) {}
         }

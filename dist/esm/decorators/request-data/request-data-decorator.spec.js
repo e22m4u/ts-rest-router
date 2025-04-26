@@ -13,20 +13,32 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect } from 'chai';
 import { DataType } from '@e22m4u/ts-data-schema';
-import { body } from './request-data-decorator.js';
-import { param } from './request-data-decorator.js';
-import { query } from './request-data-decorator.js';
-import { field } from './request-data-decorator.js';
-import { cookie } from './request-data-decorator.js';
-import { header } from './request-data-decorator.js';
-import { params } from './request-data-decorator.js';
-import { queries } from './request-data-decorator.js';
-import { cookies } from './request-data-decorator.js';
-import { headers } from './request-data-decorator.js';
 import { requestData } from './request-data-decorator.js';
+import { requestBody } from './request-data-decorator.js';
+import { requestField } from './request-data-decorator.js';
+import { requestParam } from './request-data-decorator.js';
+import { requestQuery } from './request-data-decorator.js';
+import { requestCookie } from './request-data-decorator.js';
+import { requestHeader } from './request-data-decorator.js';
+import { requestParams } from './request-data-decorator.js';
+import { requestQueries } from './request-data-decorator.js';
+import { requestHeaders } from './request-data-decorator.js';
+import { requestCookies } from './request-data-decorator.js';
 import { RequestDataSource } from './request-data-metadata.js';
 import { RequestDataReflector } from './request-data-reflector.js';
 describe('requestData', function () {
+    it('has aliases', function () {
+        expect(requestParams).to.be.instanceOf(Function);
+        expect(requestParam).to.be.instanceOf(Function);
+        expect(requestQueries).to.be.instanceOf(Function);
+        expect(requestQuery).to.be.instanceOf(Function);
+        expect(requestHeaders).to.be.instanceOf(Function);
+        expect(requestHeader).to.be.instanceOf(Function);
+        expect(requestCookies).to.be.instanceOf(Function);
+        expect(requestCookie).to.be.instanceOf(Function);
+        expect(requestField).to.be.instanceOf(Function);
+        expect(requestBody).to.be.instanceOf(Function);
+    });
     it('sets given options to the target metadata', function () {
         const options = {
             source: RequestDataSource.BODY,
@@ -53,7 +65,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, params()),
+                    __param(0, requestParams()),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -71,7 +83,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, queries()),
+                    __param(0, requestQueries()),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -89,7 +101,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, headers()),
+                    __param(0, requestHeaders()),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -107,7 +119,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, cookies()),
+                    __param(0, requestCookies()),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -125,7 +137,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, body()),
+                    __param(0, requestBody()),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -141,7 +153,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, body(DataType.STRING)),
+                    __param(0, requestBody(DataType.STRING)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -158,7 +170,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, body(schema)),
+                    __param(0, requestBody(schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -178,7 +190,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, param('myPropertyKey')),
+                    __param(0, requestParam('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -197,7 +209,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, param(propertyKey, propertyType)),
+                    __param(0, requestParam(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -226,7 +238,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, param(propertyKey, schema)),
+                    __param(0, requestParam(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -250,7 +262,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, query('myPropertyKey')),
+                    __param(0, requestQuery('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -269,7 +281,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, query(propertyKey, propertyType)),
+                    __param(0, requestQuery(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -298,7 +310,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, query(propertyKey, schema)),
+                    __param(0, requestQuery(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -322,7 +334,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, header('myPropertyKey')),
+                    __param(0, requestHeader('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -341,7 +353,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, header(propertyKey, propertyType)),
+                    __param(0, requestHeader(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -370,7 +382,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, header(propertyKey, schema)),
+                    __param(0, requestHeader(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -394,7 +406,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, cookie('myPropertyKey')),
+                    __param(0, requestCookie('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -413,7 +425,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, cookie(propertyKey, propertyType)),
+                    __param(0, requestCookie(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -442,7 +454,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, cookie(propertyKey, schema)),
+                    __param(0, requestCookie(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -466,7 +478,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, field('myPropertyKey')),
+                    __param(0, requestField('myPropertyKey')),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -485,7 +497,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, field(propertyKey, propertyType)),
+                    __param(0, requestField(propertyKey, propertyType)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -514,7 +526,7 @@ describe('requestData', function () {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, field(propertyKey, schema)),
+                    __param(0, requestField(propertyKey, schema)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
