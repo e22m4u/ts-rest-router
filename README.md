@@ -86,10 +86,51 @@ server.listen('8080', '0.0.0.0', () => {
 
 ## Валидация
 
-Для проверки входящих данных используется встроенный модуль
-[@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema).
-Все [декораторы](#декораторы) данных запроса имеют параметр для
-указания типа ожидаемого значения или схему для проверки данных.
+Указанные ниже декораторы используются для инъекции соответствующих параметров
+запроса в качестве аргументов метода контроллера. Каждый из этих декораторов
+имеет параметр `schemaOrType`, в котором указывается тип ожидаемого значения
+или схема для проверки данных.
+
+- `@requestParam(name: string, schemaOrType?: DataSchema | DataType)`  
+  *- извлечение URL параметра по названию;*
+- `@requestQuery(name: string, schemaOrType?: DataSchema | DataType)`  
+  *- извлечение query параметра по названию;*
+- `@requestBody(schemaOrType?: DataSchema | DataType)`  
+  *- извлечение тела запроса;*
+- `@requestField(name: string, schemaOrType?: DataSchema | DataType)`  
+  *- извлечение свойства из тела запроса;*
+- `@requestHeader(name: string, schemaOrType?: DataSchema | DataType)`  
+  *- извлечение заголовка запроса по названию;*
+- `@requestCookie(name: string, schemaOrType?: DataSchema | DataType)`  
+  *- извлечение cookie запроса по названию;*
+
+Проверка входящих данных выполняется встроенным модулем
+[@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema)
+(не требует установки). Ниже приводятся константы для определения допустимых
+типов извлекаемого значения.
+
+- `DataType.ANY` - принимает любой тип
+- `DataType.STRING` - строковые значения
+- `DataType.NUMBER` - числовые значения
+- `DataType.BOOLEAN` - логические значения
+- `DataType.ARRAY` - массивы
+- `DataType.OBJECT` - объекты (не экземпляры)
+
+Для определения дополнительных условий, используется объект `DataSchema`,
+с помощью которого можно определить структуру ожидаемого объекта, допустимые
+элементы массива, функции-валидаторы и другие ограничения входящих данных.
+
+```ts
+type DataSchema = {
+  type: DataType;
+  items?: DataSchema;
+  properties?: {[key: string]: DataSchema};
+  required?: boolean;
+  validate?: CallableValidator | CallableValidator[];
+}
+```
+
+Пример проверки передаваемого объекта методом POST:
 
 ```ts
 import {DataType} from '@e22m4u/ts-rest-router';
