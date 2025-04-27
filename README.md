@@ -127,6 +127,7 @@ type DataSchema = {
   properties?: {[key: string]: DataSchema};
   required?: boolean;
   validate?: CallableValidator | CallableValidator[];
+  default?: unknown;
 }
 ```
 
