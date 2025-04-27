@@ -151,7 +151,7 @@ class UserController {
         name: {                        // схема свойства "name"
           type: DataType.STRING,       // свойство должно содержать строку
           required: true,              // свойство не может содержать undefined или null
-          validate: v => v.length > 2, // проверка длины значения
+          validate: v => v.length > 2, // проверка длины строки
         },
         age: {                         // схема свойства "age"
           type: DataType.NUMBER,       // свойство должно являться числом
