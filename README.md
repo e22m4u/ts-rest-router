@@ -40,7 +40,7 @@ import {requestField} from '@e22m4u/ts-rest-router';
 import {restController} from '@e22m4u/ts-rest-router';
 
 // объявление контроллера
-// и базовый путь /users
+// и базового пути /users
 @restController('users')
 class UserController {
   // объявление метода POST /users/login
