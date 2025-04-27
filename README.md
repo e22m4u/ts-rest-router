@@ -210,16 +210,16 @@ class UserController {
 ```ts
 @restController()
 class UserController {
-  // методы контроллера
+  // ...
 }
 ```
 
-Определение пути контроллера.
+Определение базового пути.
 
 ```ts
-@restController('/users')  // путь контроллера
+@restController('users')
 class UserController {
-  // методы контроллера
+  // ...
 }
 ```
 
@@ -227,12 +227,12 @@ class UserController {
 
 ```ts
 @restController({
-  path: '/api',              // путь контроллера
+  path: 'api',               // базовый путь
   before: [authMiddleware],  // middleware до обработки запроса
   after: [loggerMiddleware], // middleware после обработки запроса
 })
 class UserController {
-  // методы контроллера
+  // ...
 }
 ```
 
@@ -241,9 +241,9 @@ class UserController {
 Определение метода GET.
 
 ```ts
-@restController('/users') // путь контроллера
-class UserController {    // класс контроллера
-  @getAction('/whoAmI')   // маршрут GET /users/whoAmI
+@restController('users')
+class UserController {
+  @getAction('whoAmI')   // маршрут GET /users/whoAmI
   async whoAmI() {
     return {              // если метод возвращает объект,
       name: 'John',       // то результат будет представлен
@@ -256,9 +256,9 @@ class UserController {    // класс контроллера
 Дополнительные параметры декоратора.
 
 ```ts
-@restController('/users')      // путь контроллера
-class UserController {         // класс контроллера
-  @getAction('/whoAmI', {      // маршрут GET /users/whoAmI
+@restController('users')
+class UserController {
+  @getAction('whoAmI', {      // маршрут GET /users/whoAmI
     before: [authMiddleware],  // middleware до обработки запроса
     after: [loggerMiddleware], // middleware после обработки запроса
   })
@@ -278,12 +278,12 @@ class UserController {         // класс контроллера
 ```ts
 import {RequestContext} from '@e22m4u/js-trie-router';
 
-@restController('/users')      // путь контроллера
-class UserController {         // класс контроллера
-  @getAction('/:id')           // маршрут GET /users/:id
+@restController('users')
+class UserController {
+  @getAction(':id')
   findById(
-    @requestContext()          // включениее контекста запроса
-    ctx: RequestContext,       // в качестве параметра метода
+    @requestContext()          // инъекция контекста запроса
+    ctx: RequestContext,       // в качестве аргумента
   ) {
     console.log(ctx.req);      // IncomingMessage
     console.log(ctx.res);      // ServerResponse
