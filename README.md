@@ -39,24 +39,25 @@ import {postAction} from '@e22m4u/ts-rest-router';
 import {requestField} from '@e22m4u/ts-rest-router';
 import {restController} from '@e22m4u/ts-rest-router';
 
-@restController('/users')       // путь контроллера
-class UserController {          // класс контроллера
-  @postAction('/login')         // метод POST /users/login
+// объявление контроллера
+// и базовый путь /users
+@restController('users')
+class UserController {
+  // объявление метода POST /users/login
+  // (использует базовый путь контроллера)
+  @postAction('login')
   async login(
-    @requestField('username', { // поле "username" в теле запроса
-      type: DataType.STRING,    // тип параметра допускает только строки
-      required: true,           // параметр является обязательным
-    })
-    username: string,
-    @requestField('password', { // поле "password" в теле запроса
-      type: DataType.STRING,    // тип параметра допускает только строки
-      required: true,           // параметр является обязательным
-    })
-    password: string,
+    // инъекция значений указанных полей
+    // извлеизвлекаемых из тела запроса
+    @requestField('username') username?: string,
+    @requestField('password') password?: string,
   ) {
-    return {                  // если метод возвращает объект,
-      id: '123',              // то результат будет представлен как
-      firstName: 'John',      // "Content-Type: application/json"
+    // так как метод возвращает объект,
+    // результат будет представлен как
+    // "Content-Type: application/json"
+    return {
+      id: 1,
+      firstName: 'John',
       lastName: 'Doe',
     };
   }
@@ -87,8 +88,8 @@ server.listen('8080', '0.0.0.0', () => {
 ## Валидация
 
 Указанные ниже декораторы используются для инъекции соответствующих параметров
-запроса в качестве аргументов метода контроллера. Каждый из этих декораторов
-имеет параметр `schemaOrType`, в котором указывается тип ожидаемого значения
+запроса в качестве аргументов метода контроллера. Каждый из указанных декораторов
+имеет параметр `schemaOrType`, в котором определяется тип ожидаемого значения
 или схема для проверки данных.
 
 - `@requestParam(name: string, schemaOrType?: DataSchema | DataType)`  
