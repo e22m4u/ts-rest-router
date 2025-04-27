@@ -84,6 +84,48 @@ server.listen('8080', '0.0.0.0', () => {
 });
 ```
 
+## Валидация
+
+Для валидации входящих данных используется встроенный модуль
+[@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema#dataschema).
+Все [декораторы](#декораторы) для извлечения данных запроса имеют параметр для
+указания типа ожидаемого значения или схему данных.
+
+```ts
+import {DataType} from '@e22m4u/ts-rest-router';
+import {getAction} from '@e22m4u/ts-rest-router';
+import {postAction} from '@e22m4u/ts-rest-router';
+import {requestField} from '@e22m4u/ts-rest-router';
+import {restController} from '@e22m4u/ts-rest-router';
+
+@restController('users')
+class UserController {
+  @postAction()                        // POST /users
+  async create(
+    @requestBody({                     // декоратор тела запроса
+      type: DataType.OBJECT,           // в теле запроса ожидается объект
+      properties: {
+        name: {                        // схема свойства "name"
+          type: DataType.STRING,       // свойство должно содержать строку
+          required: true,              // свойство не может содержать undefined или null
+          validate: v => v.length > 2, // проверка длины значения
+        },
+        age: {                         // схема свойства "age"
+          type: DataType.NUMBER,       // свойство должно являться числом
+        }
+      },
+    })
+    body: {name: string, age?: number},
+  ) {
+    return {
+      id: 1,
+      name: body.name,
+      age: body.age,
+    };
+  }
+}
+```
+
 ## Декораторы
 
 Контроллер и методы:
