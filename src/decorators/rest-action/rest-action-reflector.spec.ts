@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {describe} from 'mocha';
 import {Reflector} from '@e22m4u/ts-reflector';
 import {HttpMethod} from '@e22m4u/js-trie-router';
 import {RestActionReflector} from './rest-action-reflector.js';

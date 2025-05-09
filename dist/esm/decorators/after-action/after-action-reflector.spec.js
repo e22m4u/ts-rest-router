@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { describe } from 'mocha';
 import { Reflector } from '@e22m4u/ts-reflector';
 import { AfterActionReflector } from './after-action-reflector.js';
 import { AFTER_ACTION_METADATA_KEY } from './after-action-metadata.js';

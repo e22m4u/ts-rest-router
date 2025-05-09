@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {describe} from 'mocha';
 import {Reflector} from '@e22m4u/ts-reflector';
 import {RestControllerReflector} from './rest-controller-reflector.js';
 import {REST_CONTROLLER_METADATA_KEY} from './rest-controller-metadata.js';

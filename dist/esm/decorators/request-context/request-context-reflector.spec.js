@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { describe } from 'mocha';
 import { Reflector } from '@e22m4u/ts-reflector';
 import { RequestContextReflector } from './request-context-reflector.js';
 import { REQUEST_CONTEXT_METADATA_KEY } from './request-context-metadata.js';
