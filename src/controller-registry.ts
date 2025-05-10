@@ -14,6 +14,7 @@ import {DebuggableService} from './debuggable-service.js';
 import {RestActionReflector} from './decorators/index.js';
 import {RequestDataReflector} from './decorators/index.js';
 import {AfterActionReflector} from './decorators/index.js';
+import {DefaultValuesApplier} from '@e22m4u/ts-data-schema';
 import {BeforeActionReflector} from './decorators/index.js';
 import {RestControllerReflector} from './decorators/index.js';
 import {RequestContextReflector} from './decorators/index.js';
@@ -381,6 +382,7 @@ export class ControllerRegistry extends DebuggableService {
       actionName,
     );
     const argsNumber = controllerCtor.prototype[actionName].length;
+    const defaultsApplier = this.getService(DefaultValuesApplier);
     const dataTypeCaster = this.getService(DataTypeCaster);
     const dataValidator = this.getService(DataValidator);
     return (requestContext: RequestContext) => {
@@ -445,20 +447,27 @@ export class ControllerRegistry extends DebuggableService {
                 break;
             }
             debug('Request data source is %v.', requestDataMd.source);
-            // при наличии схемы данных выполняется
-            // их конвертация и валидация
+            // при наличии схемы данных применяются значения
+            // по умолчанию, выполняется конвертация входящего
+            // значения и валидация согласно схеме
             if (requestDataMd.schema) {
+              data = defaultsApplier.applyDefaultValuesIfNeeded(
+                data,
+                requestDataMd.schema,
+                requestDataMd.source,
+              );
+              debug('Default values applied.');
               data = dataTypeCaster.cast(data, requestDataMd.schema, {
                 noTypeCastError: true,
                 sourcePath: requestDataMd.source,
               });
-              debug('Data type casting is passed.');
+              debug('Data type casting applied.');
               dataValidator.validate(
                 data,
                 requestDataMd.schema,
                 requestDataMd.source,
               );
-              debug('Data validation is passed.');
+              debug('Data validation passed.');
             }
             // если свойство данных не определено,
             // то используем весь объекта данных

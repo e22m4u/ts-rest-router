@@ -1,32 +1,38 @@
 /* eslint mocha/no-sibling-hooks: 0 */
+import {
+  createRequestMock,
+  createResponseMock,
+  HookName,
+  HttpMethod,
+  ParsedCookie,
+  ParsedHeaders,
+  ParsedParams,
+  ParsedQuery,
+  RequestContext,
+  RequestParser,
+  RouteRegistry,
+  TrieRouter,
+} from '@e22m4u/js-trie-router';
+import {
+  afterAction,
+  beforeAction,
+  getAction,
+  postAction,
+  requestBody,
+  requestCookie,
+  requestCookies,
+  requestField,
+  requestHeader,
+  requestHeaders,
+  requestParam,
+  requestParams,
+  requestQueries,
+  requestQuery,
+  restController,
+} from './decorators/index.js';
+
 import {expect} from 'chai';
-import {HookName} from '@e22m4u/js-trie-router';
-import {getAction} from './decorators/index.js';
-import {postAction} from './decorators/index.js';
-import {TrieRouter} from '@e22m4u/js-trie-router';
-import {HttpMethod} from '@e22m4u/js-trie-router';
-import {requestBody} from './decorators/index.js';
-import {afterAction} from './decorators/index.js';
-import {requestQuery} from './decorators/index.js';
-import {requestParam} from './decorators/index.js';
-import {requestField} from './decorators/index.js';
-import {beforeAction} from './decorators/index.js';
-import {ParsedQuery} from '@e22m4u/js-trie-router';
-import {ParsedCookie} from '@e22m4u/js-trie-router';
-import {ParsedParams} from '@e22m4u/js-trie-router';
-import {requestCookie} from './decorators/index.js';
-import {requestParams} from './decorators/index.js';
-import {requestHeader} from './decorators/index.js';
-import {requestCookies} from './decorators/index.js';
-import {requestQueries} from './decorators/index.js';
-import {requestHeaders} from './decorators/index.js';
-import {restController} from './decorators/index.js';
-import {ParsedHeaders} from '@e22m4u/js-trie-router';
-import {RouteRegistry} from '@e22m4u/js-trie-router';
-import {RequestParser} from '@e22m4u/js-trie-router';
-import {RequestContext} from '@e22m4u/js-trie-router';
-import {createRequestMock} from '@e22m4u/js-trie-router';
-import {createResponseMock} from '@e22m4u/js-trie-router';
+import {DataType} from '@e22m4u/ts-data-schema';
 import {ControllerRegistry} from './controller-registry.js';
 
 const PRE_HANDLER_1 = () => undefined;
@@ -909,6 +915,58 @@ describe('ControllerRegistry', function () {
       expect(S.hasController(MyController)).to.be.false;
       S.addController(MyController);
       expect(S.hasController(MyController)).to.be.true;
+    });
+  });
+
+  describe('createRouteHandler', function () {
+    it('uses default values from schema as copy', async function () {
+      let invoked = false;
+      const defaultValue = {foo: 'bar'};
+      class MyController {
+        myAction(
+          @requestBody({
+            type: DataType.OBJECT,
+            default: defaultValue,
+          })
+          body: object,
+        ) {
+          expect(body).to.be.not.eq(defaultValue);
+          expect(body).to.be.eql(defaultValue);
+          invoked = true;
+        }
+      }
+      const S = new ControllerRegistry();
+      const req = createRequestMock();
+      const res = createResponseMock();
+      const ctx = new RequestContext(S.container, req, res);
+      const handler = S['createRouteHandler'](MyController, 'myAction');
+      await handler(ctx);
+      expect(invoked).to.be.true;
+    });
+
+    it('uses default values from factory function that defined in schema as copy', async function () {
+      let invoked = false;
+      const defaultValue = {foo: 'bar'};
+      class MyController {
+        myAction(
+          @requestBody({
+            type: DataType.OBJECT,
+            default: () => defaultValue,
+          })
+          body: object,
+        ) {
+          expect(body).to.be.not.eq(defaultValue);
+          expect(body).to.be.eql(defaultValue);
+          invoked = true;
+        }
+      }
+      const S = new ControllerRegistry();
+      const req = createRequestMock();
+      const res = createResponseMock();
+      const ctx = new RequestContext(S.container, req, res);
+      const handler = S['createRouteHandler'](MyController, 'myAction');
+      await handler(ctx);
+      expect(invoked).to.be.true;
     });
   });
 });

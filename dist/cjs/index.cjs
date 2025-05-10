@@ -548,6 +548,7 @@ function httpResponse() {
 __name(httpResponse, "httpResponse");
 
 // dist/esm/controller-registry.js
+var import_ts_data_schema4 = require("@e22m4u/ts-data-schema");
 var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   /**
    * Controllers.
@@ -828,6 +829,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     const requestContextMetadataMap = RequestContextReflector.getMetadata(controllerCtor, actionName);
     const requestDataMetadataMap = RequestDataReflector.getMetadata(controllerCtor, actionName);
     const argsNumber = controllerCtor.prototype[actionName].length;
+    const defaultsApplier = this.getService(import_ts_data_schema4.DefaultValuesApplier);
     const dataTypeCaster = this.getService(import_ts_data_schema3.DataTypeCaster);
     const dataValidator = this.getService(import_ts_data_schema2.DataValidator);
     return (requestContext2) => {
@@ -872,13 +874,15 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
           }
           debug("Request data source is %v.", requestDataMd.source);
           if (requestDataMd.schema) {
+            data = defaultsApplier.applyDefaultValuesIfNeeded(data, requestDataMd.schema, requestDataMd.source);
+            debug("Default values applied.");
             data = dataTypeCaster.cast(data, requestDataMd.schema, {
               noTypeCastError: true,
               sourcePath: requestDataMd.source
             });
-            debug("Data type casting is passed.");
+            debug("Data type casting applied.");
             dataValidator.validate(data, requestDataMd.schema, requestDataMd.source);
-            debug("Data validation is passed.");
+            debug("Data validation passed.");
           }
           if (requestDataMd.property == null) {
             debug("Request data property is not specified.");
