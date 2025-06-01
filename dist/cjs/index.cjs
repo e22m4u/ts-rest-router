@@ -29,11 +29,13 @@ __export(index_exports, {
   NotAControllerError: () => NotAControllerError,
   REQUEST_CONTEXT_METADATA_KEY: () => REQUEST_CONTEXT_METADATA_KEY,
   REQUEST_DATA_METADATA_KEY: () => REQUEST_DATA_METADATA_KEY,
+  RESPONSE_BODY_METADATA_KEY: () => RESPONSE_BODY_METADATA_KEY,
   REST_ACTIONS_METADATA_KEY: () => REST_ACTIONS_METADATA_KEY,
   REST_CONTROLLER_METADATA_KEY: () => REST_CONTROLLER_METADATA_KEY,
   RequestContextReflector: () => RequestContextReflector,
   RequestDataReflector: () => RequestDataReflector,
   RequestDataSource: () => RequestDataSource,
+  ResponseBodyReflector: () => ResponseBodyReflector,
   RestActionReflector: () => RestActionReflector,
   RestControllerReflector: () => RestControllerReflector,
   RestRouter: () => RestRouter,
@@ -60,6 +62,7 @@ __export(index_exports, {
   requestParams: () => requestParams,
   requestQueries: () => requestQueries,
   requestQuery: () => requestQuery,
+  responseBody: () => responseBody,
   restAction: () => restAction,
   restController: () => restController,
   toCamelCase: () => toCamelCase
@@ -281,11 +284,11 @@ var RequestDataReflector = _RequestDataReflector;
 
 // dist/esm/decorators/request-data/request-data-decorator.js
 function requestData(options) {
-  return function(target, propertyKey, indexOrDescriptor) {
-    const decoratorType = (0, import_ts_reflector8.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
+  return function(target, propertyKey, index) {
+    const decoratorType = (0, import_ts_reflector8.getDecoratorTargetType)(target, propertyKey, index);
     if (decoratorType !== import_ts_reflector7.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error("@requestData decorator is only supported on an instance method parameter.");
-    RequestDataReflector.setMetadata(options, target.constructor, indexOrDescriptor, propertyKey);
+    RequestDataReflector.setMetadata(options, target.constructor, index, propertyKey);
   };
 }
 __name(requestData, "requestData");
@@ -437,16 +440,70 @@ function beforeAction(middleware) {
 }
 __name(beforeAction, "beforeAction");
 
-// dist/esm/decorators/rest-controller/rest-controller-metadata.js
+// dist/esm/decorators/response-body/response-body-metadata.js
 var import_ts_reflector17 = require("@e22m4u/ts-reflector");
-var REST_CONTROLLER_METADATA_KEY = new import_ts_reflector17.MetadataKey("restControllerMetadataKey");
+var RESPONSE_BODY_METADATA_KEY = new import_ts_reflector17.MetadataKey("responseBodyMetadataKey");
 
-// dist/esm/decorators/rest-controller/rest-controller-decorator.js
+// dist/esm/decorators/response-body/response-body-decorator.js
 var import_ts_reflector19 = require("@e22m4u/ts-reflector");
 var import_ts_reflector20 = require("@e22m4u/ts-reflector");
 
-// dist/esm/decorators/rest-controller/rest-controller-reflector.js
+// dist/esm/decorators/response-body/response-body-reflector.js
 var import_ts_reflector18 = require("@e22m4u/ts-reflector");
+var _ResponseBodyReflector = class _ResponseBodyReflector {
+  /**
+   * Set metadata.
+   *
+   * @param metadata
+   * @param target
+   * @param propertyKey
+   */
+  static setMetadata(metadata, target, propertyKey) {
+    const oldMap = import_ts_reflector18.Reflector.getOwnMetadata(RESPONSE_BODY_METADATA_KEY, target);
+    const newMap = new Map(oldMap);
+    newMap.set(propertyKey, metadata);
+    import_ts_reflector18.Reflector.defineMetadata(RESPONSE_BODY_METADATA_KEY, newMap, target);
+  }
+  /**
+   * Get metadata.
+   *
+   * @param target
+   */
+  static getMetadata(target) {
+    const metadata = import_ts_reflector18.Reflector.getOwnMetadata(RESPONSE_BODY_METADATA_KEY, target);
+    return metadata ?? /* @__PURE__ */ new Map();
+  }
+};
+__name(_ResponseBodyReflector, "ResponseBodyReflector");
+var ResponseBodyReflector = _ResponseBodyReflector;
+
+// dist/esm/decorators/response-body/response-body-decorator.js
+function responseBody(schemaOrType) {
+  return function(target, propertyKey, descriptor) {
+    const decoratorType = (0, import_ts_reflector20.getDecoratorTargetType)(target, propertyKey, descriptor);
+    if (decoratorType !== import_ts_reflector19.DecoratorTargetType.INSTANCE_METHOD)
+      throw new Error("@responseBody decorator is only supported on an instance method.");
+    let schema;
+    if (typeof schemaOrType === "object") {
+      schema = schemaOrType;
+    } else if (typeof schemaOrType === "string") {
+      schema = { type: schemaOrType };
+    }
+    ResponseBodyReflector.setMetadata(schema ? { schema } : {}, target.constructor, propertyKey);
+  };
+}
+__name(responseBody, "responseBody");
+
+// dist/esm/decorators/rest-controller/rest-controller-metadata.js
+var import_ts_reflector21 = require("@e22m4u/ts-reflector");
+var REST_CONTROLLER_METADATA_KEY = new import_ts_reflector21.MetadataKey("restControllerMetadataKey");
+
+// dist/esm/decorators/rest-controller/rest-controller-decorator.js
+var import_ts_reflector23 = require("@e22m4u/ts-reflector");
+var import_ts_reflector24 = require("@e22m4u/ts-reflector");
+
+// dist/esm/decorators/rest-controller/rest-controller-reflector.js
+var import_ts_reflector22 = require("@e22m4u/ts-reflector");
 var _RestControllerReflector = class _RestControllerReflector {
   /**
    * Set metadata.
@@ -455,7 +512,7 @@ var _RestControllerReflector = class _RestControllerReflector {
    * @param target
    */
   static setMetadata(metadata, target) {
-    return import_ts_reflector18.Reflector.defineMetadata(REST_CONTROLLER_METADATA_KEY, metadata, target);
+    return import_ts_reflector22.Reflector.defineMetadata(REST_CONTROLLER_METADATA_KEY, metadata, target);
   }
   /**
    * Get metadata.
@@ -463,7 +520,7 @@ var _RestControllerReflector = class _RestControllerReflector {
    * @param target
    */
   static getMetadata(target) {
-    return import_ts_reflector18.Reflector.getOwnMetadata(REST_CONTROLLER_METADATA_KEY, target);
+    return import_ts_reflector22.Reflector.getOwnMetadata(REST_CONTROLLER_METADATA_KEY, target);
   }
 };
 __name(_RestControllerReflector, "RestControllerReflector");
@@ -472,8 +529,8 @@ var RestControllerReflector = _RestControllerReflector;
 // dist/esm/decorators/rest-controller/rest-controller-decorator.js
 function restController(pathOrOptions, options) {
   return function(target) {
-    const decoratorType = (0, import_ts_reflector20.getDecoratorTargetType)(target);
-    if (decoratorType !== import_ts_reflector19.DecoratorTargetType.CONSTRUCTOR)
+    const decoratorType = (0, import_ts_reflector24.getDecoratorTargetType)(target);
+    if (decoratorType !== import_ts_reflector23.DecoratorTargetType.CONSTRUCTOR)
       throw new Error("@restController decorator is only supported on a class.");
     if (typeof pathOrOptions === "string") {
       if (!options) {
@@ -490,15 +547,15 @@ function restController(pathOrOptions, options) {
 __name(restController, "restController");
 
 // dist/esm/decorators/request-context/request-context-metadata.js
-var import_ts_reflector21 = require("@e22m4u/ts-reflector");
-var REQUEST_CONTEXT_METADATA_KEY = new import_ts_reflector21.MetadataKey("requestContextMetadataKey");
+var import_ts_reflector25 = require("@e22m4u/ts-reflector");
+var REQUEST_CONTEXT_METADATA_KEY = new import_ts_reflector25.MetadataKey("requestContextMetadataKey");
 
 // dist/esm/decorators/request-context/request-context-decorator.js
-var import_ts_reflector23 = require("@e22m4u/ts-reflector");
-var import_ts_reflector24 = require("@e22m4u/ts-reflector");
+var import_ts_reflector27 = require("@e22m4u/ts-reflector");
+var import_ts_reflector28 = require("@e22m4u/ts-reflector");
 
 // dist/esm/decorators/request-context/request-context-reflector.js
-var import_ts_reflector22 = require("@e22m4u/ts-reflector");
+var import_ts_reflector26 = require("@e22m4u/ts-reflector");
 var _RequestContextReflector = class _RequestContextReflector {
   /**
    * Set metadata.
@@ -509,10 +566,10 @@ var _RequestContextReflector = class _RequestContextReflector {
    * @param propertyKey
    */
   static setMetadata(metadata, target, index, propertyKey) {
-    const oldMap = import_ts_reflector22.Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, target, propertyKey);
+    const oldMap = import_ts_reflector26.Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, target, propertyKey);
     const newMap = new Map(oldMap);
     newMap.set(index, metadata);
-    import_ts_reflector22.Reflector.defineMetadata(REQUEST_CONTEXT_METADATA_KEY, newMap, target, propertyKey);
+    import_ts_reflector26.Reflector.defineMetadata(REQUEST_CONTEXT_METADATA_KEY, newMap, target, propertyKey);
   }
   /**
    * Get metadata.
@@ -521,7 +578,7 @@ var _RequestContextReflector = class _RequestContextReflector {
    * @param propertyKey
    */
   static getMetadata(target, propertyKey) {
-    const metadata = import_ts_reflector22.Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, target, propertyKey);
+    const metadata = import_ts_reflector26.Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, target, propertyKey);
     return metadata ?? /* @__PURE__ */ new Map();
   }
 };
@@ -531,8 +588,8 @@ var RequestContextReflector = _RequestContextReflector;
 // dist/esm/decorators/request-context/request-context-decorator.js
 function requestContext(propertyName) {
   return function(target, propertyKey, indexOrDescriptor) {
-    const decoratorType = (0, import_ts_reflector24.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
-    if (decoratorType !== import_ts_reflector23.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
+    const decoratorType = (0, import_ts_reflector28.getDecoratorTargetType)(target, propertyKey, indexOrDescriptor);
+    if (decoratorType !== import_ts_reflector27.DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error("@requestContext decorator is only supported on an instance method parameter.");
     RequestContextReflector.setMetadata({ property: propertyName }, target.constructor, indexOrDescriptor, propertyKey);
   };
@@ -938,11 +995,13 @@ var RestRouter = _RestRouter;
   NotAControllerError,
   REQUEST_CONTEXT_METADATA_KEY,
   REQUEST_DATA_METADATA_KEY,
+  RESPONSE_BODY_METADATA_KEY,
   REST_ACTIONS_METADATA_KEY,
   REST_CONTROLLER_METADATA_KEY,
   RequestContextReflector,
   RequestDataReflector,
   RequestDataSource,
+  ResponseBodyReflector,
   RestActionReflector,
   RestControllerReflector,
   RestRouter,
@@ -969,6 +1028,7 @@ var RestRouter = _RestRouter;
   requestParams,
   requestQueries,
   requestQuery,
+  responseBody,
   restAction,
   restController,
   toCamelCase

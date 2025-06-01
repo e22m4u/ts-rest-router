@@ -9,12 +9,12 @@ import { RequestDataReflector } from './request-data-reflector.js';
  * @param options
  */
 export function requestData(options) {
-    return function (target, propertyKey, indexOrDescriptor) {
-        const decoratorType = getDecoratorTargetType(target, propertyKey, indexOrDescriptor);
+    return function (target, propertyKey, index) {
+        const decoratorType = getDecoratorTargetType(target, propertyKey, index);
         if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
             throw new Error('@requestData decorator is only supported ' +
                 'on an instance method parameter.');
-        RequestDataReflector.setMetadata(options, target.constructor, indexOrDescriptor, propertyKey);
+        RequestDataReflector.setMetadata(options, target.constructor, index, propertyKey);
     };
 }
 /**

@@ -20,16 +20,8 @@ export type RequestDataOptions = RequestDataMetadata;
  * @param options
  */
 export function requestData<T extends object>(options: RequestDataOptions) {
-  return function (
-    target: Prototype<T>,
-    propertyKey: string,
-    indexOrDescriptor: number,
-  ) {
-    const decoratorType = getDecoratorTargetType(
-      target,
-      propertyKey,
-      indexOrDescriptor,
-    );
+  return function (target: Prototype<T>, propertyKey: string, index: number) {
+    const decoratorType = getDecoratorTargetType(target, propertyKey, index);
     if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD_PARAMETER)
       throw new Error(
         '@requestData decorator is only supported ' +
@@ -38,7 +30,7 @@ export function requestData<T extends object>(options: RequestDataOptions) {
     RequestDataReflector.setMetadata(
       options,
       target.constructor as Constructor<T>,
-      indexOrDescriptor,
+      index,
       propertyKey,
     );
   };
