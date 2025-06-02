@@ -35,7 +35,7 @@ export class ControllerRegistry extends DebuggableService {
   /**
    * Controllers.
    */
-  controllers = new Set();
+  controllers: Set<Constructor<object>> = new Set();
 
   /**
    * Add controller.

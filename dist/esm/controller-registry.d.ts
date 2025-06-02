@@ -18,7 +18,7 @@ export declare class ControllerRegistry extends DebuggableService {
     /**
      * Controllers.
      */
-    controllers: Set<unknown>;
+    controllers: Set<Constructor<object>>;
     /**
      * Add controller.
      *
