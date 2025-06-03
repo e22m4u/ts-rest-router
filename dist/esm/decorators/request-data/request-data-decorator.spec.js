@@ -186,11 +186,12 @@ describe('requestData', function () {
     describe('request data piece by a given property key', function () {
         describe('param', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
+                const propertyKey = 'myPropertyKey';
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, requestParam('myPropertyKey')),
+                    __param(0, requestParam(propertyKey)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -198,8 +199,15 @@ describe('requestData', function () {
                 const res = RequestDataReflector.getMetadata(Target, 'myMethod');
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.PARAMS,
-                    schema: { type: DataType.OBJECT },
-                    property: 'myPropertyKey',
+                    schema: {
+                        type: DataType.OBJECT,
+                        properties: {
+                            [propertyKey]: {
+                                type: DataType.ANY,
+                            },
+                        },
+                    },
+                    property: propertyKey,
                 });
             });
             it('sets a given DataType as property type', function () {
@@ -258,11 +266,12 @@ describe('requestData', function () {
         });
         describe('query', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
+                const propertyKey = 'myPropertyKey';
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, requestQuery('myPropertyKey')),
+                    __param(0, requestQuery(propertyKey)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -270,8 +279,15 @@ describe('requestData', function () {
                 const res = RequestDataReflector.getMetadata(Target, 'myMethod');
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.QUERY,
-                    schema: { type: DataType.OBJECT },
-                    property: 'myPropertyKey',
+                    schema: {
+                        type: DataType.OBJECT,
+                        properties: {
+                            [propertyKey]: {
+                                type: DataType.ANY,
+                            },
+                        },
+                    },
+                    property: propertyKey,
                 });
             });
             it('sets a given DataType as property type', function () {
@@ -330,11 +346,12 @@ describe('requestData', function () {
         });
         describe('header', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
+                const propertyKey = 'myPropertyKey';
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, requestHeader('myPropertyKey')),
+                    __param(0, requestHeader(propertyKey)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -342,8 +359,15 @@ describe('requestData', function () {
                 const res = RequestDataReflector.getMetadata(Target, 'myMethod');
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.HEADERS,
-                    schema: { type: DataType.OBJECT },
-                    property: 'myPropertyKey',
+                    schema: {
+                        type: DataType.OBJECT,
+                        properties: {
+                            [propertyKey]: {
+                                type: DataType.ANY,
+                            },
+                        },
+                    },
+                    property: propertyKey,
                 });
             });
             it('sets a given DataType as property type', function () {
@@ -402,11 +426,12 @@ describe('requestData', function () {
         });
         describe('cookie', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
+                const propertyKey = 'myPropertyKey';
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, requestCookie('myPropertyKey')),
+                    __param(0, requestCookie(propertyKey)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -414,8 +439,15 @@ describe('requestData', function () {
                 const res = RequestDataReflector.getMetadata(Target, 'myMethod');
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.COOKIE,
-                    schema: { type: DataType.OBJECT },
-                    property: 'myPropertyKey',
+                    schema: {
+                        type: DataType.OBJECT,
+                        properties: {
+                            [propertyKey]: {
+                                type: DataType.ANY,
+                            },
+                        },
+                    },
+                    property: propertyKey,
                 });
             });
             it('sets a given DataType as property type', function () {
@@ -474,11 +506,12 @@ describe('requestData', function () {
         });
         describe('field', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
+                const propertyKey = 'myPropertyKey';
                 class Target {
                     myMethod(prop) { }
                 }
                 __decorate([
-                    __param(0, requestField('myPropertyKey')),
+                    __param(0, requestField(propertyKey)),
                     __metadata("design:type", Function),
                     __metadata("design:paramtypes", [Object]),
                     __metadata("design:returntype", void 0)
@@ -486,8 +519,15 @@ describe('requestData', function () {
                 const res = RequestDataReflector.getMetadata(Target, 'myMethod');
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.BODY,
-                    schema: { type: DataType.OBJECT },
-                    property: 'myPropertyKey',
+                    schema: {
+                        type: DataType.OBJECT,
+                        properties: {
+                            [propertyKey]: {
+                                type: DataType.ANY,
+                            },
+                        },
+                    },
+                    property: propertyKey,
                 });
             });
             it('sets a given DataType as property type', function () {

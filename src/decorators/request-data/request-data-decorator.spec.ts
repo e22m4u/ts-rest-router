@@ -160,17 +160,25 @@ describe('requestData', function () {
   describe('request data piece by a given property key', function () {
     describe('param', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
+        const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @requestParam('myPropertyKey')
+            @requestParam(propertyKey)
             prop: unknown,
           ) {}
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.PARAMS,
-          schema: {type: DataType.OBJECT},
-          property: 'myPropertyKey',
+          schema: {
+            type: DataType.OBJECT,
+            properties: {
+              [propertyKey]: {
+                type: DataType.ANY,
+              },
+            },
+          },
+          property: propertyKey,
         });
       });
 
@@ -226,17 +234,25 @@ describe('requestData', function () {
 
     describe('query', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
+        const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @requestQuery('myPropertyKey')
+            @requestQuery(propertyKey)
             prop: unknown,
           ) {}
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.QUERY,
-          schema: {type: DataType.OBJECT},
-          property: 'myPropertyKey',
+          schema: {
+            type: DataType.OBJECT,
+            properties: {
+              [propertyKey]: {
+                type: DataType.ANY,
+              },
+            },
+          },
+          property: propertyKey,
         });
       });
 
@@ -292,17 +308,25 @@ describe('requestData', function () {
 
     describe('header', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
+        const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @requestHeader('myPropertyKey')
+            @requestHeader(propertyKey)
             prop: unknown,
           ) {}
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.HEADERS,
-          schema: {type: DataType.OBJECT},
-          property: 'myPropertyKey',
+          schema: {
+            type: DataType.OBJECT,
+            properties: {
+              [propertyKey]: {
+                type: DataType.ANY,
+              },
+            },
+          },
+          property: propertyKey,
         });
       });
 
@@ -358,17 +382,25 @@ describe('requestData', function () {
 
     describe('cookie', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
+        const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @requestCookie('myPropertyKey')
+            @requestCookie(propertyKey)
             prop: unknown,
           ) {}
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.COOKIE,
-          schema: {type: DataType.OBJECT},
-          property: 'myPropertyKey',
+          schema: {
+            type: DataType.OBJECT,
+            properties: {
+              [propertyKey]: {
+                type: DataType.ANY,
+              },
+            },
+          },
+          property: propertyKey,
         });
       });
 
@@ -424,17 +456,25 @@ describe('requestData', function () {
 
     describe('field', function () {
       it('sets a given "propertyKey" to the target metadata', function () {
+        const propertyKey = 'myPropertyKey';
         class Target {
           myMethod(
-            @requestField('myPropertyKey')
+            @requestField(propertyKey)
             prop: unknown,
           ) {}
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.BODY,
-          schema: {type: DataType.OBJECT},
-          property: 'myPropertyKey',
+          schema: {
+            type: DataType.OBJECT,
+            properties: {
+              [propertyKey]: {
+                type: DataType.ANY,
+              },
+            },
+          },
+          property: propertyKey,
         });
       });
 

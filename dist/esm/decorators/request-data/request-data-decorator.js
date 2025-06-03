@@ -45,6 +45,10 @@ function createRequestDataPropertyDecoratorWithSource(source) {
             properties[propertyKey] = { type: schemaOrType };
             rootSchema.properties = properties;
         }
+        else {
+            properties[propertyKey] = { type: DataType.ANY };
+            rootSchema.properties = properties;
+        }
         return requestData({
             source: source,
             schema: rootSchema,

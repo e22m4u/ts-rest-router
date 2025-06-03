@@ -309,6 +309,9 @@ function createRequestDataPropertyDecoratorWithSource(source) {
     } else if (typeof schemaOrType === "string") {
       properties[propertyKey] = { type: schemaOrType };
       rootSchema.properties = properties;
+    } else {
+      properties[propertyKey] = { type: import_ts_data_schema.DataType.ANY };
+      rootSchema.properties = properties;
     }
     return requestData({
       source,
