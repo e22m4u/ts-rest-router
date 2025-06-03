@@ -293,8 +293,15 @@ function requestData(options) {
 }
 __name(requestData, "requestData");
 function createRequestDataDecoratorWithSource(source) {
-  return function() {
-    const schema = { type: import_ts_data_schema.DataType.OBJECT };
+  return function(schemaOrType) {
+    let schema;
+    if (typeof schemaOrType === "object") {
+      schema = schemaOrType;
+    } else if (typeof schemaOrType === "string") {
+      schema = { type: schemaOrType };
+    } else {
+      schema = { type: import_ts_data_schema.DataType.ANY };
+    }
     return requestData({ schema, source });
   };
 }
@@ -329,19 +336,8 @@ var requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEAD
 var requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
 var requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
 var requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+var requestBody = createRequestDataDecoratorWithSource(RequestDataSource.BODY);
 var requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
-function requestBody(schemaOrType) {
-  let schema;
-  if (typeof schemaOrType === "object") {
-    schema = schemaOrType;
-  } else if (typeof schemaOrType === "string") {
-    schema = { type: schemaOrType };
-  } else {
-    schema = { type: import_ts_data_schema.DataType.ANY };
-  }
-  return requestData({ schema, source: RequestDataSource.BODY });
-}
-__name(requestBody, "requestBody");
 
 // dist/esm/decorators/after-action/after-action-metadata.js
 var import_ts_reflector9 = require("@e22m4u/ts-reflector");

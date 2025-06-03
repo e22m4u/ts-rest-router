@@ -42,8 +42,15 @@ export function requestData<T extends object>(options: RequestDataOptions) {
  * @param source
  */
 function createRequestDataDecoratorWithSource(source: RequestDataSource) {
-  return function () {
-    const schema = {type: DataType.OBJECT};
+  return function (schemaOrType?: DataSchema | DataType) {
+    let schema: DataSchema;
+    if (typeof schemaOrType === 'object') {
+      schema = schemaOrType;
+    } else if (typeof schemaOrType === 'string') {
+      schema = {type: schemaOrType};
+    } else {
+      schema = {type: DataType.ANY};
+    }
     return requestData({schema, source});
   };
 }
@@ -104,23 +111,9 @@ export const requestCookies = createRequestDataDecoratorWithSource(
 export const requestCookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
+export const requestBody = createRequestDataDecoratorWithSource(
+  RequestDataSource.BODY,
+);
 export const requestField = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,
 );
-
-/**
- * Request body decorator.
- *
- * @param schemaOrType
- */
-export function requestBody(schemaOrType?: DataSchema | DataType) {
-  let schema: DataSchema;
-  if (typeof schemaOrType === 'object') {
-    schema = schemaOrType;
-  } else if (typeof schemaOrType === 'string') {
-    schema = {type: schemaOrType};
-  } else {
-    schema = {type: DataType.ANY};
-  }
-  return requestData({schema, source: RequestDataSource.BODY});
-}

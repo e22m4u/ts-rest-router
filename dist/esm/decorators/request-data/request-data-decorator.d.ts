@@ -15,18 +15,13 @@ export declare function requestData<T extends object>(options: RequestDataOption
 /**
  * Decorator aliases.
  */
-export declare const requestParams: () => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestParams: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
 export declare const requestParam: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestQueries: () => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestQueries: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
 export declare const requestQuery: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestHeaders: () => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestHeaders: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
 export declare const requestHeader: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestCookies: () => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestCookies: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
 export declare const requestCookie: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestBody: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
 export declare const requestField: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-/**
- * Request body decorator.
- *
- * @param schemaOrType
- */
-export declare function requestBody(schemaOrType?: DataSchema | DataType): (target: Prototype<object>, propertyKey: string, index: number) => void;
