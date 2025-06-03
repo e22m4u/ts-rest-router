@@ -62,6 +62,7 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
  */
 function createRequestDataPropertyDecoratorWithSource(
   source: RequestDataSource,
+  defaultType: DataType,
 ) {
   return function (propertyKey: string, schemaOrType?: DataSchema | DataType) {
     const properties = {} as NoUndef<DataSchema['properties']>;
@@ -73,7 +74,7 @@ function createRequestDataPropertyDecoratorWithSource(
       properties[propertyKey] = {type: schemaOrType};
       rootSchema.properties = properties;
     } else {
-      properties[propertyKey] = {type: DataType.ANY};
+      properties[propertyKey] = {type: defaultType};
       rootSchema.properties = properties;
     }
     return requestData({
@@ -92,28 +93,33 @@ export const requestParams = createRequestDataDecoratorWithSource(
 );
 export const requestParam = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.PARAMS,
+  DataType.STRING,
 );
 export const requestQueries = createRequestDataDecoratorWithSource(
   RequestDataSource.QUERY,
 );
 export const requestQuery = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.QUERY,
+  DataType.STRING,
 );
 export const requestHeaders = createRequestDataDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
 export const requestHeader = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.HEADERS,
+  DataType.STRING,
 );
 export const requestCookies = createRequestDataDecoratorWithSource(
   RequestDataSource.COOKIE,
 );
 export const requestCookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
+  DataType.STRING,
 );
 export const requestBody = createRequestDataDecoratorWithSource(
   RequestDataSource.BODY,
 );
 export const requestField = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,
+  DataType.ANY,
 );

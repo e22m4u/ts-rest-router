@@ -306,7 +306,7 @@ function createRequestDataDecoratorWithSource(source) {
   };
 }
 __name(createRequestDataDecoratorWithSource, "createRequestDataDecoratorWithSource");
-function createRequestDataPropertyDecoratorWithSource(source) {
+function createRequestDataPropertyDecoratorWithSource(source, defaultType) {
   return function(propertyKey, schemaOrType) {
     const properties = {};
     const rootSchema = { type: import_ts_data_schema.DataType.OBJECT };
@@ -317,7 +317,7 @@ function createRequestDataPropertyDecoratorWithSource(source) {
       properties[propertyKey] = { type: schemaOrType };
       rootSchema.properties = properties;
     } else {
-      properties[propertyKey] = { type: import_ts_data_schema.DataType.ANY };
+      properties[propertyKey] = { type: defaultType };
       rootSchema.properties = properties;
     }
     return requestData({
@@ -329,15 +329,15 @@ function createRequestDataPropertyDecoratorWithSource(source) {
 }
 __name(createRequestDataPropertyDecoratorWithSource, "createRequestDataPropertyDecoratorWithSource");
 var requestParams = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
-var requestParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+var requestParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS, import_ts_data_schema.DataType.STRING);
 var requestQueries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
-var requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
+var requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY, import_ts_data_schema.DataType.STRING);
 var requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
-var requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+var requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS, import_ts_data_schema.DataType.STRING);
 var requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
-var requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+var requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE, import_ts_data_schema.DataType.STRING);
 var requestBody = createRequestDataDecoratorWithSource(RequestDataSource.BODY);
-var requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
+var requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY, import_ts_data_schema.DataType.ANY);
 
 // dist/esm/decorators/after-action/after-action-metadata.js
 var import_ts_reflector9 = require("@e22m4u/ts-reflector");

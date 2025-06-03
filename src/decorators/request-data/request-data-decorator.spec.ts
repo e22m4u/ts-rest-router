@@ -174,7 +174,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.ANY,
+                type: DataType.STRING,
               },
             },
           },
@@ -248,7 +248,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.ANY,
+                type: DataType.STRING,
               },
             },
           },
@@ -322,7 +322,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.ANY,
+                type: DataType.STRING,
               },
             },
           },
@@ -396,7 +396,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.ANY,
+                type: DataType.STRING,
               },
             },
           },
