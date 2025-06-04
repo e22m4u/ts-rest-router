@@ -21,9 +21,8 @@ export function requestData(options) {
  * Create request data decorator with source.
  *
  * @param source
- * @param defaultType
  */
-function createRequestDataDecoratorWithSource(source, defaultType) {
+function createRequestDataDecoratorWithSource(source) {
     return function (schemaOrType) {
         let schema;
         if (typeof schemaOrType === 'object') {
@@ -33,7 +32,7 @@ function createRequestDataDecoratorWithSource(source, defaultType) {
             schema = { type: schemaOrType };
         }
         else {
-            schema = { type: defaultType };
+            schema = { type: DataType.ANY };
         }
         return requestData({ schema, source });
     };
@@ -42,9 +41,8 @@ function createRequestDataDecoratorWithSource(source, defaultType) {
  * Create request data property decorator with source.
  *
  * @param source
- * @param defaultType
  */
-function createRequestDataPropertyDecoratorWithSource(source, defaultType) {
+function createRequestDataPropertyDecoratorWithSource(source) {
     return function (propertyKey, schemaOrType) {
         const properties = {};
         const rootSchema = { type: DataType.OBJECT };
@@ -57,7 +55,7 @@ function createRequestDataPropertyDecoratorWithSource(source, defaultType) {
             rootSchema.properties = properties;
         }
         else {
-            properties[propertyKey] = { type: defaultType };
+            properties[propertyKey] = { type: DataType.ANY };
             rootSchema.properties = properties;
         }
         return requestData({
@@ -70,13 +68,13 @@ function createRequestDataPropertyDecoratorWithSource(source, defaultType) {
 /**
  * Decorator aliases.
  */
-export const requestParams = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS, DataType.OBJECT);
-export const requestParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS, DataType.STRING);
-export const requestQueries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY, DataType.OBJECT);
-export const requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY, DataType.STRING);
-export const requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS, DataType.OBJECT);
-export const requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS, DataType.STRING);
-export const requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE, DataType.OBJECT);
-export const requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE, DataType.STRING);
-export const requestBody = createRequestDataDecoratorWithSource(RequestDataSource.BODY, DataType.OBJECT);
-export const requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY, DataType.ANY);
+export const requestParams = createRequestDataDecoratorWithSource(RequestDataSource.PARAMS);
+export const requestParam = createRequestDataPropertyDecoratorWithSource(RequestDataSource.PARAMS);
+export const requestQueries = createRequestDataDecoratorWithSource(RequestDataSource.QUERY);
+export const requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
+export const requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
+export const requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
+export const requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
+export const requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+export const requestBody = createRequestDataDecoratorWithSource(RequestDataSource.BODY);
+export const requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);

@@ -58,7 +58,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.PARAMS,
-          schema: {type: DataType.OBJECT},
+          schema: {type: DataType.ANY},
         });
       });
     });
@@ -74,7 +74,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.QUERY,
-          schema: {type: DataType.OBJECT},
+          schema: {type: DataType.ANY},
         });
       });
     });
@@ -90,7 +90,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.HEADERS,
-          schema: {type: DataType.OBJECT},
+          schema: {type: DataType.ANY},
         });
       });
     });
@@ -106,7 +106,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.COOKIE,
-          schema: {type: DataType.OBJECT},
+          schema: {type: DataType.ANY},
         });
       });
     });
@@ -122,7 +122,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.BODY,
-          schema: {type: DataType.OBJECT},
+          schema: {type: DataType.ANY},
         });
       });
 
@@ -174,7 +174,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.STRING,
+                type: DataType.ANY,
               },
             },
           },
@@ -248,7 +248,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.STRING,
+                type: DataType.ANY,
               },
             },
           },
@@ -322,7 +322,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.STRING,
+                type: DataType.ANY,
               },
             },
           },
@@ -396,7 +396,7 @@ describe('requestData', function () {
             type: DataType.OBJECT,
             properties: {
               [propertyKey]: {
-                type: DataType.STRING,
+                type: DataType.ANY,
               },
             },
           },
