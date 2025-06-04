@@ -40,8 +40,12 @@ export function requestData<T extends object>(options: RequestDataOptions) {
  * Create request data decorator with source.
  *
  * @param source
+ * @param defaultType
  */
-function createRequestDataDecoratorWithSource(source: RequestDataSource) {
+function createRequestDataDecoratorWithSource(
+  source: RequestDataSource,
+  defaultType: DataType,
+) {
   return function (schemaOrType?: DataSchema | DataType) {
     let schema: DataSchema;
     if (typeof schemaOrType === 'object') {
@@ -49,7 +53,7 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
     } else if (typeof schemaOrType === 'string') {
       schema = {type: schemaOrType};
     } else {
-      schema = {type: DataType.ANY};
+      schema = {type: defaultType};
     }
     return requestData({schema, source});
   };
@@ -59,6 +63,7 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
  * Create request data property decorator with source.
  *
  * @param source
+ * @param defaultType
  */
 function createRequestDataPropertyDecoratorWithSource(
   source: RequestDataSource,
@@ -90,6 +95,7 @@ function createRequestDataPropertyDecoratorWithSource(
  */
 export const requestParams = createRequestDataDecoratorWithSource(
   RequestDataSource.PARAMS,
+  DataType.OBJECT,
 );
 export const requestParam = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.PARAMS,
@@ -97,6 +103,7 @@ export const requestParam = createRequestDataPropertyDecoratorWithSource(
 );
 export const requestQueries = createRequestDataDecoratorWithSource(
   RequestDataSource.QUERY,
+  DataType.OBJECT,
 );
 export const requestQuery = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.QUERY,
@@ -104,6 +111,7 @@ export const requestQuery = createRequestDataPropertyDecoratorWithSource(
 );
 export const requestHeaders = createRequestDataDecoratorWithSource(
   RequestDataSource.HEADERS,
+  DataType.OBJECT,
 );
 export const requestHeader = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.HEADERS,
@@ -111,6 +119,7 @@ export const requestHeader = createRequestDataPropertyDecoratorWithSource(
 );
 export const requestCookies = createRequestDataDecoratorWithSource(
   RequestDataSource.COOKIE,
+  DataType.OBJECT,
 );
 export const requestCookie = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.COOKIE,
@@ -118,6 +127,7 @@ export const requestCookie = createRequestDataPropertyDecoratorWithSource(
 );
 export const requestBody = createRequestDataDecoratorWithSource(
   RequestDataSource.BODY,
+  DataType.OBJECT,
 );
 export const requestField = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.BODY,

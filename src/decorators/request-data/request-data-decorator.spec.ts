@@ -58,7 +58,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.PARAMS,
-          schema: {type: DataType.ANY},
+          schema: {type: DataType.OBJECT},
         });
       });
     });
@@ -74,7 +74,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.QUERY,
-          schema: {type: DataType.ANY},
+          schema: {type: DataType.OBJECT},
         });
       });
     });
@@ -90,7 +90,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.HEADERS,
-          schema: {type: DataType.ANY},
+          schema: {type: DataType.OBJECT},
         });
       });
     });
@@ -106,7 +106,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.COOKIE,
-          schema: {type: DataType.ANY},
+          schema: {type: DataType.OBJECT},
         });
       });
     });
@@ -122,7 +122,7 @@ describe('requestData', function () {
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
           source: RequestDataSource.BODY,
-          schema: {type: DataType.ANY},
+          schema: {type: DataType.OBJECT},
         });
       });
 
