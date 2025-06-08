@@ -27,7 +27,7 @@ export class DebuggableService extends Service {
     constructor(container) {
         super(container);
         const serviceName = toCamelCase(this.constructor.name);
-        this.debug = createDebugger('tsRestRouter', serviceName);
+        this.debug = createDebugger('tsRestRouter', serviceName).withoutEnvNs();
         const debug = this.debug.withNs('constructor').withHash();
         debug('Service created.');
     }
