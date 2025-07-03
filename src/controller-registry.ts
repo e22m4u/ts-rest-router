@@ -29,13 +29,22 @@ export type ControllerRootOptions = {
 };
 
 /**
+ * В данном Map ключом является контроллер, а значением
+ * его опции, которые могут отсутствовать.
+ */
+export type ControllerRegistryMap = Map<
+  Constructor<object>,
+  ControllerRootOptions | undefined
+>;
+
+/**
  * Controller registry.
  */
 export class ControllerRegistry extends DebuggableService {
   /**
    * Controllers.
    */
-  controllers: Set<Constructor<object>> = new Set();
+  controllers: ControllerRegistryMap = new Map();
 
   /**
    * Add controller.
@@ -123,7 +132,7 @@ export class ControllerRegistry extends DebuggableService {
         prefixedRoutePath,
       );
     });
-    this.controllers.add(ctor);
+    this.controllers.set(ctor, options);
     return this;
   }
 

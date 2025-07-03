@@ -19,7 +19,7 @@ export class ControllerRegistry extends DebuggableService {
     /**
      * Controllers.
      */
-    controllers = new Set();
+    controllers = new Map();
     /**
      * Add controller.
      *
@@ -100,7 +100,7 @@ export class ControllerRegistry extends DebuggableService {
             });
             debug('Route %s %v is added.', actionMd.method.toUpperCase(), prefixedRoutePath);
         });
-        this.controllers.add(ctor);
+        this.controllers.set(ctor, options);
         return this;
     }
     /**

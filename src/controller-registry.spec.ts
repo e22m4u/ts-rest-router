@@ -42,10 +42,10 @@ const POST_HANDLER_1 = () => undefined;
 const POST_HANDLER_2 = () => undefined;
 
 describe('ControllerRegistry', function () {
-  it('has a public property with set of controllers', function () {
+  it('has a public property with Map of controllers', function () {
     const S = new ControllerRegistry();
     expect(S).to.have.property('controllers');
-    expect(S.controllers).to.be.instanceof(Set);
+    expect(S.controllers).to.be.instanceof(Map);
   });
 
   describe('addController', function () {
@@ -57,7 +57,7 @@ describe('ControllerRegistry', function () {
       expect(res).to.be.eq(S);
     });
 
-    it('adds a given controller to controllers set', function () {
+    it('adds a given controller to controllers map', function () {
       const S = new ControllerRegistry();
       @restController()
       class MyController {}

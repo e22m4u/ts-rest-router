@@ -12,13 +12,18 @@ export type ControllerRootOptions = {
     after?: RoutePostHandler | RoutePostHandler[];
 };
 /**
+ * В данном Map ключом является контроллер, а значением
+ * его опции, которые могут отсутствовать.
+ */
+export type ControllerRegistryMap = Map<Constructor<object>, ControllerRootOptions | undefined>;
+/**
  * Controller registry.
  */
 export declare class ControllerRegistry extends DebuggableService {
     /**
      * Controllers.
      */
-    controllers: Set<Constructor<object>>;
+    controllers: ControllerRegistryMap;
     /**
      * Add controller.
      *

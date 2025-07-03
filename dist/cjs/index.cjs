@@ -609,7 +609,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   /**
    * Controllers.
    */
-  controllers = /* @__PURE__ */ new Set();
+  controllers = /* @__PURE__ */ new Map();
   /**
    * Add controller.
    *
@@ -672,7 +672,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
       });
       debug("Route %s %v is added.", actionMd.method.toUpperCase(), prefixedRoutePath);
     });
-    this.controllers.add(ctor);
+    this.controllers.set(ctor, options);
     return this;
   }
   /**
