@@ -1,6 +1,6 @@
 {
   "name": "@e22m4u/ts-rest-router",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "REST маршрутизатор на основе контроллеров для TypeScript",
   "author": "e22m4u <e22m4u@yandex.ru>",
   "license": "MIT",
