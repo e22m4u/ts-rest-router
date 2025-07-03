@@ -607,9 +607,9 @@ __name(httpResponse, "httpResponse");
 var import_ts_data_schema4 = require("@e22m4u/ts-data-schema");
 var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   /**
-   * Controllers.
+   * Controller map.
    */
-  controllers = /* @__PURE__ */ new Map();
+  controllerMap = /* @__PURE__ */ new Map();
   /**
    * Add controller.
    *
@@ -672,7 +672,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
       });
       debug("Route %s %v is added.", actionMd.method.toUpperCase(), prefixedRoutePath);
     });
-    this.controllers.set(ctor, options);
+    this.controllerMap.set(ctor, options);
     return this;
   }
   /**
@@ -681,7 +681,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
    * @param ctor
    */
   hasController(ctor) {
-    return this.controllers.has(ctor);
+    return this.controllerMap.has(ctor);
   }
   /**
    * Get path prefix from controller root options.

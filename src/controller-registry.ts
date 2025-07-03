@@ -30,9 +30,10 @@ export type ControllerRootOptions = {
 
 /**
  * В данном Map ключом является контроллер, а значением
- * его опции, которые могут отсутствовать.
+ * его опции верхнего уровня, которые могут отсутствовать,
+ * если пользователь их не определил.
  */
-export type ControllerRegistryMap = Map<
+export type ControllerRootOptionsMap = Map<
   Constructor<object>,
   ControllerRootOptions | undefined
 >;
@@ -42,9 +43,9 @@ export type ControllerRegistryMap = Map<
  */
 export class ControllerRegistry extends DebuggableService {
   /**
-   * Controllers.
+   * Controller map.
    */
-  controllers: ControllerRegistryMap = new Map();
+  controllerMap: ControllerRootOptionsMap = new Map();
 
   /**
    * Add controller.
@@ -132,7 +133,7 @@ export class ControllerRegistry extends DebuggableService {
         prefixedRoutePath,
       );
     });
-    this.controllers.set(ctor, options);
+    this.controllerMap.set(ctor, options);
     return this;
   }
 
@@ -142,7 +143,7 @@ export class ControllerRegistry extends DebuggableService {
    * @param ctor
    */
   hasController<T extends object>(ctor: Constructor<T>) {
-    return this.controllers.has(ctor);
+    return this.controllerMap.has(ctor);
   }
 
   /**

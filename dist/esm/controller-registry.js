@@ -17,9 +17,9 @@ import { RequestContextReflector } from './decorators/index.js';
  */
 export class ControllerRegistry extends DebuggableService {
     /**
-     * Controllers.
+     * Controller map.
      */
-    controllers = new Map();
+    controllerMap = new Map();
     /**
      * Add controller.
      *
@@ -100,7 +100,7 @@ export class ControllerRegistry extends DebuggableService {
             });
             debug('Route %s %v is added.', actionMd.method.toUpperCase(), prefixedRoutePath);
         });
-        this.controllers.set(ctor, options);
+        this.controllerMap.set(ctor, options);
         return this;
     }
     /**
@@ -109,7 +109,7 @@ export class ControllerRegistry extends DebuggableService {
      * @param ctor
      */
     hasController(ctor) {
-        return this.controllers.has(ctor);
+        return this.controllerMap.has(ctor);
     }
     /**
      * Get path prefix from controller root options.

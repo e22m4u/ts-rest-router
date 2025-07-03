@@ -42,10 +42,11 @@ const POST_HANDLER_1 = () => undefined;
 const POST_HANDLER_2 = () => undefined;
 
 describe('ControllerRegistry', function () {
-  it('has a public property with Map of controllers', function () {
+  it('has a public property `controllerMap` with an empty Map', function () {
     const S = new ControllerRegistry();
-    expect(S).to.have.property('controllers');
-    expect(S.controllers).to.be.instanceof(Map);
+    expect(S).to.have.property('controllerMap');
+    expect(S.controllerMap).to.be.instanceof(Map);
+    expect(S.controllerMap).to.be.empty;
   });
 
   describe('addController', function () {

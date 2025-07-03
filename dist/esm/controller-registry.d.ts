@@ -13,17 +13,18 @@ export type ControllerRootOptions = {
 };
 /**
  * В данном Map ключом является контроллер, а значением
- * его опции, которые могут отсутствовать.
+ * его опции верхнего уровня, которые могут отсутствовать,
+ * если пользователь их не определил.
  */
-export type ControllerRegistryMap = Map<Constructor<object>, ControllerRootOptions | undefined>;
+export type ControllerRootOptionsMap = Map<Constructor<object>, ControllerRootOptions | undefined>;
 /**
  * Controller registry.
  */
 export declare class ControllerRegistry extends DebuggableService {
     /**
-     * Controllers.
+     * Controller map.
      */
-    controllers: ControllerRegistryMap;
+    controllerMap: ControllerRootOptionsMap;
     /**
      * Add controller.
      *
