@@ -14,3 +14,7 @@ export declare function httpRequest(): (target: Prototype<object>, propertyKey: 
  * HttpResponse decorator.
  */
 export declare function httpResponse(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;
+/**
+ * RequestContainer decorator.
+ */
+export declare function requestContainer(): (target: Prototype<object>, propertyKey: string, indexOrDescriptor: number) => void;

@@ -209,6 +209,7 @@ class UserController {
 - `@requestCookie` - определенный cookie запроса;
 - `@requestCookies` - все cookies запроса как объект;
 - `@requestContext` - доступ к контексту запроса;
+- `@requestContainer` - сервис-контейнер запроса;
 - `@requestData` - доступ к данным запроса;
 - `@httpRequest` - экземпляр `IncomingMessage`;
 - `@httpResponse` - экземпляр `ServerResponse`;

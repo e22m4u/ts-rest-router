@@ -27,3 +27,9 @@ export function httpRequest() {
 export function httpResponse() {
     return requestContext('res');
 }
+/**
+ * RequestContainer decorator.
+ */
+export function requestContainer() {
+    return requestContext('container');
+}

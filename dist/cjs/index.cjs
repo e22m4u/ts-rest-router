@@ -51,6 +51,7 @@ __export(index_exports, {
   postAction: () => postAction,
   putAction: () => putAction,
   requestBody: () => requestBody,
+  requestContainer: () => requestContainer,
   requestContext: () => requestContext,
   requestCookie: () => requestCookie,
   requestCookies: () => requestCookies,
@@ -602,6 +603,10 @@ function httpResponse() {
   return requestContext("res");
 }
 __name(httpResponse, "httpResponse");
+function requestContainer() {
+  return requestContext("container");
+}
+__name(requestContainer, "requestContainer");
 
 // dist/esm/controller-registry.js
 var import_ts_data_schema4 = require("@e22m4u/ts-data-schema");
@@ -1016,6 +1021,7 @@ var RestRouter = _RestRouter;
   postAction,
   putAction,
   requestBody,
+  requestContainer,
   requestContext,
   requestCookie,
   requestCookies,
