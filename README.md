@@ -58,7 +58,7 @@ class UserController {
   @postAction('login')
   async login(
     // инъекция значений указанных полей
-    // извлеизвлекаемых из тела запроса
+    // извлекаемых из тела запроса
     @requestField('username') username?: string,
     @requestField('password') password?: string,
   ) {
