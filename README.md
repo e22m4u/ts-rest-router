@@ -398,12 +398,8 @@ export async function authMiddleware(context: RequestContext) {
 
 **2. Создание `AuthService`**
 
-В этом примере `AuthService` - это простой класс, который не наследует `Service`.
-Он хранит состояние (`currentUser`), которое будет установлено в middleware.
-
-*Примечание: если бы `AuthService` сам наследовал `Service` (чтобы, например,
-использовать `this.getService()` внутри), то его конструктор нужно было бы
-вызывать с передачей контейнера: `new AuthService(requestContainer)`.*
+В этом примере `AuthService` - это простой класс. Он хранит состояние
+(`currentUser`), которое будет установлено в middleware.
 
 ```ts
 // src/auth.service.ts
@@ -418,6 +414,10 @@ export class AuthService {
   }
 }
 ```
+
+*Примечание: если бы `AuthService` сам наследовал `Service` (чтобы, например,
+использовать `this.getService()` внутри), то его конструктор нужно было бы
+вызывать с передачей контейнера: `new AuthService(requestContainer)`.*
 
 **3. Использование сервиса в контроллере**
 
