@@ -442,7 +442,7 @@ import {restController} from '@e22m4u/ts-rest-router';
 export class ProfileController extends Service {
   @getAction('me')
   getProfile() {
-    // Получение того же самого request-scoped экземпляра AuthService,
+    // Получение request-scoped экземпляра AuthService,
     // который был создан и зарегистрирован в middleware.
     const authService = this.getService(AuthService);
 
