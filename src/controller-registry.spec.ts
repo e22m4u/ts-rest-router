@@ -13,6 +13,7 @@ import {
   RouteRegistry,
   TrieRouter,
 } from '@e22m4u/js-trie-router';
+
 import {
   afterAction,
   beforeAction,
@@ -34,6 +35,7 @@ import {
 import {expect} from 'chai';
 import {DataType} from '@e22m4u/ts-data-schema';
 import {ControllerRegistry} from './controller-registry.js';
+import {Service, ServiceContainer} from '@e22m4u/js-service';
 
 const PRE_HANDLER_1 = () => undefined;
 const PRE_HANDLER_2 = () => undefined;
@@ -968,6 +970,74 @@ describe('ControllerRegistry', function () {
       const handler = S['createRouteHandler'](MyController, 'myAction');
       await handler(ctx);
       expect(invoked).to.be.true;
+    });
+
+    it('should create a new controller instance for each request', async function () {
+      @restController()
+      class MyStatefulController {
+        public readonly instanceId: number;
+        constructor() {
+          this.instanceId = Math.random();
+        }
+        @getAction('/test')
+        myAction() {
+          return this;
+        }
+      }
+      const S = new ControllerRegistry();
+      S.addController(MyStatefulController);
+      // поиск обработчика
+      const router = S.getService(RouteRegistry);
+      const req = createRequestMock({method: HttpMethod.GET, path: '/test'});
+      const matching = router.matchRouteByRequest(req);
+      const handler = matching!.route.handler;
+      // симуляция первого запроса
+      const req1 = createRequestMock();
+      const res1 = createResponseMock();
+      const cont1 = new ServiceContainer(S.container);
+      const ctx1 = new RequestContext(cont1, req1, res1);
+      const controllerInstance1 = (await handler(ctx1)) as MyStatefulController;
+      // симуляция второго запроса
+      const req2 = createRequestMock();
+      const res2 = createResponseMock();
+      const cont2 = new ServiceContainer(S.container);
+      const ctx2 = new RequestContext(cont2, req2, res2);
+      const controllerInstance2 = (await handler(ctx2)) as MyStatefulController;
+      // проверка, что это два разных экземпляра
+      expect(controllerInstance1).to.be.instanceOf(MyStatefulController);
+      expect(controllerInstance2).to.be.instanceOf(MyStatefulController);
+      expect(controllerInstance1).to.not.equal(controllerInstance2);
+      expect(controllerInstance1.instanceId).to.not.equal(
+        controllerInstance2.instanceId,
+        'Controller instance IDs should be different',
+      );
+    });
+
+    it('should create controller using a request-scoped container parented by the application container', async function () {
+      let counter = 0;
+      const appContainer = new ServiceContainer();
+      @restController()
+      class MyStatefulController extends Service {
+        @getAction('/test')
+        myAction() {
+          expect(this.container).to.be.not.eq(appContainer);
+          expect(this.container.getParent()).to.be.eq(appContainer);
+          counter++;
+        }
+      }
+      const S = new ControllerRegistry(appContainer);
+      S.addController(MyStatefulController);
+      // поиск обработчика
+      const router = S.getService(RouteRegistry);
+      const req = createRequestMock({method: HttpMethod.GET, path: '/test'});
+      const matching = router.matchRouteByRequest(req);
+      const handler = matching!.route.handler;
+      // симуляция запроса
+      const res = createResponseMock();
+      const cont1 = new ServiceContainer(S.container);
+      const ctx1 = new RequestContext(cont1, req, res);
+      await handler(ctx1);
+      expect(counter).to.be.eq(1);
     });
   });
 });

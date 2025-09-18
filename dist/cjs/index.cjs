@@ -960,7 +960,9 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
           debug("No RequestDataMetadata specified for %v argument.", index);
         }
       });
-      const controller = this.getService(controllerCtor);
+      if (requestContext2.container.has(controllerCtor))
+        throw new import_js_format3.Errorf("The controller %v is already registered, which breaks controller isolation per request.", controllerCtor.name);
+      const controller = requestContext2.container.get(controllerCtor);
       return controller[actionName](...args);
     };
   }
