@@ -1,413 +1,496 @@
 # @e22m4u/ts-rest-router
 
-REST маршрутизатор на основе контроллеров для TypeScript.
+**REST-маршрутизатор для Node.js и TypeScript, построенный на контроллерах
+и декораторах.**
 
-#### Основные возможности
+`@e22m4u/ts-rest-router` предоставляет возможность создания структурированных,
+масштабируемых и легко тестируемых REST API. В его основе лежит декларативный
+подход с использованием декораторов TypeScript для определения маршрутов,
+обработки входящих данных и управления жизненным циклом запроса.
 
-- Декларативное определение маршрутов через декораторы.
-- Типизированные параметры запросов (body, query, params).
-- Поддержка middleware до и после обработки запроса.
-- Валидация входящих данных.
-- Поддержка всех HTTP методов (GET, POST, PUT, PATCH и DELETE).
+### Особенности
+
+- **Декларативная маршрутизация**  
+  Определение маршрутов непосредственно над методами контроллера с помощью
+  декораторов (`@getAction`, `@postAction` и т.д.).
+- **Типобезопасная обработка данных**  
+  Автоматическое извлечение, преобразование и валидация данных из `body`,
+  `query`, `params`, `headers` и `cookie` с привязкой к типизированным
+  аргументам методов.
+- **Встроенная валидация**  
+  Использование схем данных из `@e22m4u/ts-data-schema` для описания сложных
+  правил проверки.
+- **Middleware (хуки)**  
+  Поддержка промежуточных обработчиков (`@beforeAction`, `@afterAction`)
+  на уровне контроллера и отдельных методов.
+- **Изоляция запросов**  
+  Обработка каждого запроса в отдельном DI-контейнере, что гарантирует
+  отсутствие конфликтов состояний и повышает надежность приложения.
+- **Гибкая архитектура**  
+  Основан на `@e22m4u/js-trie-router` для маршрутизации и `@e22m4u/js-service`
+  для внедрения зависимостей.
 
 ## Содержание
 
 - [Установка](#установка)
-  - [Поддержка декораторов](#поддержка-декораторов)
-- [Базовый пример](#базовый-пример)
-- [Валидация](#валидация)
-- [Декораторы](#декораторы)
-- [Жизненный цикл контроллера](#жизненный-цикл-контроллера)
+- [Быстрый старт: Пример сервера](#быстрый-старт-пример-сервера)
+- [Обработка данных запроса](#обработка-данных-запроса)
+  - [URL-параметры (`@requestParam`)](#url-параметры-requestparam)
+  - [Query-параметры (`@requestQuery`)](#query-параметры-requestquery)
+  - [Тело запроса (`@requestBody`, `@requestField`)](#тело-запроса-requestbody-requestfield)
+  - [Заголовки и Cookies](#заголовки-и-cookies)
+  - [Контекст запроса (`@requestContext`)](#контекст-запроса-requestcontext)
+- [Валидация и схемы данных](#валидация-и-схемы-данных)
+- [Middleware (хуки)](#middleware-хуки)
+- [Архитектура: Жизненный цикл контроллера и DI](#архитектура-жизненный-цикл-контроллера-и-di)
 - [Отладка](#отладка)
 - [Тесты](#тесты)
+- [Полный список декораторов](#полный-список-декораторов)
+- [Лицензия](#лицензия)
 
 ## Установка
 
-```bash
 npm install @e22m4u/ts-rest-router
-```
 
-#### Поддержка декораторов
+**Поддержка декораторов**
 
-Для включения поддержки декораторов, добавьте указанные
-ниже опции в файл `tsconfig.json` вашего проекта.
+Для включения поддержки декораторов, добавьте указанные ниже опции в файл `tsconfig.json` вашего проекта.
 
-```json
 {
   "emitDecoratorMetadata": true,
   "experimentalDecorators": true
 }
-```
 
-## Базовый пример
 
-Создание контроллера и методов.
+## Быстрый старт: Пример сервера
+
+Пример создания простого сервера для управления списком пользователей.
+
+**`user.controller.ts`**
 
 ```ts
-import {DataType} from '@e22m4u/ts-rest-router';
-import {getAction} from '@e22m4u/ts-rest-router';
-import {postAction} from '@e22m4u/ts-rest-router';
-import {requestField} from '@e22m4u/ts-rest-router';
-import {restController} from '@e22m4u/ts-rest-router';
+import {
+  restController,
+  getAction,
+  postAction,
+  requestBody,
+  DataType,
+} from '@e22m4u/ts-rest-router';
 
-// объявление контроллера
-// и базового пути /users
+// Временное хранилище данных
+const users = [
+  {id: 1, name: 'John Doe'},
+];
+
+// 1. Декоратор @restController определяет класс как контроллер
+//    и устанавливает базовый путь для всех его маршрутов.
 @restController('users')
-class UserController {
-  // объявление метода POST /users/login
-  // (использует базовый путь контроллера)
-  @postAction('login')
-  async login(
-    // инъекция значений указанных полей
-    // извлекаемых из тела запроса
-    @requestField('username') username?: string,
-    @requestField('password') password?: string,
+export class UserController {
+  // 2. Декоратор @getAction создает маршрут для GET-запросов.
+  //    Полный путь: GET /users
+  @getAction()
+  getAllUsers() {
+    // Результат автоматически сериализуется в JSON
+    return users;
+  }
+
+  // 3. Декоратор @postAction создает маршрут для POST-запросов.
+  //    Полный путь: POST /users
+  @postAction()
+  createUser(
+    // 4. Декоратор @requestBody извлекает тело запроса,
+    //    проверяет его по схеме и передает в аргумент `newUser`.
+    @requestBody({
+      type: DataType.OBJECT,
+      properties: {
+        name: {
+          type: DataType.STRING,
+          required: true
+        },
+      },
+    })
+    newUser: {name: string},
   ) {
-    // так как метод возвращает объект,
-    // результат будет представлен как
-    // "Content-Type: application/json"
-    return {
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-    };
+    const user = {id: users.length + 1, ...newUser};
+    users.push(user);
+    // Возвращаемый объект будет отправлен клиенту как JSON.
+    return user;
   }
 }
 ```
 
-Регистрация контроллеров и запуск сервера.
+**`index.ts`**
 
 ```ts
 import http from 'http';
+import {UserController} from './user.controller';
 import {RestRouter} from '@e22m4u/ts-rest-router';
 
-// создание маршрутизатора и регистрация контроллеров
-const router = new RestRouter();
-router.registerController(UserController);
-router.registerController(ProductController);
+async function bootstrap() {
+  // Создание экземпляра роутера
+  const router = new RestRouter();
+  // Регистрация контроллера
+  router.addController(UserController);
 
-// создание сервера и регистрация обработчика запросов
-const server = new http.Server();
-server.on('request', router.requestListener);
+  // Создание HTTP-сервера с обработчиком запросов из роутера
+  const server = http.createServer(router.requestListener);
 
-// запуск сервера
-server.listen('8080', '0.0.0.0', () => {
-  console.log(`Server is running on http://localhost:8080`);
-});
+  // Запуск сервера
+  server.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+    console.log('Try GET http://localhost:3000/users');
+    console.log(
+      'Try POST http://localhost:3000/users with body {"name": "Jane Doe"}'
+    );
+  });
+}
+
+bootstrap();
 ```
 
-## Валидация
+## Обработка данных запроса
 
-Указанные ниже декораторы используются для инъекции соответствующих параметров
-запроса в качестве аргументов метода контроллера. Каждый из указанных декораторов
-имеет параметр `schemaOrType`, в котором определяется тип ожидаемого значения
-или схема для проверки данных.
+Модуль предоставляет удобные и типобезопасные механизмы для доступа
+к данным входящего запроса.
 
-- `@requestParam(name: string, schemaOrType?: DataSchema | DataType)`  
-  *- извлечение URL параметра по названию;*
-- `@requestQuery(name: string, schemaOrType?: DataSchema | DataType)`  
-  *- извлечение query параметра по названию;*
-- `@requestBody(schemaOrType?: DataSchema | DataType)`  
-  *- извлечение тела запроса;*
-- `@requestField(name: string, schemaOrType?: DataSchema | DataType)`  
-  *- извлечение свойства из тела запроса;*
-- `@requestHeader(name: string, schemaOrType?: DataSchema | DataType)`  
-  *- извлечение заголовка запроса по названию;*
-- `@requestCookie(name: string, schemaOrType?: DataSchema | DataType)`  
-  *- извлечение cookie запроса по названию;*
+### URL-параметры (`@requestParam`)
 
-Проверка входящих данных выполняется встроенным модулем
+Используются для извлечения динамических частей URL (например, `:id`).
+
+```ts
+import {getAction, requestParam, DataType} from '@e22m4u/ts-rest-router';
+
+@restController('articles')
+class ArticleController {
+  // Маршрут: GET /articles/42
+  @getAction(':id')
+  getArticleById(
+    // Извлечение параметра 'id' с проверкой на соответствие
+    // типу "number"
+    @requestParam('id', DataType.NUMBER) id: number,
+  ) {
+    // Если id не является числом, фреймворк вернет ошибку
+    // 400 Bad Request
+    return {articleId: id, content: '...'};
+  }
+}
+```
+
+**Декораторы:**
+
+- `@requestParam(name, schema)` - извлечение одного параметра;
+- `@requestParams(schema)` - извлечение всех URL-параметров в виде объекта;
+
+### Query-параметры (`@requestQuery`)
+
+Применяются для извлечения параметров из строки запроса
+(например, `?sort=desc`).
+
+```ts
+import {getAction, requestQuery, DataType} from '@e22m4u/ts-rest-router';
+
+@restController('products')
+class ProductController {
+  // Маршрут: GET /products/search?q=phone&limit=10
+  @getAction('search')
+  searchProducts(
+    @requestQuery('q', {
+      type: DataType.STRING,
+      required: true,
+    })
+    searchTerm: string,
+    @requestQuery('limit', {
+      type: DataType.NUMBER,
+      default: 20,
+    })
+    limit: number,
+  ) {
+    // searchTerm будет 'phone', limit будет 10.
+    // При отсутствии 'q' будет ошибка. При отсутствии 'limit'
+    // будет использовано значение по умолчанию 20.
+    return {results: [], query: {searchTerm, limit}};
+  }
+}
+```
+
+**Декораторы:**
+
+- `@requestQuery(name, schema)` - извлечение одного query-параметра;
+- `@requestQueries(schema)` - извлечение всех query-параметров в виде объекта;
+
+### Тело запроса (`@requestBody`, `@requestField`)
+
+Для работы с данными, отправленными в теле POST, PUT, PATCH запросов.
+
+```ts
+import {
+  postAction,
+  requestBody,
+  requestField,
+  DataType,
+} from '@e22m4u/ts-rest-router';
+
+@restController('users')
+class UserController {
+  // Пример с @requestBody: получение и валидация всего тела запроса
+  @postAction()
+  createUser(
+    @requestBody({
+      type: DataType.OBJECT,
+      properties: {
+        username: {
+          type: DataType.STRING,
+          required: true,
+        },
+        email: {
+          type: DataType.STRING,
+          required: true,
+        },
+      },
+    })
+    body: {username: string; email: string},
+  ) {
+    return {id: 1, ...body};
+  }
+
+  // Пример с @requestField: получение только одного поля из тела
+  @postAction('login')
+  login(
+    @requestField('username', DataType.STRING) username: string,
+    @requestField('password', DataType.STRING) password: string,
+  ) {
+    // ... логика аутентификации
+    return {token: 'jwt-token'};
+  }
+}
+```
+
+**Декораторы:**
+
+- `@requestBody(schema)` - извлечение тела запроса;
+- `@requestField(name, schema)` - извлечение поля из тела запроса;
+
+### Заголовки и Cookies
+
+Работа с заголовками и cookies осуществляется аналогичным образом:
+
+- `@requestHeader(name, schema)` / `@requestHeaders(schema)`
+- `@requestCookie(name, schema)` / `@requestCookies(schema)`
+
+### Контекст запроса (`@requestContext`)
+
+Для доступа к "сырым" объектам запроса/ответа Node.js или другим частям
+контекста используются следующие декораторы:
+
+- `@requestContext()` - инъекция всего объекта `RequestContext`;
+- `@requestContext('req')` - инъекция нативного `IncomingMessage`;
+- `@requestContext('res')` - инъекция нативного `ServerResponse`;
+- `@requestContext('container')` - инъекция DI-контейнера запроса;
+- **Алиасы:** `@httpRequest()`, `@httpResponse()`, `@requestContainer()`;
+
+```ts
+import {getAction, requestContext} from '@e22m4u/ts-rest-router';
+import {RequestContext} from '@e22m4u/js-trie-router';
+
+@restController('system')
+class SystemController {
+  @getAction('ip')
+  getClientIp(
+    @requestContext()
+    ctx: RequestContext,
+  ) {
+    // ctx.req - это нативный объект IncomingMessage
+    const ip = ctx.req.socket.remoteAddress;
+    return {ip};
+  }
+}
+```
+
+## Валидация и схемы данных
+
+Модуль интегрирован с
 [@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema)
-(не требует установки). Ниже приводятся константы для определения допустимых
-типов извлекаемого значения.
+для гибкой проверки данных. Это дает возможность определять типы данных
+и сложные правила.
 
-- `DataType.ANY` - принимает любой тип
-- `DataType.STRING` - строковые значения
-- `DataType.NUMBER` - числовые значения
-- `DataType.BOOLEAN` - логические значения
-- `DataType.ARRAY` - массивы
-- `DataType.OBJECT` - объекты (не экземпляры)
+**Базовые типы `DataType`:**
 
-Для определения дополнительных условий, используется объект `DataSchema`,
-с помощью которого можно определить структуру ожидаемого объекта, допустимые
-элементы массива, функции-валидаторы и другие ограничения входящих данных.
+- `DataType.ANY`
+- `DataType.STRING`
+- `DataType.NUMBER`
+- `DataType.BOOLEAN`
+- `DataType.ARRAY`
+- `DataType.OBJECT`
+
+Для более сложных проверок используется объект `DataSchema`:
 
 ```ts
 type DataSchema = {
-  type: DataType;
-  items?: DataSchema;
-  properties?: {[key: string]: DataSchema};
-  required?: boolean;
-  validate?: CallableValidator | CallableValidator[];
-  default?: unknown;
+  type: DataType; // Обязательное поле
+  required?: boolean; // Значение не может быть null или undefined
+  default?: unknown; // Значение по умолчанию, если `required: false`
+  items?: DataSchema; // Схема для элементов массива (для type: DataType.ARRAY)
+  properties?: {[key: string]: DataSchema}; // Схема для свойств объекта
+  validate?: (value: any) => boolean | string; // Пользовательская функция
 }
 ```
 
-Пример проверки передаваемого объекта методом POST:
+**Пример сложной валидации:**
 
 ```ts
-import {DataType} from '@e22m4u/ts-rest-router';
-import {getAction} from '@e22m4u/ts-rest-router';
-import {postAction} from '@e22m4u/ts-rest-router';
-import {requestField} from '@e22m4u/ts-rest-router';
-import {restController} from '@e22m4u/ts-rest-router';
+import {postAction, requestBody, DataType} from '@e22m4u/ts-rest-router';
 
-@restController('users')
-class UserController {
-  @postAction()                        // POST /users
-  async create(
-    @requestBody({                     // декоратор тела запроса
-      type: DataType.OBJECT,           // в теле запроса ожидается объект
+@restController('orders')
+class OrderController {
+  @postAction()
+  createOrder(
+    @requestBody({
+      type: DataType.OBJECT,
       properties: {
-        name: {                        // схема свойства "name"
-          type: DataType.STRING,       // свойство должно содержать строку
-          required: true,              // свойство не может содержать undefined или null
-          validate: v => v.length > 2, // проверка длины строки
+        userId: {
+          type: DataType.NUMBER,
+          required: true,
         },
-        age: {                         // схема свойства "age"
-          type: DataType.NUMBER,       // свойство должно являться числом
-        }
+        products: {
+          type: DataType.ARRAY,
+          required: true,
+          // Описание схемы для каждого элемента массива:
+          items: {
+            type: DataType.OBJECT,
+            properties: {
+              id: {
+                type: DataType.NUMBER,
+                required: true
+              },
+              quantity: {
+                type: DataType.NUMBER,
+                required: true,
+                // Валидатор: количество должно быть больше 0
+                validate: (qty) => qty > 0 || 'Quantity must be positive',
+              },
+            },
+          },
+        },
       },
     })
-    body: {name: string, age?: number},
+    orderData: { /* ... */ },
   ) {
-    return {
-      id: 1,
-      name: body.name,
-      age: body.age,
-    };
-  }
-}
-```
-
-## Декораторы
-
-Контроллер и методы:
-
-- `@restController` - определяет класс как контроллер;
-- `@restAction` - базовый декоратор для методов;
-- `@getAction` - метод GET;
-- `@postAction` - метод POST;
-- `@putAction` - метод PUT;
-- `@patchAction` - метод PATCH;
-- `@deleteAction` - метод DELETE;
-
-Хуки запроса:
-
-- `@beforeAction` - middleware перед обработкой запроса;
-- `@afterAction` - middleware после обработки запроса;
-
-Параметры запроса:
-
-- `@requestParam` - определенный URL параметр;
-- `@requestParams` - все параметры URL как объект;
-- `@requestQuery` - определенный query параметр;
-- `@requestQueries` - все query параметры как объект;
-- `@requestBody` - тело запроса;
-- `@requestField` - поле в теле запроса;
-- `@requestHeader` - определенный заголовок запроса;
-- `@requestHeaders` - все заголовки запроса как объект;
-- `@requestCookie` - определенный cookie запроса;
-- `@requestCookies` - все cookies запроса как объект;
-- `@requestContext` - доступ к контексту запроса;
-- `@requestContainer` - сервис-контейнер запроса;
-- `@requestData` - доступ к данным запроса;
-- `@httpRequest` - экземпляр `IncomingMessage`;
-- `@httpResponse` - экземпляр `ServerResponse`;
-
-#### `@restController(options?: ControllerOptions)`
-
-Определение контроллера.
-
-```ts
-@restController()
-class UserController {
-  // ...
-}
-```
-
-Определение базового пути.
-
-```ts
-@restController('users')
-class UserController {
-  // ...
-}
-```
-
-Дополнительные параметры декоратора.
-
-```ts
-@restController({
-  path: 'api',               // базовый путь
-  before: [authMiddleware],  // middleware до обработки запроса
-  after: [loggerMiddleware], // middleware после обработки запроса
-})
-class UserController {
-  // ...
-}
-```
-
-#### `@getAction(path: string, options?: ActionOptions)`
-
-Определение метода GET.
-
-```ts
-@restController('users')
-class UserController {
-  @getAction('whoAmI')   // маршрут GET /users/whoAmI
-  async whoAmI() {
-    return {              // если метод возвращает объект,
-      name: 'John',       // то результат будет представлен
-      surname: 'Doe',     // как "Content-Type: application/json"
-    };
-  }
-}
-```
-
-Дополнительные параметры декоратора.
-
-```ts
-@restController('users')
-class UserController {
-  @getAction('whoAmI', {      // маршрут GET /users/whoAmI
-    before: [authMiddleware],  // middleware до обработки запроса
-    after: [loggerMiddleware], // middleware после обработки запроса
-  })
-  async whoAmI() {
-    return {
-      name: 'John',
-      surname: 'Doe',
-    };
-  }
-}
-```
-
-#### `@requestContext(propertyName?: string)`
-
-Доступ к контексту запроса.
-
-```ts
-import {RequestContext} from '@e22m4u/js-trie-router';
-
-@restController('users')
-class UserController {
-  @getAction(':id')
-  findById(
-    @requestContext()          // инъекция контекста запроса
-    ctx: RequestContext,       // в качестве аргумента
-  ) {
-    console.log(ctx.req);      // IncomingMessage
-    console.log(ctx.res);      // ServerResponse
-    console.log(ctx.params);   // {id: 10}
-    console.log(ctx.query);    // {include: 'city'}
-    console.log(ctx.headers);  // {cookie: 'foo=bar; baz=qux;'}
-    console.log(ctx.cookie);   // {foo: 'bar', baz: 'qux'}
-    console.log(ctx.method);   // "GET"
-    console.log(ctx.path);     // "/users/10?include=city"
-    console.log(ctx.pathname); // "/users/10"
     // ...
   }
 }
 ```
 
-Доступ к свойствам контекста.
+## Middleware (хуки)
+
+Middleware (или "хуки") - это функции, выполняющиеся до (`@beforeAction`)
+или после (`@afterAction`) основного метода контроллера. Они предназначены
+для сквозной логики, такой как аутентификация, логирование или кэширование.
+
+Применение middleware возможно как ко всему контроллеру, так и к отдельному
+методу.
 
 ```ts
-import {ServerResponse} from 'http';
-import {IncomingMessage} from 'http';
+import {RequestContext} from '@e22m4u/js-trie-router';
+import createError from 'http-errors';
 
-@restController('/users')  // путь контроллера
-class UserController {     // класс контроллера
-  @getAction('/:id')       // маршрут GET /users/:id
-  findById(
-    @requestContext('req') // декоратор контекста запроса
-    req: IncomingMessage,  // включающий свойство "req"
-    @requestContext('res') // декоратор контекста запроса
-    res: ServerResponse,   // включающий свойство "res"
-  ) {
-    console.log(req);      // IncomingMessage
-    console.log(res);      // ServerResponse
+// Middleware для проверки аутентификации
+async function authMiddleware(ctx: RequestContext) {
+  const token = ctx.headers.authorization;
+  if (!token || !isValidToken(token)) {
+    // Выброс ошибки прерывает выполнение и отправляет клиенту
+    // соответствующий HTTP-статус.
+    throw createError(401, 'Unauthorized');
+  }
+}
+
+// Middleware для логирования
+async function loggerMiddleware(ctx: RequestContext, data: any) {
+  console.log(`Response for ${ctx.pathname}:`, data);
+  // @afterAction может модифицировать ответ
+  return {...data, timestamp: new Date()};
+}
+
+@restController('profile')
+@beforeAction(authMiddleware) // Применение ко всем методам
+class ProfileController {
+  @getAction('me')
+  @afterAction(loggerMiddleware) // Применение только к этому методу
+  getMyProfile() {
+    return {id: 1, name: 'Current User'};
+  }
+
+  @getAction('settings')
+  getMySettings() {
+    return {theme: 'dark'};
   }
 }
 ```
 
-Свойства контекста:
+## Архитектура: Жизненный цикл контроллера и DI
 
-- `container: ServiceContainer` экземпляр [сервис-контейнера](https://npmjs.com/package/@e22m4u/js-service)
-- `req: IncomingMessage` нативный поток входящего запроса
-- `res: ServerResponse` нативный поток ответа сервера
-- `params: ParsedParams` объект ключ-значение с параметрами пути
-- `query: ParsedQuery` объект ключ-значение с параметрами строки запроса
-- `headers: ParsedHeaders` объект ключ-значение с заголовками запроса 
-- `cookie: ParsedCookie` объект ключ-значение разобранного заголовка `cookie`
-- `method: string` метод запроса в верхнем регистре, например `GET`, `POST` и т.д.
-- `path: string` путь включающий строку запроса, например `/myPath?foo=bar`
-- `pathname: string` путь запроса, например `/myMath`
-- `body: unknown` тело запроса
+Понимание архитектурных принципов `ts-rest-router` является ключом
+к созданию надежных и масштабируемых приложений. Модуль построен на
+базе библиотеки `@e22m4u/js-service`, реализующей паттерн
+Service Locator / Dependency Injection.
 
-## Жизненный цикл контроллера
+#### Принцип №1: Изоляция запросов
 
-Важной архитектурной особенностью модуля является управление жизненным циклом
-контроллеров, основанное на библиотеке
-[@e22m4u/js-service](https://www.npmjs.com/package/@e22m4u/js-service).
+Для **каждого** входящего HTTP-запроса создается **новый, изолированный
+экземпляр контроллера**. Этот фундаментальный принцип гарантирует, что
+состояние одного запроса (например, данные аутентифицированного
+пользователя) никогда не будет разделено с другим, одновременно
+обрабатываемым запросом. Это устраняет целый класс потенциальных
+ошибок, связанных с состоянием гонки.
 
-#### Изоляция запросов
+#### Принцип №2: Request-Scoped Service Container
 
-Для каждого входящего HTTP-запроса фреймворк создает **новый, изолированный
-экземпляр контроллера**. Это гарантирует, что состояние одного запроса
-(например, данные пользователя или временные вычисления) никогда не "протечет"
-в другой, одновременно обрабатываемый запрос. Такой подход устраняет целый
-класс потенциальных ошибок, связанных с состоянием гонки (race conditions).
+Каждый экземпляр контроллера создается с помощью своего собственного
+DI-контейнера, который существует только в рамках одного запроса. Чтобы
+контроллер мог взаимодействовать с другими сервисами (например, с сервисом
+для работы с базой данных), его класс должен наследоваться от базового
+класса `Service`. Это дает доступ к методу `this.getService()` для
+получения зависимостей.
 
-#### Сервис-контейнер запроса
+**Практический пример с сервисом аутентификации:**
 
-Каждый экземпляр контроллера создается с помощью сервис-контейнера, который
-"живет" только в рамках одного запроса. Чтобы контроллер мог взаимодействовать
-с другими сервисами, он должен наследоваться от базового класса `Service`.
-Это дает ему доступ к методу `this.getService()` для получения зависимостей.
+**Шаг 1: Создание Middleware для подготовки сервиса**
 
-Рассмотрим пример с сервисом аутентификации. Наша задача - идентифицировать
-пользователя в Middleware и сделать информацию о нем доступной в контроллере.
-
-**1. Создание Middleware для подготовки сервиса**
-
-Middleware - идеальное место для подготовки сервисов, специфичных для запроса.
-В данном примере мы вручную создаем экземпляр `AuthService`, выполняем
-аутентификацию, а затем регистрируем этот экземпляр в контейнере запроса
-с помощью метода `.set()`.
+Middleware - идеальное место для подготовки сервисов, специфичных для
+запроса. В этом примере происходит создание экземпляра `AuthService`,
+выполнение аутентификации и его регистрация в контейнере запроса.
 
 ```ts
 // src/auth.middleware.ts
-import {AuthService} from './auth.service.ts';
+import {AuthService} from './auth.service';
 import {RequestContext} from '@e22m4u/js-trie-router';
 
 export async function authMiddleware(context: RequestContext) {
-  // Получение контейнера текущего запроса
   const requestContainer = context.container;
-  // Создание нового экземпляра AuthService
-  const authService = new AuthService();
+  // Создание сервиса с передачей ему контейнера запроса
+  const authService = new AuthService(requestContainer);
   // Регистрация созданного экземпляра в контейнере.
   // Теперь любой другой сервис в рамках этого запроса
   // сможет получить этот конкретный экземпляр.
   requestContainer.set(AuthService, authService);
-  // Выполнение логики аутентификации (например, по токену)
+  // Выполнение логики аутентификации
   await authService.authenticate(context.headers.authorization);
 }
 ```
 
-**2. Создание `AuthService`**
+**Шаг 2: Создание `AuthService`**
 
-В этом примере `AuthService` - это простой класс. Он хранит состояние
-(`currentUser`), которое будет установлено в middleware.
+`AuthService` наследуется от `Service`, что позволяет ему запрашивать другие
+зависимости (например, `this.getService(DatabaseService)`).
 
 ```ts
 // src/auth.service.ts
-export class AuthService {
-  public currentUser?: { id: number; name: string; };
-  
+import {Service} from '@e22m4u/js-service';
+
+export class AuthService extends Service {
+  public currentUser?: {id: number; name: string;};
+
   async authenticate(token?: string) {
-    // Здесь ваша логика проверки токена и поиска пользователя в БД...
+    // Логика проверки токена и поиска пользователя в БД...
     if (token === 'valid-token') {
       this.currentUser = { id: 1, name: 'John Doe' };
     }
@@ -415,30 +498,26 @@ export class AuthService {
 }
 ```
 
-*Примечание: если бы `AuthService` сам наследовал `Service` (чтобы, например,
-использовать `this.getService()` внутри), то его конструктор нужно было бы
-вызывать с передачей контейнера: `new AuthService(requestContainer)`.*
+**Шаг 3: Использование сервиса в контроллере**
 
-**3. Использование сервиса в контроллере**
-
-Контроллер, унаследованный от `Service`, теперь может получить доступ
-к предварительно настроенному экземпляру `AuthService` через `this.getService()`.
-Поскольку middleware уже выполнил `.set(AuthService, authService)`,
-вызов `this.getService(AuthService)` вернет именно тот экземпляр, который
-был создан и настроен на предыдущем шаге.
+Контроллер унаследованный от `Service`, теперь может получить
+доступ к предварительно настроенному экземпляру `AuthService`
+через `this.getService()`.
 
 ```ts
 // src/profile.controller.ts
-import {createError} from 'http-errors';
+import createError from 'http-errors';
 import {Service} from '@e22m4u/js-service';
-import {AuthService} from './auth.service.ts';
-import {getAction} from '@e22m4u/ts-rest-router';
-import {beforeAction} from '@e22m4u/ts-rest-router';
-import {authMiddleware} from './auth.middleware.ts';
-import {restController} from '@e22m4u/ts-rest-router';
+import {AuthService} from './auth.service';
+import {authMiddleware} from './auth.middleware';
+import {
+  getAction,
+  restController,
+  beforeAction,
+} from '@e22m4u/ts-rest-router';
 
 @restController('profile')
-@beforeAction(authMiddleware) // применение middleware ко всем методам контроллера
+@beforeAction(authMiddleware)
 export class ProfileController extends Service {
   @getAction('me')
   getProfile() {
@@ -454,23 +533,60 @@ export class ProfileController extends Service {
 }
 ```
 
-Таким образом, контейнер запроса выступает в роли моста между middleware
-и контроллером, позволяя безопасно передавать состояние, изолированное
-в рамках одного HTTP-запроса.
+Таким образом, DI-контейнер запроса выступает в роли моста между
+middleware и контроллером, позволяя безопасно передавать состояние,
+изолированное в рамках одного HTTP-запроса.
 
 ## Отладка
 
-Установка переменной `DEBUG` включает вывод логов.
+Включение вывода отладочных логов в консоль осуществляется
+установкой переменной окружения `DEBUG`:
 
 ```bash
-DEBUG=tsRestRouter* npm run test
+DEBUG=tsRestRouter* npm start
 ```
 
 ## Тесты
 
+Запуск тестов выполняется командой:
+
 ```bash
 npm run test
 ```
+
+## Полный список декораторов
+
+#### Контроллер и методы:
+- `@restController(options)` - определение класса как контроллера;
+- `@getAction(path, options)` - метод GET;
+- `@postAction(path, options)` - метод POST;
+- `@putAction(path, options)` - метод PUT;
+- `@patchAction(path, options)` - метод PATCH;
+- `@deleteAction(path, options)` - метод DELETE;
+- `@restAction(options)` - базовый декоратор для определение метода;
+
+#### Middleware (хуки):
+- `@beforeAction(middleware)` - выполнение перед методом;
+- `@afterAction(middleware)` - выполнение после метода;
+
+#### Параметры запроса:
+- `@requestParam(name, schema)` - URL-параметр;
+- `@requestParams(schema)` - все URL-параметры;
+- `@requestQuery(name, schema)` - query-параметр;
+- `@requestQueries(schema)` - все query-параметры;
+- `@requestBody(schema)` - тело запроса;
+- `@requestField(name, schema)` - поле из тела запроса;
+- `@requestHeader(name, schema)` - заголовок запроса;
+- `@requestHeaders(schema)` - все заголовки;
+- `@requestCookie(name, schema)` - cookie;
+- `@requestCookies(schema)` - все cookies;
+- `@requestData(options)` - базовый декоратор для доступа к данным;
+
+#### Контекст:
+- `@requestContext(property)` - доступ к `RequestContext` или его свойствам;
+- `@requestContainer()` - DI-контейнер запроса;
+- `@httpRequest()` - экземпляр `IncomingMessage`;
+- `@httpResponse()` - экземпляр `ServerResponse`;
 
 ## Лицензия
 
