@@ -50,17 +50,20 @@
 
 ## Установка
 
+```bash
 npm install @e22m4u/ts-rest-router
+```
 
 **Поддержка декораторов**
 
 Для включения поддержки декораторов, добавьте указанные ниже опции в файл `tsconfig.json` вашего проекта.
 
+```json
 {
   "emitDecoratorMetadata": true,
   "experimentalDecorators": true
 }
-
+```
 
 ## Быстрый старт: Пример сервера
 
@@ -557,19 +560,22 @@ npm run test
 ## Полный список декораторов
 
 #### Контроллер и методы:
+
 - `@restController(options)` - определение класса как контроллера;
 - `@getAction(path, options)` - метод GET;
 - `@postAction(path, options)` - метод POST;
 - `@putAction(path, options)` - метод PUT;
 - `@patchAction(path, options)` - метод PATCH;
 - `@deleteAction(path, options)` - метод DELETE;
-- `@restAction(options)` - базовый декоратор для определение метода;
+- `@restAction(options)` - базовый декоратор для определения метода;
 
 #### Middleware (хуки):
+
 - `@beforeAction(middleware)` - выполнение перед методом;
 - `@afterAction(middleware)` - выполнение после метода;
 
 #### Параметры запроса:
+
 - `@requestParam(name, schema)` - URL-параметр;
 - `@requestParams(schema)` - все URL-параметры;
 - `@requestQuery(name, schema)` - query-параметр;
@@ -583,6 +589,7 @@ npm run test
 - `@requestData(options)` - базовый декоратор для доступа к данным;
 
 #### Контекст:
+
 - `@requestContext(property)` - доступ к `RequestContext` или его свойствам;
 - `@requestContainer()` - DI-контейнер запроса;
 - `@httpRequest()` - экземпляр `IncomingMessage`;
