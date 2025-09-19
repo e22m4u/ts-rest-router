@@ -274,7 +274,7 @@ class UserController {
 **Декораторы:**
 
 - `@requestBody(schema)` - извлечение тела запроса;
-- `@requestField(name, schema)` - извлечение поля из тела запроса;
+- `@requestField(name, schema)` - извлечение отдельного поля из тела запроса;
 
 ### Заголовки и Cookies
 
