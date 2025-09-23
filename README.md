@@ -419,8 +419,8 @@ async function loggerHook(ctx: RequestContext, data: any) {
   return {...data, timestamp: new Date()};
 }
 
-@restController('profile')
 @beforeAction(authHook) // Применение ко всем методам контроллера
+@restController('profile')
 class ProfileController {
   @getAction('me')
   @afterAction(loggerHook) // Применение только к этому методу
