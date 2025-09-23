@@ -8,10 +8,10 @@ import {AfterActionReflector} from './after-action-reflector.js';
 /**
  * After action decorator.
  *
- * @param middleware
+ * @param hook
  */
 export function afterAction<T extends object>(
-  middleware: AfterActionMetadata['middleware'],
+  hook: AfterActionMetadata['hook'],
 ) {
   return function (
     target: Constructor<T> | Prototype<T>,
@@ -24,10 +24,10 @@ export function afterAction<T extends object>(
       descriptor,
     );
     if (decoratorType === DecoratorTargetType.CONSTRUCTOR) {
-      AfterActionReflector.addMetadata({middleware}, target as Constructor<T>);
+      AfterActionReflector.addMetadata({hook}, target as Constructor<T>);
     } else if (decoratorType === DecoratorTargetType.INSTANCE_METHOD) {
       AfterActionReflector.addMetadata(
-        {propertyKey, middleware},
+        {propertyKey, hook},
         target.constructor as Constructor<T>,
         propertyKey,
       );

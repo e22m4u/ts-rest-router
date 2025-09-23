@@ -3,88 +3,85 @@ import {expect} from 'chai';
 import {beforeAction} from './before-action-decorator.js';
 import {BeforeActionReflector} from './before-action-reflector.js';
 
-const MIDDLEWARE_1 = () => undefined;
-const MIDDLEWARE_2 = () => undefined;
-const MIDDLEWARE_3 = () => undefined;
+const HOOK_1 = () => undefined;
+const HOOK_2 = () => undefined;
+const HOOK_3 = () => undefined;
 
 describe('beforeAction', function () {
   describe('class target', function () {
-    it('sets given middleware to the target metadata', function () {
-      @beforeAction(MIDDLEWARE_1)
+    it('sets given hook to the target metadata', function () {
+      @beforeAction(HOOK_1)
       class Target {
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target);
-      expect(res).to.be.eql([{middleware: MIDDLEWARE_1}]);
+      expect(res).to.be.eql([{hook: HOOK_1}]);
     });
 
-    it('sets multiple middlewares to the target metadata', function () {
-      @beforeAction([MIDDLEWARE_1, MIDDLEWARE_2])
+    it('sets multiple hooks to the target metadata', function () {
+      @beforeAction([HOOK_1, HOOK_2])
       class Target {
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target);
-      expect(res).to.be.eql([{middleware: [MIDDLEWARE_1, MIDDLEWARE_2]}]);
+      expect(res).to.be.eql([{hook: [HOOK_1, HOOK_2]}]);
     });
 
     it('allows to use the decorator multiple times', function () {
-      @beforeAction(MIDDLEWARE_1)
-      @beforeAction([MIDDLEWARE_2, MIDDLEWARE_3])
+      @beforeAction(HOOK_1)
+      @beforeAction([HOOK_2, HOOK_3])
       class Target {
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target);
-      expect(res).to.be.eql([
-        {middleware: MIDDLEWARE_1},
-        {middleware: [MIDDLEWARE_2, MIDDLEWARE_3]},
-      ]);
+      expect(res).to.be.eql([{hook: HOOK_1}, {hook: [HOOK_2, HOOK_3]}]);
     });
   });
 
   describe('method target', function () {
-    it('sets given middleware to the target metadata', function () {
+    it('sets given hook to the target metadata', function () {
       class Target {
-        @beforeAction(MIDDLEWARE_1)
+        @beforeAction(HOOK_1)
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target, 'method');
       expect(res).to.be.eql([
         {
           propertyKey: 'method',
-          middleware: MIDDLEWARE_1,
+          hook: HOOK_1,
         },
       ]);
     });
 
-    it('sets multiple middlewares to the target metadata', function () {
+    it('sets multiple hooks to the target metadata', function () {
       class Target {
-        @beforeAction([MIDDLEWARE_1, MIDDLEWARE_2])
+        @beforeAction([HOOK_1, HOOK_2])
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target, 'method');
       expect(res).to.be.eql([
         {
           propertyKey: 'method',
-          middleware: [MIDDLEWARE_1, MIDDLEWARE_2],
+          hook: [HOOK_1, HOOK_2],
         },
       ]);
     });
 
     it('allows to use the decorator multiple times', function () {
       class Target {
-        @beforeAction(MIDDLEWARE_1)
-        @beforeAction([MIDDLEWARE_2, MIDDLEWARE_3])
+        @beforeAction(HOOK_1)
+        @beforeAction([HOOK_2, HOOK_3])
         method() {}
       }
       const res = BeforeActionReflector.getMetadata(Target, 'method');
       expect(res).to.be.eql([
         {
           propertyKey: 'method',
-          middleware: MIDDLEWARE_1,
+          hook: HOOK_1,
         },
         {
           propertyKey: 'method',
-          middleware: [MIDDLEWARE_2, MIDDLEWARE_3],
+          hook: [HOOK_2, HOOK_3],
         },
       ]);
     });

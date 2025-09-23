@@ -2,17 +2,17 @@ import { expect } from 'chai';
 import { Reflector } from '@e22m4u/ts-reflector';
 import { BeforeActionReflector } from './before-action-reflector.js';
 import { BEFORE_ACTION_METADATA_KEY } from './before-action-metadata.js';
-const MIDDLEWARE_1 = () => undefined;
-const MIDDLEWARE_2 = () => undefined;
-const MIDDLEWARE_3 = () => undefined;
+const hook_1 = () => undefined;
+const hook_2 = () => undefined;
+const hook_3 = () => undefined;
 describe('BeforeActionReflector', function () {
     describe('class target', function () {
         describe('addMetadata', function () {
             it('adds a given value to the target metadata', function () {
                 class Target {
                 }
-                const md1 = { middleware: MIDDLEWARE_1 };
-                const md2 = { middleware: [MIDDLEWARE_2, MIDDLEWARE_3] };
+                const md1 = { hook: hook_1 };
+                const md2 = { hook: [hook_2, hook_3] };
                 BeforeActionReflector.addMetadata(md1, Target);
                 BeforeActionReflector.addMetadata(md2, Target);
                 const res = Reflector.getOwnMetadata(BEFORE_ACTION_METADATA_KEY, Target);
@@ -29,8 +29,8 @@ describe('BeforeActionReflector', function () {
             it('returns existing metadata by the target', function () {
                 class Target {
                 }
-                const md1 = { middleware: MIDDLEWARE_1 };
-                const md2 = { middleware: [MIDDLEWARE_2, MIDDLEWARE_3] };
+                const md1 = { hook: hook_1 };
+                const md2 = { hook: [hook_2, hook_3] };
                 const mdArray = [md1, md2];
                 Reflector.defineMetadata(BEFORE_ACTION_METADATA_KEY, mdArray, Target);
                 const res = BeforeActionReflector.getMetadata(Target);
@@ -43,8 +43,8 @@ describe('BeforeActionReflector', function () {
             it('adds a given value to the target metadata', function () {
                 class Target {
                 }
-                const md1 = { middleware: MIDDLEWARE_1 };
-                const md2 = { middleware: [MIDDLEWARE_2, MIDDLEWARE_3] };
+                const md1 = { hook: hook_1 };
+                const md2 = { hook: [hook_2, hook_3] };
                 BeforeActionReflector.addMetadata(md1, Target, 'prop');
                 BeforeActionReflector.addMetadata(md2, Target, 'prop');
                 const res = Reflector.getOwnMetadata(BEFORE_ACTION_METADATA_KEY, Target, 'prop');
@@ -61,8 +61,8 @@ describe('BeforeActionReflector', function () {
             it('returns existing metadata by the target', function () {
                 class Target {
                 }
-                const md1 = { middleware: MIDDLEWARE_1 };
-                const md2 = { middleware: [MIDDLEWARE_2, MIDDLEWARE_3] };
+                const md1 = { hook: hook_1 };
+                const md2 = { hook: [hook_2, hook_3] };
                 const mdArray = [md1, md2];
                 Reflector.defineMetadata(BEFORE_ACTION_METADATA_KEY, mdArray, Target, 'prop');
                 const res = BeforeActionReflector.getMetadata(Target, 'prop');
@@ -74,8 +74,8 @@ describe('BeforeActionReflector', function () {
         it('can distinguish class and method metadata', function () {
             class Target {
             }
-            const md1 = { middleware: MIDDLEWARE_1 };
-            const md2 = { middleware: MIDDLEWARE_2 };
+            const md1 = { hook: hook_1 };
+            const md2 = { hook: hook_2 };
             BeforeActionReflector.addMetadata(md1, Target);
             BeforeActionReflector.addMetadata(md2, Target, 'prop');
             const res1 = Reflector.getOwnMetadata(BEFORE_ACTION_METADATA_KEY, Target);
@@ -88,8 +88,8 @@ describe('BeforeActionReflector', function () {
         it('can distinguish class and method metadata', function () {
             class Target {
             }
-            const md1 = { middleware: MIDDLEWARE_1 };
-            const md2 = { middleware: MIDDLEWARE_2 };
+            const md1 = { hook: hook_1 };
+            const md2 = { hook: hook_2 };
             Reflector.defineMetadata(BEFORE_ACTION_METADATA_KEY, [md1], Target);
             Reflector.defineMetadata(BEFORE_ACTION_METADATA_KEY, [md2], Target, 'prop');
             const res1 = BeforeActionReflector.getMetadata(Target);

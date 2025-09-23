@@ -4,16 +4,16 @@ import { BeforeActionReflector } from './before-action-reflector.js';
 /**
  * Before action decorator.
  *
- * @param middleware
+ * @param hook
  */
-export function beforeAction(middleware) {
+export function beforeAction(hook) {
     return function (target, propertyKey, descriptor) {
         const decoratorType = getDecoratorTargetType(target, propertyKey, descriptor);
         if (decoratorType === DecoratorTargetType.CONSTRUCTOR) {
-            BeforeActionReflector.addMetadata({ middleware }, target);
+            BeforeActionReflector.addMetadata({ hook }, target);
         }
         else if (decoratorType === DecoratorTargetType.INSTANCE_METHOD) {
-            BeforeActionReflector.addMetadata({ propertyKey, middleware }, target.constructor, propertyKey);
+            BeforeActionReflector.addMetadata({ propertyKey, hook }, target.constructor, propertyKey);
         }
         else {
             throw new Error('@beforeAction decorator is only supported on a class or an instance method.');

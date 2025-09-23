@@ -8,10 +8,10 @@ import {BeforeActionReflector} from './before-action-reflector.js';
 /**
  * Before action decorator.
  *
- * @param middleware
+ * @param hook
  */
 export function beforeAction<T extends object>(
-  middleware: BeforeActionMetadata['middleware'],
+  hook: BeforeActionMetadata['hook'],
 ) {
   return function (
     target: Constructor<T> | Prototype<T>,
@@ -24,10 +24,10 @@ export function beforeAction<T extends object>(
       descriptor,
     );
     if (decoratorType === DecoratorTargetType.CONSTRUCTOR) {
-      BeforeActionReflector.addMetadata({middleware}, target as Constructor<T>);
+      BeforeActionReflector.addMetadata({hook}, target as Constructor<T>);
     } else if (decoratorType === DecoratorTargetType.INSTANCE_METHOD) {
       BeforeActionReflector.addMetadata(
-        {propertyKey, middleware},
+        {propertyKey, hook},
         target.constructor as Constructor<T>,
         propertyKey,
       );

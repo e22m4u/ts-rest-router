@@ -4,6 +4,6 @@ import { BeforeActionMetadata } from './before-action-metadata.js';
 /**
  * Before action decorator.
  *
- * @param middleware
+ * @param hook
  */
-export declare function beforeAction<T extends object>(middleware: BeforeActionMetadata['middleware']): (target: Constructor<T> | Prototype<T>, propertyKey?: string, descriptor?: PropertyDescriptor) => void;
+export declare function beforeAction<T extends object>(hook: BeforeActionMetadata['hook']): (target: Constructor<T> | Prototype<T>, propertyKey?: string, descriptor?: PropertyDescriptor) => void;

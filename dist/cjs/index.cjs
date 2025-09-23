@@ -376,13 +376,13 @@ var AfterActionReflector = _AfterActionReflector;
 // dist/esm/decorators/after-action/after-action-decorator.js
 var import_ts_reflector11 = require("@e22m4u/ts-reflector");
 var import_ts_reflector12 = require("@e22m4u/ts-reflector");
-function afterAction(middleware) {
+function afterAction(hook) {
   return function(target, propertyKey, descriptor) {
     const decoratorType = (0, import_ts_reflector12.getDecoratorTargetType)(target, propertyKey, descriptor);
     if (decoratorType === import_ts_reflector11.DecoratorTargetType.CONSTRUCTOR) {
-      AfterActionReflector.addMetadata({ middleware }, target);
+      AfterActionReflector.addMetadata({ hook }, target);
     } else if (decoratorType === import_ts_reflector11.DecoratorTargetType.INSTANCE_METHOD) {
-      AfterActionReflector.addMetadata({ propertyKey, middleware }, target.constructor, propertyKey);
+      AfterActionReflector.addMetadata({ propertyKey, hook }, target.constructor, propertyKey);
     } else {
       throw new Error("@afterAction decorator is only supported on a class or an instance method.");
     }
@@ -426,13 +426,13 @@ var BeforeActionReflector = _BeforeActionReflector;
 // dist/esm/decorators/before-action/before-action-decorator.js
 var import_ts_reflector15 = require("@e22m4u/ts-reflector");
 var import_ts_reflector16 = require("@e22m4u/ts-reflector");
-function beforeAction(middleware) {
+function beforeAction(hook) {
   return function(target, propertyKey, descriptor) {
     const decoratorType = (0, import_ts_reflector16.getDecoratorTargetType)(target, propertyKey, descriptor);
     if (decoratorType === import_ts_reflector15.DecoratorTargetType.CONSTRUCTOR) {
-      BeforeActionReflector.addMetadata({ middleware }, target);
+      BeforeActionReflector.addMetadata({ hook }, target);
     } else if (decoratorType === import_ts_reflector15.DecoratorTargetType.INSTANCE_METHOD) {
-      BeforeActionReflector.addMetadata({ propertyKey, middleware }, target.constructor, propertyKey);
+      BeforeActionReflector.addMetadata({ propertyKey, hook }, target.constructor, propertyKey);
     } else {
       throw new Error("@beforeAction decorator is only supported on a class or an instance method.");
     }
@@ -624,7 +624,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   addController(ctor, options) {
     const debug = this.getDebuggerFor(this.addController);
     if (this.hasController(ctor))
-      throw new import_js_format3.Errorf("The controller %v is already registered.");
+      throw new import_js_format3.Errorf("The controller %v is already registered.", ctor.name);
     const controllerMd = RestControllerReflector.getMetadata(ctor);
     if (!controllerMd)
       throw new NotAControllerError(ctor);
@@ -761,10 +761,10 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     let preHandlers = [];
     const mdArray = BeforeActionReflector.getMetadata(ctor, actionName);
     mdArray.forEach((md) => {
-      if (Array.isArray(md.middleware)) {
-        preHandlers = [...preHandlers, ...md.middleware];
+      if (Array.isArray(md.hook)) {
+        preHandlers = [...preHandlers, ...md.hook];
       } else {
-        preHandlers.push(md.middleware);
+        preHandlers.push(md.hook);
       }
     });
     if (mdArray.length) {
@@ -791,10 +791,10 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     let res = [];
     const mdArray = AfterActionReflector.getMetadata(ctor, actionName);
     mdArray.forEach((md) => {
-      if (Array.isArray(md.middleware)) {
-        res = [...res, ...md.middleware];
+      if (Array.isArray(md.hook)) {
+        res = [...res, ...md.hook];
       } else {
-        res.push(md.middleware);
+        res.push(md.hook);
       }
     });
     if (mdArray.length) {
@@ -874,7 +874,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     let res = [];
     if (actionMd.after)
       res = Array.isArray(actionMd.after) ? actionMd.after : [actionMd.after];
-    debug("%v pre-handlers found.", res.length);
+    debug("%v post-handlers found.", res.length);
     return res;
   }
   /**

@@ -32,7 +32,7 @@ export class ControllerRegistry extends DebuggableService {
         // заметить ошибку в коде, который использует
         // интерфейс данного сервиса
         if (this.hasController(ctor))
-            throw new Errorf('The controller %v is already registered.');
+            throw new Errorf('The controller %v is already registered.', ctor.name);
         // так как контроллером может быть любой
         // класс, выполняется проверка на наличие
         // метаданных применяемых декоратором
@@ -185,11 +185,11 @@ export class ControllerRegistry extends DebuggableService {
         let preHandlers = [];
         const mdArray = BeforeActionReflector.getMetadata(ctor, actionName);
         mdArray.forEach(md => {
-            if (Array.isArray(md.middleware)) {
-                preHandlers = [...preHandlers, ...md.middleware];
+            if (Array.isArray(md.hook)) {
+                preHandlers = [...preHandlers, ...md.hook];
             }
             else {
-                preHandlers.push(md.middleware);
+                preHandlers.push(md.hook);
             }
         });
         if (mdArray.length) {
@@ -218,11 +218,11 @@ export class ControllerRegistry extends DebuggableService {
         let res = [];
         const mdArray = AfterActionReflector.getMetadata(ctor, actionName);
         mdArray.forEach(md => {
-            if (Array.isArray(md.middleware)) {
-                res = [...res, ...md.middleware];
+            if (Array.isArray(md.hook)) {
+                res = [...res, ...md.hook];
             }
             else {
-                res.push(md.middleware);
+                res.push(md.hook);
             }
         });
         if (mdArray.length) {
@@ -305,7 +305,7 @@ export class ControllerRegistry extends DebuggableService {
         let res = [];
         if (actionMd.after)
             res = Array.isArray(actionMd.after) ? actionMd.after : [actionMd.after];
-        debug('%v pre-handlers found.', res.length);
+        debug('%v post-handlers found.', res.length);
         return res;
     }
     /**

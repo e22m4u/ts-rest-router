@@ -5,7 +5,7 @@ import { RoutePreHandler } from '@e22m4u/js-trie-router';
  */
 export type BeforeActionMetadata = {
     propertyKey?: string;
-    middleware: RoutePreHandler | RoutePreHandler[];
+    hook: RoutePreHandler | RoutePreHandler[];
 };
 /**
  * Before action metadata key.

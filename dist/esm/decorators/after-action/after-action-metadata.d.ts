@@ -5,7 +5,7 @@ import { RoutePostHandler } from '@e22m4u/js-trie-router';
  */
 export type AfterActionMetadata = {
     propertyKey?: string;
-    middleware: RoutePostHandler | RoutePostHandler[];
+    hook: RoutePostHandler | RoutePostHandler[];
 };
 /**
  * After action metadata key.
