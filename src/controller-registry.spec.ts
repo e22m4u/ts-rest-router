@@ -4,7 +4,7 @@ import {
   createResponseMock,
   HookType,
   HttpMethod,
-  ParsedCookie,
+  ParsedCookies,
   ParsedHeaders,
   ParsedParams,
   ParsedQuery,
@@ -784,7 +784,7 @@ describe('ControllerRegistry', function () {
         @getAction('/myAction')
         myAction(
           @requestCookies()
-          cookies: ParsedCookie,
+          cookies: ParsedCookies,
         ) {
           expect(cookies).to.be.eql({foo: 'bar'});
           checked = true;

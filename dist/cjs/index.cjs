@@ -927,7 +927,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
               data = requestContext2.headers;
               break;
             case RequestDataSource.COOKIE:
-              data = requestContext2.cookie;
+              data = requestContext2.cookies;
               break;
             case RequestDataSource.BODY:
               data = requestContext2.body;

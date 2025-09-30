@@ -450,7 +450,7 @@ export class ControllerRegistry extends DebuggableService {
                 data = requestContext.headers;
                 break;
               case RequestDataSource.COOKIE:
-                data = requestContext.cookie;
+                data = requestContext.cookies;
                 break;
               case RequestDataSource.BODY:
                 data = requestContext.body;
