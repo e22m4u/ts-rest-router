@@ -2,6 +2,7 @@ import {AnyObject} from './types.js';
 import {Constructor} from './types.js';
 import {Errorf} from '@e22m4u/js-format';
 import {TrieRouter} from '@e22m4u/js-trie-router';
+import {DataSchema} from '@e22m4u/ts-data-schema';
 import {RouteHandler} from '@e22m4u/js-trie-router';
 import {DataValidator} from '@e22m4u/ts-data-schema';
 import {DataTypeCaster} from '@e22m4u/ts-data-schema';
@@ -461,22 +462,25 @@ export class ControllerRegistry extends DebuggableService {
             // по умолчанию, выполняется конвертация входящего
             // значения и валидация согласно схеме
             if (requestDataMd.schema) {
+              let dataSchema: DataSchema;
+              if (typeof requestDataMd.schema === 'function') {
+                dataSchema = requestDataMd.schema(this.container);
+                debug('Data schema extracted from factory function.');
+              } else {
+                dataSchema = requestDataMd.schema;
+              }
               data = defaultsApplier.applyDefaultValuesIfNeeded(
                 data,
-                requestDataMd.schema,
+                dataSchema,
                 requestDataMd.source,
               );
               debug('Default values applied.');
-              data = dataTypeCaster.cast(data, requestDataMd.schema, {
+              data = dataTypeCaster.cast(data, dataSchema, {
                 noTypeCastError: true,
                 sourcePath: requestDataMd.source,
               });
               debug('Data type casting applied.');
-              dataValidator.validate(
-                data,
-                requestDataMd.schema,
-                requestDataMd.source,
-              );
+              dataValidator.validate(data, dataSchema, requestDataMd.source);
               debug('Data validation passed.');
             }
             // если свойство данных не определено,

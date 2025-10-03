@@ -23,13 +23,13 @@ export function requestData(options) {
  * @param source
  */
 function createRequestDataDecoratorWithSource(source) {
-    return function (schemaOrType) {
+    return function (schemaInput) {
         let schema;
-        if (typeof schemaOrType === 'object') {
-            schema = schemaOrType;
+        if (typeof schemaInput === 'function' || typeof schemaInput === 'object') {
+            schema = schemaInput;
         }
-        else if (typeof schemaOrType === 'string') {
-            schema = { type: schemaOrType };
+        else if (typeof schemaInput === 'string') {
+            schema = { type: schemaInput };
         }
         else {
             schema = { type: DataType.ANY };
@@ -43,15 +43,23 @@ function createRequestDataDecoratorWithSource(source) {
  * @param source
  */
 function createRequestDataPropertyDecoratorWithSource(source) {
-    return function (propertyKey, schemaOrType) {
-        const properties = {};
+    return function (propertyKey, schemaInput) {
         const rootSchema = { type: DataType.OBJECT };
-        if (typeof schemaOrType === 'object') {
-            properties[propertyKey] = schemaOrType;
+        const properties = {};
+        let schemaOrFactory = rootSchema;
+        if (typeof schemaInput === 'function') {
+            schemaOrFactory = container => {
+                properties[propertyKey] = schemaInput(container);
+                rootSchema.properties = properties;
+                return rootSchema;
+            };
+        }
+        else if (typeof schemaInput === 'object') {
+            properties[propertyKey] = schemaInput;
             rootSchema.properties = properties;
         }
-        else if (typeof schemaOrType === 'string') {
-            properties[propertyKey] = { type: schemaOrType };
+        else if (typeof schemaInput === 'string') {
+            properties[propertyKey] = { type: schemaInput };
             rootSchema.properties = properties;
         }
         else {
@@ -60,7 +68,7 @@ function createRequestDataPropertyDecoratorWithSource(source) {
         }
         return requestData({
             source: source,
-            schema: rootSchema,
+            schema: schemaOrFactory,
             property: propertyKey,
         });
     };

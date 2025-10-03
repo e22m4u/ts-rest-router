@@ -6,18 +6,18 @@ import { ResponseBodyReflector } from './response-body-reflector.js';
  *
  * @param schemaOrType
  */
-export function responseBody(schemaOrType) {
+export function responseBody(schemaInput) {
     return function (target, propertyKey, descriptor) {
         const decoratorType = getDecoratorTargetType(target, propertyKey, descriptor);
         if (decoratorType !== DecoratorTargetType.INSTANCE_METHOD)
             throw new Error('@responseBody decorator is only supported on an instance method.');
-        let schema;
-        if (typeof schemaOrType === 'object') {
-            schema = schemaOrType;
+        let schemaOrFactory;
+        if (typeof schemaInput === 'function' || typeof schemaInput === 'object') {
+            schemaOrFactory = schemaInput;
         }
-        else if (typeof schemaOrType === 'string') {
-            schema = { type: schemaOrType };
+        else if (typeof schemaInput === 'string') {
+            schemaOrFactory = { type: schemaInput };
         }
-        ResponseBodyReflector.setMetadata(schema ? { schema } : {}, target.constructor, propertyKey);
+        ResponseBodyReflector.setMetadata(schemaOrFactory ? { schema: schemaOrFactory } : {}, target.constructor, propertyKey);
     };
 }

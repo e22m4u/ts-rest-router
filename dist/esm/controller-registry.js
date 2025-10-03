@@ -384,14 +384,22 @@ export class ControllerRegistry extends DebuggableService {
                     // по умолчанию, выполняется конвертация входящего
                     // значения и валидация согласно схеме
                     if (requestDataMd.schema) {
-                        data = defaultsApplier.applyDefaultValuesIfNeeded(data, requestDataMd.schema, requestDataMd.source);
+                        let dataSchema;
+                        if (typeof requestDataMd.schema === 'function') {
+                            dataSchema = requestDataMd.schema(this.container);
+                            debug('Data schema extracted from factory function.');
+                        }
+                        else {
+                            dataSchema = requestDataMd.schema;
+                        }
+                        data = defaultsApplier.applyDefaultValuesIfNeeded(data, dataSchema, requestDataMd.source);
                         debug('Default values applied.');
-                        data = dataTypeCaster.cast(data, requestDataMd.schema, {
+                        data = dataTypeCaster.cast(data, dataSchema, {
                             noTypeCastError: true,
                             sourcePath: requestDataMd.source,
                         });
                         debug('Data type casting applied.');
-                        dataValidator.validate(data, requestDataMd.schema, requestDataMd.source);
+                        dataValidator.validate(data, dataSchema, requestDataMd.source);
                         debug('Data validation passed.');
                     }
                     // если свойство данных не определено,

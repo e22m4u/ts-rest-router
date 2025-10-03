@@ -164,7 +164,7 @@ describe('requestData', function () {
                     schema: { type: DataType.STRING },
                 });
             });
-            it('set a given DataSchema to the target metadata', function () {
+            it('sets a given DataSchema to the target metadata', function () {
                 const schema = { type: DataType.STRING, required: true };
                 class Target {
                     myMethod(prop) { }
@@ -179,6 +179,23 @@ describe('requestData', function () {
                 expect(res.get(0)).to.be.eql({
                     source: RequestDataSource.BODY,
                     schema,
+                });
+            });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const factory = () => ({ type: DataType.STRING, required: true });
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestBody(factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const res = RequestDataReflector.getMetadata(Target, 'myMethod');
+                expect(res.get(0)).to.be.eql({
+                    source: RequestDataSource.BODY,
+                    schema: factory,
                 });
             });
         });
@@ -263,6 +280,39 @@ describe('requestData', function () {
                     property: propertyKey,
                 });
             });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const container = {};
+                const factory = sc => {
+                    expect(sc).to.be.eq(container);
+                    return { type: DataType.STRING, required: true };
+                };
+                const propertyKey = 'myPropertyKey';
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestParam(propertyKey, factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
+                const md = mdMap.get(0);
+                expect(md.source).to.be.eq(RequestDataSource.PARAMS);
+                expect(md.schema).to.be.a('function');
+                expect(md.property).to.be.eq(propertyKey);
+                const res1 = md.schema;
+                const res2 = res1(container);
+                expect(res2).to.be.eql({
+                    type: DataType.OBJECT,
+                    properties: {
+                        [propertyKey]: {
+                            type: DataType.STRING,
+                            required: true,
+                        },
+                    },
+                });
+            });
         });
         describe('query', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
@@ -341,6 +391,39 @@ describe('requestData', function () {
                         },
                     },
                     property: propertyKey,
+                });
+            });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const container = {};
+                const factory = sc => {
+                    expect(sc).to.be.eq(container);
+                    return { type: DataType.STRING, required: true };
+                };
+                const propertyKey = 'myPropertyKey';
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestQuery(propertyKey, factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
+                const md = mdMap.get(0);
+                expect(md.source).to.be.eq(RequestDataSource.QUERY);
+                expect(md.schema).to.be.a('function');
+                expect(md.property).to.be.eq(propertyKey);
+                const res1 = md.schema;
+                const res2 = res1(container);
+                expect(res2).to.be.eql({
+                    type: DataType.OBJECT,
+                    properties: {
+                        [propertyKey]: {
+                            type: DataType.STRING,
+                            required: true,
+                        },
+                    },
                 });
             });
         });
@@ -423,6 +506,39 @@ describe('requestData', function () {
                     property: propertyKey,
                 });
             });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const container = {};
+                const factory = sc => {
+                    expect(sc).to.be.eq(container);
+                    return { type: DataType.STRING, required: true };
+                };
+                const propertyKey = 'myPropertyKey';
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestHeader(propertyKey, factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
+                const md = mdMap.get(0);
+                expect(md.source).to.be.eq(RequestDataSource.HEADERS);
+                expect(md.schema).to.be.a('function');
+                expect(md.property).to.be.eq(propertyKey);
+                const res1 = md.schema;
+                const res2 = res1(container);
+                expect(res2).to.be.eql({
+                    type: DataType.OBJECT,
+                    properties: {
+                        [propertyKey]: {
+                            type: DataType.STRING,
+                            required: true,
+                        },
+                    },
+                });
+            });
         });
         describe('cookie', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
@@ -503,6 +619,39 @@ describe('requestData', function () {
                     property: propertyKey,
                 });
             });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const container = {};
+                const factory = sc => {
+                    expect(sc).to.be.eq(container);
+                    return { type: DataType.STRING, required: true };
+                };
+                const propertyKey = 'myPropertyKey';
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestCookie(propertyKey, factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
+                const md = mdMap.get(0);
+                expect(md.source).to.be.eq(RequestDataSource.COOKIE);
+                expect(md.schema).to.be.a('function');
+                expect(md.property).to.be.eq(propertyKey);
+                const res1 = md.schema;
+                const res2 = res1(container);
+                expect(res2).to.be.eql({
+                    type: DataType.OBJECT,
+                    properties: {
+                        [propertyKey]: {
+                            type: DataType.STRING,
+                            required: true,
+                        },
+                    },
+                });
+            });
         });
         describe('field', function () {
             it('sets a given "propertyKey" to the target metadata', function () {
@@ -581,6 +730,39 @@ describe('requestData', function () {
                         },
                     },
                     property: propertyKey,
+                });
+            });
+            it('sets a given DataSchemaFactory to the target metadata', function () {
+                const container = {};
+                const factory = sc => {
+                    expect(sc).to.be.eq(container);
+                    return { type: DataType.STRING, required: true };
+                };
+                const propertyKey = 'myPropertyKey';
+                class Target {
+                    myMethod(prop) { }
+                }
+                __decorate([
+                    __param(0, requestField(propertyKey, factory)),
+                    __metadata("design:type", Function),
+                    __metadata("design:paramtypes", [Object]),
+                    __metadata("design:returntype", void 0)
+                ], Target.prototype, "myMethod", null);
+                const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
+                const md = mdMap.get(0);
+                expect(md.source).to.be.eq(RequestDataSource.BODY);
+                expect(md.schema).to.be.a('function');
+                expect(md.property).to.be.eq(propertyKey);
+                const res1 = md.schema;
+                const res2 = res1(container);
+                expect(res2).to.be.eql({
+                    type: DataType.OBJECT,
+                    properties: {
+                        [propertyKey]: {
+                            type: DataType.STRING,
+                            required: true,
+                        },
+                    },
                 });
             });
         });

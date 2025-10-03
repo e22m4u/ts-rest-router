@@ -1,10 +1,10 @@
 import { MetadataKey } from '@e22m4u/ts-reflector';
-import { DataSchema } from '@e22m4u/ts-data-schema';
+import { DataSchemaOrFactory } from '../../data-schema-types.js';
 /**
  * Response body metadata.
  */
 export type ResponseBodyMetadata = {
-    schema?: DataSchema;
+    schema?: DataSchemaOrFactory;
 };
 /**
  * Response body metadata map.

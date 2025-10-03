@@ -1,5 +1,5 @@
 import { MetadataKey } from '@e22m4u/ts-reflector';
-import { DataSchema } from '@e22m4u/ts-data-schema';
+import { DataSchemaOrFactory } from '../../data-schema-types.js';
 /**
  * Request data source.
  */
@@ -15,7 +15,7 @@ export declare enum RequestDataSource {
  */
 export type RequestDataMetadata = {
     source: RequestDataSource;
-    schema?: DataSchema;
+    schema?: DataSchemaOrFactory;
     property?: string;
 };
 /**

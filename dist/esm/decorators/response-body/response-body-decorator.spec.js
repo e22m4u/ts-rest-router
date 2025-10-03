@@ -38,7 +38,7 @@ describe('responseBody', function () {
         const res = ResponseBodyReflector.getMetadata(Target);
         expect(res.get('myMethod')).to.be.eql({ schema: { type: DataType.STRING } });
     });
-    it('sets the given schema to the target metadata', function () {
+    it('sets the given DataSchema to the target metadata', function () {
         const schema = {
             type: DataType.OBJECT,
             properties: {
@@ -57,5 +57,25 @@ describe('responseBody', function () {
         ], Target.prototype, "myMethod", null);
         const res = ResponseBodyReflector.getMetadata(Target);
         expect(res.get('myMethod')).to.be.eql({ schema });
+    });
+    it('sets the given DataSchemaFactory to the target metadata', function () {
+        const factory = () => ({
+            type: DataType.OBJECT,
+            properties: {
+                foo: { type: DataType.STRING },
+                bar: { type: DataType.NUMBER },
+            },
+        });
+        class Target {
+            myMethod() { }
+        }
+        __decorate([
+            responseBody(factory),
+            __metadata("design:type", Function),
+            __metadata("design:paramtypes", []),
+            __metadata("design:returntype", void 0)
+        ], Target.prototype, "myMethod", null);
+        const res = ResponseBodyReflector.getMetadata(Target);
+        expect(res.get('myMethod')).to.be.eql({ schema: factory });
     });
 });

@@ -1,6 +1,5 @@
 import { Prototype } from '../../types.js';
-import { DataType } from '@e22m4u/ts-data-schema';
-import { DataSchema } from '@e22m4u/ts-data-schema';
+import { DataSchemaInput } from '../../data-schema-types.js';
 import { RequestDataMetadata } from './request-data-metadata.js';
 /**
  * Request data options.
@@ -15,13 +14,13 @@ export declare function requestData<T extends object>(options: RequestDataOption
 /**
  * Decorator aliases.
  */
-export declare const requestParams: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestParam: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestQueries: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestQuery: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestHeaders: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestHeader: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestCookies: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestCookie: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestBody: (schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
-export declare const requestField: (propertyKey: string, schemaOrType?: DataSchema | DataType) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestParams: (schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestParam: (propertyKey: string, schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestQueries: (schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestQuery: (propertyKey: string, schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestHeaders: (schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestHeader: (propertyKey: string, schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestCookies: (schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestCookie: (propertyKey: string, schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestBody: (schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;
+export declare const requestField: (propertyKey: string, schemaInput?: DataSchemaInput) => (target: Prototype<object>, propertyKey: string, index: number) => void;

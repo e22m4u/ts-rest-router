@@ -1,9 +1,9 @@
 import {Prototype} from '../../types.js';
 import {Constructor} from '../../types.js';
-import {DataType} from '@e22m4u/ts-data-schema';
-import {DataSchema} from '@e22m4u/ts-data-schema';
 import {DecoratorTargetType} from '@e22m4u/ts-reflector';
+import {DataSchemaInput} from '../../data-schema-types.js';
 import {getDecoratorTargetType} from '@e22m4u/ts-reflector';
+import {DataSchemaOrFactory} from '../../data-schema-types.js';
 import {ResponseBodyReflector} from './response-body-reflector.js';
 
 /**
@@ -11,9 +11,7 @@ import {ResponseBodyReflector} from './response-body-reflector.js';
  *
  * @param schemaOrType
  */
-export function responseBody<T extends object>(
-  schemaOrType?: DataSchema | DataType,
-) {
+export function responseBody<T extends object>(schemaInput?: DataSchemaInput) {
   return function (
     target: Prototype<T>,
     propertyKey: string,
@@ -28,14 +26,14 @@ export function responseBody<T extends object>(
       throw new Error(
         '@responseBody decorator is only supported on an instance method.',
       );
-    let schema: DataSchema | undefined;
-    if (typeof schemaOrType === 'object') {
-      schema = schemaOrType;
-    } else if (typeof schemaOrType === 'string') {
-      schema = {type: schemaOrType};
+    let schemaOrFactory: DataSchemaOrFactory | undefined;
+    if (typeof schemaInput === 'function' || typeof schemaInput === 'object') {
+      schemaOrFactory = schemaInput;
+    } else if (typeof schemaInput === 'string') {
+      schemaOrFactory = {type: schemaInput};
     }
     ResponseBodyReflector.setMetadata(
-      schema ? {schema} : {},
+      schemaOrFactory ? {schema: schemaOrFactory} : {},
       target.constructor as Constructor<T>,
       propertyKey,
     );

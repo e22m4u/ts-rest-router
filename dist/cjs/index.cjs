@@ -294,12 +294,12 @@ function requestData(options) {
 }
 __name(requestData, "requestData");
 function createRequestDataDecoratorWithSource(source) {
-  return function(schemaOrType) {
+  return function(schemaInput) {
     let schema;
-    if (typeof schemaOrType === "object") {
-      schema = schemaOrType;
-    } else if (typeof schemaOrType === "string") {
-      schema = { type: schemaOrType };
+    if (typeof schemaInput === "function" || typeof schemaInput === "object") {
+      schema = schemaInput;
+    } else if (typeof schemaInput === "string") {
+      schema = { type: schemaInput };
     } else {
       schema = { type: import_ts_data_schema.DataType.ANY };
     }
@@ -308,14 +308,21 @@ function createRequestDataDecoratorWithSource(source) {
 }
 __name(createRequestDataDecoratorWithSource, "createRequestDataDecoratorWithSource");
 function createRequestDataPropertyDecoratorWithSource(source) {
-  return function(propertyKey, schemaOrType) {
-    const properties = {};
+  return function(propertyKey, schemaInput) {
     const rootSchema = { type: import_ts_data_schema.DataType.OBJECT };
-    if (typeof schemaOrType === "object") {
-      properties[propertyKey] = schemaOrType;
+    const properties = {};
+    let schemaOrFactory = rootSchema;
+    if (typeof schemaInput === "function") {
+      schemaOrFactory = /* @__PURE__ */ __name((container) => {
+        properties[propertyKey] = schemaInput(container);
+        rootSchema.properties = properties;
+        return rootSchema;
+      }, "schemaOrFactory");
+    } else if (typeof schemaInput === "object") {
+      properties[propertyKey] = schemaInput;
       rootSchema.properties = properties;
-    } else if (typeof schemaOrType === "string") {
-      properties[propertyKey] = { type: schemaOrType };
+    } else if (typeof schemaInput === "string") {
+      properties[propertyKey] = { type: schemaInput };
       rootSchema.properties = properties;
     } else {
       properties[propertyKey] = { type: import_ts_data_schema.DataType.ANY };
@@ -323,7 +330,7 @@ function createRequestDataPropertyDecoratorWithSource(source) {
     }
     return requestData({
       source,
-      schema: rootSchema,
+      schema: schemaOrFactory,
       property: propertyKey
     });
   };
@@ -478,18 +485,18 @@ __name(_ResponseBodyReflector, "ResponseBodyReflector");
 var ResponseBodyReflector = _ResponseBodyReflector;
 
 // dist/esm/decorators/response-body/response-body-decorator.js
-function responseBody(schemaOrType) {
+function responseBody(schemaInput) {
   return function(target, propertyKey, descriptor) {
     const decoratorType = (0, import_ts_reflector20.getDecoratorTargetType)(target, propertyKey, descriptor);
     if (decoratorType !== import_ts_reflector19.DecoratorTargetType.INSTANCE_METHOD)
       throw new Error("@responseBody decorator is only supported on an instance method.");
-    let schema;
-    if (typeof schemaOrType === "object") {
-      schema = schemaOrType;
-    } else if (typeof schemaOrType === "string") {
-      schema = { type: schemaOrType };
+    let schemaOrFactory;
+    if (typeof schemaInput === "function" || typeof schemaInput === "object") {
+      schemaOrFactory = schemaInput;
+    } else if (typeof schemaInput === "string") {
+      schemaOrFactory = { type: schemaInput };
     }
-    ResponseBodyReflector.setMetadata(schema ? { schema } : {}, target.constructor, propertyKey);
+    ResponseBodyReflector.setMetadata(schemaOrFactory ? { schema: schemaOrFactory } : {}, target.constructor, propertyKey);
   };
 }
 __name(responseBody, "responseBody");
@@ -935,14 +942,21 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
           }
           debug("Request data source is %v.", requestDataMd.source);
           if (requestDataMd.schema) {
-            data = defaultsApplier.applyDefaultValuesIfNeeded(data, requestDataMd.schema, requestDataMd.source);
+            let dataSchema;
+            if (typeof requestDataMd.schema === "function") {
+              dataSchema = requestDataMd.schema(this.container);
+              debug("Data schema extracted from factory function.");
+            } else {
+              dataSchema = requestDataMd.schema;
+            }
+            data = defaultsApplier.applyDefaultValuesIfNeeded(data, dataSchema, requestDataMd.source);
             debug("Default values applied.");
-            data = dataTypeCaster.cast(data, requestDataMd.schema, {
+            data = dataTypeCaster.cast(data, dataSchema, {
               noTypeCastError: true,
               sourcePath: requestDataMd.source
             });
             debug("Data type casting applied.");
-            dataValidator.validate(data, requestDataMd.schema, requestDataMd.source);
+            dataValidator.validate(data, dataSchema, requestDataMd.source);
             debug("Data validation passed.");
           }
           if (requestDataMd.property == null) {

@@ -33,9 +33,11 @@ import {
 } from './decorators/index.js';
 
 import {expect} from 'chai';
+import {Service} from '@e22m4u/js-service';
 import {DataType} from '@e22m4u/ts-data-schema';
+import {ServiceContainer} from '@e22m4u/js-service';
+import {DataSchemaFactory} from './data-schema-types.js';
 import {ControllerRegistry} from './controller-registry.js';
-import {Service, ServiceContainer} from '@e22m4u/js-service';
 
 const PRE_HANDLER_1 = () => undefined;
 const PRE_HANDLER_2 = () => undefined;
@@ -1038,6 +1040,177 @@ describe('ControllerRegistry', function () {
       const ctx1 = new RequestContext(cont1, req, res);
       await handler(ctx1);
       expect(counter).to.be.eq(1);
+    });
+
+    describe('data schema', function () {
+      describe('@requestBody', function () {
+        describe('DataType', function () {
+          it('should cast request data by the specified type', async function () {
+            let invoked = 0;
+            class MyController {
+              myAction(
+                @requestBody(DataType.NUMBER)
+                body: number,
+              ) {
+                expect(body).to.be.eq(10);
+                invoked++;
+              }
+            }
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const S = new ControllerRegistry();
+            const ctx = new RequestContext(S.container, req, res);
+            ctx.body = '10';
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            await handler(ctx);
+            expect(invoked).to.be.eq(1);
+          });
+        });
+
+        describe('DataSchema', function () {
+          it('should apply default value to request data', async function () {
+            let invoked = 0;
+            class MyController {
+              myAction(
+                @requestBody({
+                  type: DataType.STRING,
+                  default: 'OK',
+                })
+                body: string,
+              ) {
+                expect(body).to.be.eq('OK');
+                invoked++;
+              }
+            }
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const S = new ControllerRegistry();
+            const ctx = new RequestContext(S.container, req, res);
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            await handler(ctx);
+            expect(invoked).to.be.eq(1);
+          });
+
+          it('should cast request data by the specified type', async function () {
+            let invoked = 0;
+            class MyController {
+              myAction(
+                @requestBody({type: DataType.NUMBER})
+                body: number,
+              ) {
+                expect(body).to.be.eq(10);
+                invoked++;
+              }
+            }
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const S = new ControllerRegistry();
+            const ctx = new RequestContext(S.container, req, res);
+            ctx.body = '10';
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            await handler(ctx);
+            expect(invoked).to.be.eq(1);
+          });
+
+          it('should validate request data by the given schema', async function () {
+            class MyController {
+              myAction(
+                @requestBody({
+                  type: DataType.OBJECT,
+                  required: true,
+                })
+                body: object,
+              ) {
+                throw new Error('Must not to be invoked');
+                return body;
+              }
+            }
+
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const S = new ControllerRegistry();
+            const ctx = new RequestContext(S.container, req, res);
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            const throwable = () => handler(ctx);
+            expect(throwable).to.throw(/is required, but undefined was given/);
+          });
+        });
+
+        describe('DataSchemaFactory', function () {
+          it('should apply default value to request data', async function () {
+            let invoked = 0;
+            const S = new ControllerRegistry();
+            const factory: DataSchemaFactory = sc => {
+              expect(sc).to.be.eq(S.container);
+              return {type: DataType.STRING, default: 'OK'};
+            };
+            class MyController {
+              myAction(
+                @requestBody(factory)
+                body: string,
+              ) {
+                expect(body).to.be.eq('OK');
+                invoked++;
+              }
+            }
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const ctx = new RequestContext(S.container, req, res);
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            await handler(ctx);
+            expect(invoked).to.be.eq(1);
+          });
+
+          it('should cast request data by the specified type', async function () {
+            let invoked = 0;
+            const S = new ControllerRegistry();
+            const factory: DataSchemaFactory = sc => {
+              expect(sc).to.be.eq(S.container);
+              return {type: DataType.NUMBER};
+            };
+            class MyController {
+              myAction(
+                @requestBody(factory)
+                body: number,
+              ) {
+                expect(body).to.be.eq(10);
+                invoked++;
+              }
+            }
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const ctx = new RequestContext(S.container, req, res);
+            ctx.body = '10';
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            await handler(ctx);
+            expect(invoked).to.be.eq(1);
+          });
+
+          it('should validate request data by the given schema', async function () {
+            const S = new ControllerRegistry();
+            const factory: DataSchemaFactory = sc => {
+              expect(sc).to.be.eq(S.container);
+              return {type: DataType.OBJECT, required: true};
+            };
+            class MyController {
+              myAction(
+                @requestBody(factory)
+                body: object,
+              ) {
+                throw new Error('Must not to be invoked');
+                return body;
+              }
+            }
+
+            const req = createRequestMock();
+            const res = createResponseMock();
+            const ctx = new RequestContext(S.container, req, res);
+            const handler = S['createRouteHandler'](MyController, 'myAction');
+            const throwable = () => handler(ctx);
+            expect(throwable).to.throw(/is required, but undefined was given/);
+          });
+        });
+      });
     });
   });
 });

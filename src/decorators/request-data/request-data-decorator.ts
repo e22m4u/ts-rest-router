@@ -4,9 +4,11 @@ import {Constructor} from '../../types.js';
 import {DataType} from '@e22m4u/ts-data-schema';
 import {DataSchema} from '@e22m4u/ts-data-schema';
 import {DecoratorTargetType} from '@e22m4u/ts-reflector';
+import {DataSchemaInput} from '../../data-schema-types.js';
 import {getDecoratorTargetType} from '@e22m4u/ts-reflector';
 import {RequestDataSource} from './request-data-metadata.js';
 import {RequestDataMetadata} from './request-data-metadata.js';
+import {DataSchemaOrFactory} from '../../data-schema-types.js';
 import {RequestDataReflector} from './request-data-reflector.js';
 
 /**
@@ -42,12 +44,12 @@ export function requestData<T extends object>(options: RequestDataOptions) {
  * @param source
  */
 function createRequestDataDecoratorWithSource(source: RequestDataSource) {
-  return function (schemaOrType?: DataSchema | DataType) {
-    let schema: DataSchema;
-    if (typeof schemaOrType === 'object') {
-      schema = schemaOrType;
-    } else if (typeof schemaOrType === 'string') {
-      schema = {type: schemaOrType};
+  return function (schemaInput?: DataSchemaInput) {
+    let schema: DataSchemaOrFactory;
+    if (typeof schemaInput === 'function' || typeof schemaInput === 'object') {
+      schema = schemaInput;
+    } else if (typeof schemaInput === 'string') {
+      schema = {type: schemaInput};
     } else {
       schema = {type: DataType.ANY};
     }
@@ -63,14 +65,21 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
 function createRequestDataPropertyDecoratorWithSource(
   source: RequestDataSource,
 ) {
-  return function (propertyKey: string, schemaOrType?: DataSchema | DataType) {
-    const properties = {} as NoUndef<DataSchema['properties']>;
+  return function (propertyKey: string, schemaInput?: DataSchemaInput) {
     const rootSchema: DataSchema = {type: DataType.OBJECT};
-    if (typeof schemaOrType === 'object') {
-      properties[propertyKey] = schemaOrType;
+    const properties = {} as NoUndef<DataSchema['properties']>;
+    let schemaOrFactory: DataSchemaOrFactory = rootSchema;
+    if (typeof schemaInput === 'function') {
+      schemaOrFactory = container => {
+        properties[propertyKey] = schemaInput(container);
+        rootSchema.properties = properties;
+        return rootSchema;
+      };
+    } else if (typeof schemaInput === 'object') {
+      properties[propertyKey] = schemaInput;
       rootSchema.properties = properties;
-    } else if (typeof schemaOrType === 'string') {
-      properties[propertyKey] = {type: schemaOrType};
+    } else if (typeof schemaInput === 'string') {
+      properties[propertyKey] = {type: schemaInput};
       rootSchema.properties = properties;
     } else {
       properties[propertyKey] = {type: DataType.ANY};
@@ -78,7 +87,7 @@ function createRequestDataPropertyDecoratorWithSource(
     }
     return requestData({
       source: source,
-      schema: rootSchema,
+      schema: schemaOrFactory,
       property: propertyKey,
     });
   };
