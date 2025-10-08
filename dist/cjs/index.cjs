@@ -16,6 +16,7 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // dist/esm/index.js
@@ -42,7 +43,6 @@ __export(index_exports, {
   afterAction: () => afterAction,
   beforeAction: () => beforeAction,
   capitalize: () => capitalize,
-  createError: () => createError,
   deleteAction: () => deleteAction,
   getAction: () => getAction,
   httpRequest: () => httpRequest,
@@ -65,10 +65,10 @@ __export(index_exports, {
   requestQuery: () => requestQuery,
   responseBody: () => responseBody,
   restAction: () => restAction,
-  restController: () => restController,
-  toCamelCase: () => toCamelCase
+  restController: () => restController
 });
 module.exports = __toCommonJS(index_exports);
+__reExport(index_exports, require("@e22m4u/js-trie-router"), module.exports);
 
 // dist/esm/utils/capitalize.js
 function capitalize(input) {
@@ -76,66 +76,36 @@ function capitalize(input) {
 }
 __name(capitalize, "capitalize");
 
-// dist/esm/utils/create-error.js
-var import_js_format = require("@e22m4u/js-format");
-function createError(errorCtor, message, ...args) {
-  const interpolatedMessage = (0, import_js_format.format)(message, ...args);
-  return new errorCtor(interpolatedMessage);
-}
-__name(createError, "createError");
-
-// dist/esm/utils/to-camel-case.js
-function toCamelCase(input) {
-  return input.replace(/(^\w|[A-Z]|\b\w)/g, (c) => c.toUpperCase()).replace(/\W+/g, "").replace(/(^\w)/g, (c) => c.toLowerCase());
-}
-__name(toCamelCase, "toCamelCase");
-
 // dist/esm/rest-router.js
 var import_js_trie_router3 = require("@e22m4u/js-trie-router");
 
 // dist/esm/debuggable-service.js
 var import_js_service = require("@e22m4u/js-service");
-var import_js_debug = require("@e22m4u/js-debug");
-var _DebuggableService = class _DebuggableService extends import_js_service.Service {
-  /**
-   * Debug.
-   */
-  debug;
-  /**
-   * Возвращает функцию-отладчик с сегментом пространства имен
-   * указанного в параметре метода.
-   *
-   * @param method
-   * @protected
-   */
-  getDebuggerFor(method) {
-    return this.debug.withHash().withNs(method.name);
-  }
+var _DebuggableService = class _DebuggableService extends import_js_service.DebuggableService {
   /**
    * Constructor.
    *
    * @param container
    */
   constructor(container) {
-    super(container);
-    const serviceName = toCamelCase(this.constructor.name);
-    this.debug = (0, import_js_debug.createDebugger)("tsRestRouter", serviceName).withoutEnvNs();
-    const debug = this.debug.withNs("constructor").withHash();
-    debug("Service created.");
+    super(container, {
+      namespace: "tsRestRouter",
+      noEnvironmentNamespace: true
+    });
   }
 };
 __name(_DebuggableService, "DebuggableService");
 var DebuggableService = _DebuggableService;
 
 // dist/esm/controller-registry.js
-var import_js_format3 = require("@e22m4u/js-format");
+var import_js_format2 = require("@e22m4u/js-format");
 var import_js_trie_router2 = require("@e22m4u/js-trie-router");
 var import_ts_data_schema2 = require("@e22m4u/ts-data-schema");
 var import_ts_data_schema3 = require("@e22m4u/ts-data-schema");
 
 // dist/esm/errors/not-a-controller-error.js
-var import_js_format2 = require("@e22m4u/js-format");
-var _NotAControllerError = class _NotAControllerError extends import_js_format2.Errorf {
+var import_js_format = require("@e22m4u/js-format");
+var _NotAControllerError = class _NotAControllerError extends import_js_format.Errorf {
   /**
    * Constructor.
    *
@@ -631,7 +601,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   addController(ctor, options) {
     const debug = this.getDebuggerFor(this.addController);
     if (this.hasController(ctor))
-      throw new import_js_format3.Errorf("The controller %v is already registered.", ctor.name);
+      throw new import_js_format2.Errorf("The controller %v is already registered.", ctor.name);
     const controllerMd = RestControllerReflector.getMetadata(ctor);
     if (!controllerMd)
       throw new NotAControllerError(ctor);
@@ -718,7 +688,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     debug("Metadata target is %s.", ctor.name);
     const md = RestControllerReflector.getMetadata(ctor);
     if (!md)
-      throw new import_js_format3.Errorf("Controller %v has no metadata.", ctor);
+      throw new import_js_format2.Errorf("Controller %v has no metadata.", ctor);
     const res = md.path || "";
     debug("Controller path prefix is %v.", res);
     return md.path || "";
@@ -822,7 +792,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     debug("Target is %s.", ctor.name);
     const md = RestControllerReflector.getMetadata(ctor);
     if (!md)
-      throw new import_js_format3.Errorf("Controller %v has no metadata.", ctor);
+      throw new import_js_format2.Errorf("Controller %v has no metadata.", ctor);
     let res = [];
     if (md.before)
       res = Array.isArray(md.before) ? md.before : [md.before];
@@ -839,7 +809,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     debug("Getting post-handlers from @restController metadata.");
     const md = RestControllerReflector.getMetadata(ctor);
     if (!md)
-      throw new import_js_format3.Errorf("Controller %v has no metadata.", ctor);
+      throw new import_js_format2.Errorf("Controller %v has no metadata.", ctor);
     let res = [];
     if (md.after)
       res = Array.isArray(md.after) ? md.after : [md.after];
@@ -858,7 +828,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     const actionsMd = RestActionReflector.getMetadata(ctor);
     const actionMd = actionsMd.get(actionName);
     if (!actionMd)
-      throw new import_js_format3.Errorf("Action %s.%s has no metadata.", ctor.name, actionName);
+      throw new import_js_format2.Errorf("Action %s.%s has no metadata.", ctor.name, actionName);
     let res = [];
     if (actionMd.before)
       res = Array.isArray(actionMd.before) ? actionMd.before : [actionMd.before];
@@ -877,7 +847,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     const actionsMd = RestActionReflector.getMetadata(ctor);
     const actionMd = actionsMd.get(actionName);
     if (!actionMd)
-      throw new import_js_format3.Errorf("Action %s.%s has no metadata.", ctor.name, actionName);
+      throw new import_js_format2.Errorf("Action %s.%s has no metadata.", ctor.name, actionName);
     let res = [];
     if (actionMd.after)
       res = Array.isArray(actionMd.after) ? actionMd.after : [actionMd.after];
@@ -975,7 +945,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
         }
       });
       if (requestContext2.container.has(controllerCtor))
-        throw new import_js_format3.Errorf("The controller %v is already registered, which breaks controller isolation per request.", controllerCtor.name);
+        throw new import_js_format2.Errorf("The controller %v is already registered, which breaks controller isolation per request.", controllerCtor.name);
       const controller = requestContext2.container.get(controllerCtor);
       return controller[actionName](...args);
     };
@@ -1028,7 +998,6 @@ var RestRouter = _RestRouter;
   afterAction,
   beforeAction,
   capitalize,
-  createError,
   deleteAction,
   getAction,
   httpRequest,
@@ -1052,5 +1021,5 @@ var RestRouter = _RestRouter;
   responseBody,
   restAction,
   restController,
-  toCamelCase
+  ...require("@e22m4u/js-trie-router")
 });

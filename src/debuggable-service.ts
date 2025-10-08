@@ -1,40 +1,19 @@
-import {Callable} from './types.js';
-import {Debugger} from '@e22m4u/js-debug';
-import {Service} from '@e22m4u/js-service';
-import {toCamelCase} from './utils/index.js';
-import {createDebugger} from '@e22m4u/js-debug';
 import {ServiceContainer} from '@e22m4u/js-service';
+import {DebuggableService as BaseDebuggableService} from '@e22m4u/js-service';
 
 /**
- * Service.
+ * Base debuggable service.
  */
-export class DebuggableService extends Service {
-  /**
-   * Debug.
-   */
-  debug: Debugger;
-
-  /**
-   * Возвращает функцию-отладчик с сегментом пространства имен
-   * указанного в параметре метода.
-   *
-   * @param method
-   * @protected
-   */
-  protected getDebuggerFor(method: Callable) {
-    return this.debug.withHash().withNs(method.name);
-  }
-
+export class DebuggableService extends BaseDebuggableService {
   /**
    * Constructor.
    *
    * @param container
    */
   constructor(container?: ServiceContainer) {
-    super(container);
-    const serviceName = toCamelCase(this.constructor.name);
-    this.debug = createDebugger('tsRestRouter', serviceName).withoutEnvNs();
-    const debug = this.debug.withNs('constructor').withHash();
-    debug('Service created.');
+    super(container, {
+      namespace: 'tsRestRouter',
+      noEnvironmentNamespace: true,
+    });
   }
 }

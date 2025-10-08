@@ -1,3 +1,5 @@
+export * from '@e22m4u/js-trie-router';
+
 export * from './utils/index.js';
 export * from './rest-router.js';
 export * from './errors/index.js';
