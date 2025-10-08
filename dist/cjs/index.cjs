@@ -42,7 +42,6 @@ __export(index_exports, {
   RestRouter: () => RestRouter,
   afterAction: () => afterAction,
   beforeAction: () => beforeAction,
-  capitalize: () => capitalize,
   deleteAction: () => deleteAction,
   getAction: () => getAction,
   httpRequest: () => httpRequest,
@@ -69,12 +68,6 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 __reExport(index_exports, require("@e22m4u/js-trie-router"), module.exports);
-
-// dist/esm/utils/capitalize.js
-function capitalize(input) {
-  return input.charAt(0).toUpperCase() + input.slice(1);
-}
-__name(capitalize, "capitalize");
 
 // dist/esm/rest-router.js
 var import_js_trie_router3 = require("@e22m4u/js-trie-router");
@@ -997,7 +990,6 @@ var RestRouter = _RestRouter;
   RestRouter,
   afterAction,
   beforeAction,
-  capitalize,
   deleteAction,
   getAction,
   httpRequest,
