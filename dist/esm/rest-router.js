@@ -21,4 +21,14 @@ export class RestRouter extends DebuggableService {
         this.getService(ControllerRegistry).addController(ctor, options);
         return this;
     }
+    /**
+     * Add hook.
+     *
+     * @param type
+     * @param hook
+     */
+    addHook(type, hook) {
+        this.getService(TrieRouter).addHook(type, hook);
+        return this;
+    }
 }

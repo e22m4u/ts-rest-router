@@ -1,4 +1,6 @@
 import {Constructor} from './types.js';
+import {HookType} from '@e22m4u/js-trie-router';
+import {RouterHook} from '@e22m4u/js-trie-router';
 import {TrieRouter} from '@e22m4u/js-trie-router';
 import {DebuggableService} from './debuggable-service.js';
 import {ControllerRegistry} from './controller-registry.js';
@@ -26,6 +28,17 @@ export class RestRouter extends DebuggableService {
     options?: ControllerRootOptions,
   ): this {
     this.getService(ControllerRegistry).addController(ctor, options);
+    return this;
+  }
+
+  /**
+   * Add hook.
+   *
+   * @param type
+   * @param hook
+   */
+  addHook(type: HookType, hook: RouterHook) {
+    this.getService(TrieRouter).addHook(type, hook);
     return this;
   }
 }
