@@ -4,12 +4,12 @@ import {Constructor} from '../../types.js';
 import {DataType} from '@e22m4u/ts-data-schema';
 import {DataSchema} from '@e22m4u/ts-data-schema';
 import {DecoratorTargetType} from '@e22m4u/ts-reflector';
-import {DataSchemaInput} from '../../data-schema-types.js';
 import {getDecoratorTargetType} from '@e22m4u/ts-reflector';
 import {RequestDataSource} from './request-data-metadata.js';
 import {RequestDataMetadata} from './request-data-metadata.js';
 import {DataSchemaOrFactory} from '../../data-schema-types.js';
 import {RequestDataReflector} from './request-data-reflector.js';
+import {DataSchemaDecoratorInput} from '../../data-schema-types.js';
 
 /**
  * Request data options.
@@ -44,7 +44,7 @@ export function requestData<T extends object>(options: RequestDataOptions) {
  * @param source
  */
 function createRequestDataDecoratorWithSource(source: RequestDataSource) {
-  return function (schemaInput?: DataSchemaInput) {
+  return function (schemaInput?: DataSchemaDecoratorInput) {
     let schema: DataSchemaOrFactory;
     if (typeof schemaInput === 'function' || typeof schemaInput === 'object') {
       schema = schemaInput;
@@ -65,7 +65,10 @@ function createRequestDataDecoratorWithSource(source: RequestDataSource) {
 function createRequestDataPropertyDecoratorWithSource(
   source: RequestDataSource,
 ) {
-  return function (propertyKey: string, schemaInput?: DataSchemaInput) {
+  return function (
+    propertyKey: string,
+    schemaInput?: DataSchemaDecoratorInput,
+  ) {
     const rootSchema: DataSchema = {type: DataType.OBJECT};
     const properties = {} as NoUndef<DataSchema['properties']>;
     let schemaOrFactory: DataSchemaOrFactory = rootSchema;

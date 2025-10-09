@@ -1,17 +1,19 @@
 import {Prototype} from '../../types.js';
 import {Constructor} from '../../types.js';
 import {DecoratorTargetType} from '@e22m4u/ts-reflector';
-import {DataSchemaInput} from '../../data-schema-types.js';
 import {getDecoratorTargetType} from '@e22m4u/ts-reflector';
 import {DataSchemaOrFactory} from '../../data-schema-types.js';
 import {ResponseBodyReflector} from './response-body-reflector.js';
+import {DataSchemaDecoratorInput} from '../../data-schema-types.js';
 
 /**
  * Response body decorator.
  *
  * @param schemaOrType
  */
-export function responseBody<T extends object>(schemaInput?: DataSchemaInput) {
+export function responseBody<T extends object>(
+  schemaInput?: DataSchemaDecoratorInput,
+) {
   return function (
     target: Prototype<T>,
     propertyKey: string,

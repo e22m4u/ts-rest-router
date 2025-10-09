@@ -16,7 +16,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // dist/esm/index.js
@@ -33,6 +32,7 @@ __export(index_exports, {
   RESPONSE_BODY_METADATA_KEY: () => RESPONSE_BODY_METADATA_KEY,
   REST_ACTIONS_METADATA_KEY: () => REST_ACTIONS_METADATA_KEY,
   REST_CONTROLLER_METADATA_KEY: () => REST_CONTROLLER_METADATA_KEY,
+  RequestContext: () => import_js_trie_router4.RequestContext,
   RequestContextReflector: () => RequestContextReflector,
   RequestDataReflector: () => RequestDataReflector,
   RequestDataSource: () => RequestDataSource,
@@ -67,7 +67,6 @@ __export(index_exports, {
   restController: () => restController
 });
 module.exports = __toCommonJS(index_exports);
-__reExport(index_exports, require("@e22m4u/js-trie-router"), module.exports);
 
 // dist/esm/rest-router.js
 var import_js_trie_router3 = require("@e22m4u/js-trie-router");
@@ -978,6 +977,9 @@ var _RestRouter = class _RestRouter extends DebuggableService {
 };
 __name(_RestRouter, "RestRouter");
 var RestRouter = _RestRouter;
+
+// dist/esm/index.js
+var import_js_trie_router4 = require("@e22m4u/js-trie-router");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AFTER_ACTION_METADATA_KEY,
@@ -991,6 +993,7 @@ var RestRouter = _RestRouter;
   RESPONSE_BODY_METADATA_KEY,
   REST_ACTIONS_METADATA_KEY,
   REST_CONTROLLER_METADATA_KEY,
+  RequestContext,
   RequestContextReflector,
   RequestDataReflector,
   RequestDataSource,
@@ -1022,6 +1025,5 @@ var RestRouter = _RestRouter;
   requestQuery,
   responseBody,
   restAction,
-  restController,
-  ...require("@e22m4u/js-trie-router")
+  restController
 });

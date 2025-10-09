@@ -10,6 +10,6 @@ export type DataSchemaFactory = (container: ServiceContainer) => DataSchema;
  */
 export type DataSchemaOrFactory = DataSchema | DataSchemaFactory;
 /**
- * Data schema input.
+ * Data schema decorator input.
  */
-export type DataSchemaInput = DataSchemaOrFactory | DataType;
+export type DataSchemaDecoratorInput = DataSchemaOrFactory | DataType;
