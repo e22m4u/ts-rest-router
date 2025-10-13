@@ -44,7 +44,7 @@
     "@e22m4u/js-debug": "~0.3.1",
     "@e22m4u/js-format": "~0.2.0",
     "@e22m4u/js-service": "~0.4.3",
-    "@e22m4u/js-trie-router": "~0.3.1",
+    "@e22m4u/js-trie-router": "~0.3.2",
     "@e22m4u/ts-data-schema": "~0.4.5",
     "@e22m4u/ts-reflector": "~0.1.8",
     "http-errors": "~2.0.0"
