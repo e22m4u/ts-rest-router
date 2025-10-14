@@ -1,4 +1,4 @@
-import { DataType } from '@e22m4u/ts-data-schema';
+import { DataType } from '@e22m4u/js-data-schema';
 import { DecoratorTargetType } from '@e22m4u/ts-reflector';
 import { getDecoratorTargetType } from '@e22m4u/ts-reflector';
 import { RequestDataSource } from './request-data-metadata.js';

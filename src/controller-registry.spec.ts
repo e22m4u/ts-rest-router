@@ -34,7 +34,7 @@ import {
 
 import {expect} from 'chai';
 import {Service} from '@e22m4u/js-service';
-import {DataType} from '@e22m4u/ts-data-schema';
+import {DataType} from '@e22m4u/js-data-schema';
 import {ServiceContainer} from '@e22m4u/js-service';
 import {DataSchemaFactory} from './data-schema-types.js';
 import {ControllerRegistry} from './controller-registry.js';

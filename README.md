@@ -18,7 +18,7 @@
   аргументам методов.
 - **Встроенная валидация**  
   Использование схем данных из
-  [@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema)
+  [@e22m4u/js-data-schema](https://www.npmjs.com/package/@e22m4u/js-data-schema)
   для описания сложных правил проверки.
 - **Хуки (`@beforeAction`, `@afterAction`)**  
   Поддержка хуков для выполнения сквозной логики (например, аутентификация
@@ -326,7 +326,7 @@ class SystemController {
 ## Валидация и схемы данных
 
 Модуль интегрирован с
-[@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema)
+[@e22m4u/js-data-schema](https://www.npmjs.com/package/@e22m4u/js-data-schema)
 для гибкой проверки данных. Это дает возможность определять типы данных
 и сложные правила.
 

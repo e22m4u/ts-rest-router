@@ -92,8 +92,8 @@ var DebuggableService = _DebuggableService;
 // dist/esm/controller-registry.js
 var import_js_format2 = require("@e22m4u/js-format");
 var import_js_trie_router2 = require("@e22m4u/js-trie-router");
-var import_ts_data_schema2 = require("@e22m4u/ts-data-schema");
-var import_ts_data_schema3 = require("@e22m4u/ts-data-schema");
+var import_js_data_schema2 = require("@e22m4u/js-data-schema");
+var import_js_data_schema3 = require("@e22m4u/js-data-schema");
 
 // dist/esm/errors/not-a-controller-error.js
 var import_js_format = require("@e22m4u/js-format");
@@ -210,7 +210,7 @@ var RequestDataSource;
 var REQUEST_DATA_METADATA_KEY = new import_ts_reflector5.MetadataKey("requestDataMetadataKey");
 
 // dist/esm/decorators/request-data/request-data-decorator.js
-var import_ts_data_schema = require("@e22m4u/ts-data-schema");
+var import_js_data_schema = require("@e22m4u/js-data-schema");
 var import_ts_reflector7 = require("@e22m4u/ts-reflector");
 var import_ts_reflector8 = require("@e22m4u/ts-reflector");
 
@@ -263,7 +263,7 @@ function createRequestDataDecoratorWithSource(source) {
     } else if (typeof schemaInput === "string") {
       schema = { type: schemaInput };
     } else {
-      schema = { type: import_ts_data_schema.DataType.ANY };
+      schema = { type: import_js_data_schema.DataType.ANY };
     }
     return requestData({ schema, source });
   };
@@ -271,7 +271,7 @@ function createRequestDataDecoratorWithSource(source) {
 __name(createRequestDataDecoratorWithSource, "createRequestDataDecoratorWithSource");
 function createRequestDataPropertyDecoratorWithSource(source) {
   return function(propertyKey, schemaInput) {
-    const rootSchema = { type: import_ts_data_schema.DataType.OBJECT };
+    const rootSchema = { type: import_js_data_schema.DataType.OBJECT };
     const properties = {};
     let schemaOrFactory = rootSchema;
     if (typeof schemaInput === "function") {
@@ -287,7 +287,7 @@ function createRequestDataPropertyDecoratorWithSource(source) {
       properties[propertyKey] = { type: schemaInput };
       rootSchema.properties = properties;
     } else {
-      properties[propertyKey] = { type: import_ts_data_schema.DataType.ANY };
+      properties[propertyKey] = { type: import_js_data_schema.DataType.ANY };
       rootSchema.properties = properties;
     }
     return requestData({
@@ -578,7 +578,7 @@ function requestContainer() {
 __name(requestContainer, "requestContainer");
 
 // dist/esm/controller-registry.js
-var import_ts_data_schema4 = require("@e22m4u/ts-data-schema");
+var import_js_data_schema4 = require("@e22m4u/js-data-schema");
 var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
   /**
    * Controller map.
@@ -859,9 +859,9 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
     const requestContextMetadataMap = RequestContextReflector.getMetadata(controllerCtor, actionName);
     const requestDataMetadataMap = RequestDataReflector.getMetadata(controllerCtor, actionName);
     const argsNumber = controllerCtor.prototype[actionName].length;
-    const defaultsApplier = this.getService(import_ts_data_schema4.DefaultValuesApplier);
-    const dataTypeCaster = this.getService(import_ts_data_schema3.DataTypeCaster);
-    const dataValidator = this.getService(import_ts_data_schema2.DataValidator);
+    const defaultsApplier = this.getService(import_js_data_schema4.DefaultValuesApplier);
+    const dataTypeCaster = this.getService(import_js_data_schema3.DataTypeCaster);
+    const dataValidator = this.getService(import_js_data_schema2.DataValidator);
     return (requestContext2) => {
       debug("Executing route handler for %s.%s.", controllerCtor.name, actionName);
       const args = Array(argsNumber).fill(void 0).map((_, index) => {

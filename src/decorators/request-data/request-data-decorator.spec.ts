@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {expect} from 'chai';
-import {DataType} from '@e22m4u/ts-data-schema';
+import {DataType} from '@e22m4u/js-data-schema';
 import {ServiceContainer} from '@e22m4u/js-service';
 import {requestData} from './request-data-decorator.js';
 import {requestBody} from './request-data-decorator.js';

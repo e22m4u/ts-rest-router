@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {DataType} from '@e22m4u/ts-data-schema';
+import {DataType} from '@e22m4u/js-data-schema';
 import {responseBody} from './response-body-decorator.js';
 import {ResponseBodyReflector} from './response-body-reflector.js';
 
