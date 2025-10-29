@@ -68,9 +68,6 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
-// dist/esm/rest-router.js
-var import_js_trie_router3 = require("@e22m4u/js-trie-router");
-
 // dist/esm/debuggable-service.js
 var import_js_service = require("@e22m4u/js-service");
 var _DebuggableService = class _DebuggableService extends import_js_service.DebuggableService {
@@ -88,6 +85,9 @@ var _DebuggableService = class _DebuggableService extends import_js_service.Debu
 };
 __name(_DebuggableService, "DebuggableService");
 var DebuggableService = _DebuggableService;
+
+// dist/esm/rest-router.js
+var import_js_trie_router3 = require("@e22m4u/js-trie-router");
 
 // dist/esm/controller-registry.js
 var import_js_format2 = require("@e22m4u/js-format");

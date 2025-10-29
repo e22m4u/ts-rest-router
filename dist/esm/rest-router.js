@@ -1,6 +1,6 @@
-import { TrieRouter } from '@e22m4u/js-trie-router';
 import { DebuggableService } from './debuggable-service.js';
-import { ControllerRegistry } from './controller-registry.js';
+import { TrieRouter, } from '@e22m4u/js-trie-router';
+import { ControllerRegistry, } from './controller-registry.js';
 /**
  * Rest router.
  */
