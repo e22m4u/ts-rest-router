@@ -4,7 +4,7 @@ import {DebuggableService} from './debuggable-service.js';
 import {
   TrieRouter,
   RouterHook,
-  HookType,
+  RouterHookType,
   PostHandlerHook,
   PreHandlerHook,
 } from '@e22m4u/js-trie-router';
@@ -45,7 +45,7 @@ export class RestRouter extends DebuggableService {
    * @param type
    * @param hook
    */
-  addHook(type: typeof HookType.PRE_HANDLER, hook: PreHandlerHook): this;
+  addHook(type: typeof RouterHookType.PRE_HANDLER, hook: PreHandlerHook): this;
 
   /**
    * Add hook.
@@ -53,7 +53,10 @@ export class RestRouter extends DebuggableService {
    * @param type
    * @param hook
    */
-  addHook(type: typeof HookType.POST_HANDLER, hook: PostHandlerHook): this;
+  addHook(
+    type: typeof RouterHookType.POST_HANDLER,
+    hook: PostHandlerHook,
+  ): this;
 
   /**
    * Add hook.
@@ -61,7 +64,7 @@ export class RestRouter extends DebuggableService {
    * @param type
    * @param hook
    */
-  addHook(type: HookType, hook: RouterHook) {
+  addHook(type: RouterHookType, hook: RouterHook) {
     this.getService(TrieRouter).addHook(type, hook);
     return this;
   }

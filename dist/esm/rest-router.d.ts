@@ -1,6 +1,6 @@
 import { Constructor } from './types.js';
 import { DebuggableService } from './debuggable-service.js';
-import { HookType, PostHandlerHook, PreHandlerHook } from '@e22m4u/js-trie-router';
+import { RouterHookType, PostHandlerHook, PreHandlerHook } from '@e22m4u/js-trie-router';
 import { ControllerRootOptions } from './controller-registry.js';
 /**
  * Rest router.
@@ -23,12 +23,12 @@ export declare class RestRouter extends DebuggableService {
      * @param type
      * @param hook
      */
-    addHook(type: typeof HookType.PRE_HANDLER, hook: PreHandlerHook): this;
+    addHook(type: typeof RouterHookType.PRE_HANDLER, hook: PreHandlerHook): this;
     /**
      * Add hook.
      *
      * @param type
      * @param hook
      */
-    addHook(type: typeof HookType.POST_HANDLER, hook: PostHandlerHook): this;
+    addHook(type: typeof RouterHookType.POST_HANDLER, hook: PostHandlerHook): this;
 }

@@ -2,7 +2,7 @@
 import {
   createRequestMock,
   createResponseMock,
-  HookType,
+  RouterHookType,
   HttpMethod,
   ParsedCookies,
   ParsedHeaders,
@@ -182,7 +182,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
@@ -202,7 +204,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
@@ -222,7 +226,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
@@ -241,7 +247,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
 
@@ -260,7 +268,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1]);
       });
     });
@@ -283,7 +293,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
@@ -303,7 +315,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
@@ -323,7 +337,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
@@ -344,7 +360,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
 
@@ -365,7 +383,9 @@ describe('ControllerRegistry', function () {
         });
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
-        const res = matching!.route.hookRegistry.getHooks(HookType.PRE_HANDLER);
+        const res = matching!.route.hookRegistry.getHooks(
+          RouterHookType.PRE_HANDLER,
+        );
         expect(res).to.be.eql([PRE_HANDLER_1, PRE_HANDLER_2]);
       });
     });
@@ -387,7 +407,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
@@ -409,7 +429,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
@@ -431,7 +451,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
@@ -452,7 +472,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
@@ -473,7 +493,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1]);
       });
@@ -498,7 +518,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
@@ -520,7 +540,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
@@ -542,7 +562,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
@@ -565,7 +585,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
@@ -588,7 +608,7 @@ describe('ControllerRegistry', function () {
         const matching = routeReg.matchRouteByRequest(req);
         expect(matching).to.be.not.empty;
         const res = matching!.route.hookRegistry.getHooks(
-          HookType.POST_HANDLER,
+          RouterHookType.POST_HANDLER,
         );
         expect(res).to.be.eql([POST_HANDLER_1, POST_HANDLER_2]);
       });
