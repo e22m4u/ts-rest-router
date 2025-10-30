@@ -29,7 +29,7 @@
 - **Производительность и гибкая архитектура**  
   Основан на
   [@e22m4u/js-trie-router](https://www.npmjs.com/package/@e22m4u/js-trie-router)
-  для маршрутизации на базе *префиксного дерева* и
+  для маршрутизации на базе _префиксного дерева_ и
   [@e22m4u/js-service](https://www.npmjs.com/package/@e22m4u/js-service)
   для внедрения зависимостей.
 
@@ -86,9 +86,7 @@ import {
 } from '@e22m4u/ts-rest-router';
 
 // Временное хранилище данных
-const users = [
-  {id: 1, name: 'John Doe'},
-];
+const users = [{id: 1, name: 'John Doe'}];
 
 // 1. Декоратор @restController определяет класс как контроллер
 //    и устанавливает базовый путь для всех его маршрутов.
@@ -113,7 +111,7 @@ export class UserController {
       properties: {
         name: {
           type: DataType.STRING,
-          required: true
+          required: true,
         },
       },
     })
@@ -148,7 +146,7 @@ async function bootstrap() {
     console.log('Server is running on http://localhost:3000');
     console.log('Try GET http://localhost:3000/users');
     console.log(
-      'Try POST http://localhost:3000/users with body {"name": "Jane Doe"}'
+      'Try POST http://localhost:3000/users with body {"name": "Jane Doe"}',
     );
   });
 }
@@ -265,7 +263,10 @@ class UserController {
         },
       },
     })
-    body: {username: string; email: string},
+    body: {
+      username: string;
+      email: string;
+    },
   ) {
     return {id: 1, ...body};
   }
@@ -349,7 +350,7 @@ type DataSchema = {
   items?: DataSchema; // Схема для элементов массива (для type: DataType.ARRAY)
   properties?: {[key: string]: DataSchema}; // Схема для свойств объекта
   validate?: (value: any) => boolean | string; // Пользовательская функция
-}
+};
 ```
 
 **Пример сложной валидации:**
@@ -377,20 +378,22 @@ class OrderController {
             properties: {
               id: {
                 type: DataType.NUMBER,
-                required: true
+                required: true,
               },
               quantity: {
                 type: DataType.NUMBER,
                 required: true,
                 // Валидатор: количество должно быть больше 0
-                validate: (qty) => qty > 0 || 'Quantity must be positive',
+                validate: qty => qty > 0 || 'Quantity must be positive',
               },
             },
           },
         },
       },
     })
-    orderData: { /* ... */ },
+    orderData: {
+      /* ... */
+    },
   ) {
     // ...
   }
@@ -505,12 +508,12 @@ export async function authHook(context: RequestContext) {
 import {Service} from '@e22m4u/js-service';
 
 export class AuthService extends Service {
-  public currentUser?: {id: number; name: string;};
+  public currentUser?: {id: number; name: string};
 
   async authenticate(token?: string) {
     // Логика проверки токена и поиска пользователя в БД...
     if (token === 'valid-token') {
-      this.currentUser = { id: 1, name: 'John Doe' };
+      this.currentUser = {id: 1, name: 'John Doe'};
     }
   }
 }
@@ -528,11 +531,7 @@ import {authHook} from './auth.hook';
 import createError from 'http-errors';
 import {Service} from '@e22m4u/js-service';
 import {AuthService} from './auth.service';
-import {
-  getAction,
-  restController,
-  beforeAction,
-} from '@e22m4u/ts-rest-router';
+import {getAction, restController, beforeAction} from '@e22m4u/ts-rest-router';
 
 @beforeAction(authHook)
 @restController('profile')
@@ -543,9 +542,8 @@ export class ProfileController extends Service {
     // который был создан и зарегистрирован в хуке.
     const authService = this.getService(AuthService);
 
-    if (!authService.currentUser)
-      throw createError(401, 'Unauthorized');
-      
+    if (!authService.currentUser) throw createError(401, 'Unauthorized');
+
     return authService.currentUser;
   }
 }

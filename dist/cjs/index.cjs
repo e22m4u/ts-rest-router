@@ -32,7 +32,7 @@ __export(index_exports, {
   RESPONSE_BODY_METADATA_KEY: () => RESPONSE_BODY_METADATA_KEY,
   REST_ACTIONS_METADATA_KEY: () => REST_ACTIONS_METADATA_KEY,
   REST_CONTROLLER_METADATA_KEY: () => REST_CONTROLLER_METADATA_KEY,
-  RequestContext: () => import_js_trie_router4.RequestContext,
+  RequestContext: () => import_js_trie_router5.RequestContext,
   RequestContextReflector: () => RequestContextReflector,
   RequestDataReflector: () => RequestDataReflector,
   RequestDataSource: () => RequestDataSource,
@@ -40,6 +40,7 @@ __export(index_exports, {
   RestActionReflector: () => RestActionReflector,
   RestControllerReflector: () => RestControllerReflector,
   RestRouter: () => RestRouter,
+  RouterHookType: () => import_js_trie_router4.RouterHookType,
   afterAction: () => afterAction,
   beforeAction: () => beforeAction,
   deleteAction: () => deleteAction,
@@ -980,6 +981,7 @@ var RestRouter = _RestRouter;
 
 // dist/esm/index.js
 var import_js_trie_router4 = require("@e22m4u/js-trie-router");
+var import_js_trie_router5 = require("@e22m4u/js-trie-router");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AFTER_ACTION_METADATA_KEY,
@@ -1001,6 +1003,7 @@ var import_js_trie_router4 = require("@e22m4u/js-trie-router");
   RestActionReflector,
   RestControllerReflector,
   RestRouter,
+  RouterHookType,
   afterAction,
   beforeAction,
   deleteAction,
