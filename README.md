@@ -49,7 +49,8 @@ REST-маршрутизатор на основе контроллеров и Ty
   - [URL-параметры](#url-параметры)
   - [Query-параметры](#query-параметры)
   - [Тело запроса](#тело-запроса)
-  - [Заголовки и Cookies](#заголовки-и-cookies)
+  - [Заголовки](#заголовки)
+  - [Cookies](#cookies)
   - [Контекст запроса](#контекст-запроса)
 - [Валидация данных](#валидация-данных)
 - [Хуки](#хуки)
@@ -86,11 +87,11 @@ npm install @e22m4u/ts-rest-router
 
 ```ts
 import {
-  restController,
+  DataType,
   getAction,
   postAction,
   requestBody,
-  DataType,
+  restController,
 } from '@e22m4u/ts-rest-router';
 
 // временное хранилище данных
@@ -181,7 +182,12 @@ bootstrap();
 Пример:
 
 ```ts
-import {getAction, requestParam, DataType} from '@e22m4u/ts-rest-router';
+import {
+  DataType,
+  getAction,
+  requestParam,
+  restController,
+} from '@e22m4u/ts-rest-router';
 
 @restController('articles')
 class ArticleController {
@@ -215,7 +221,12 @@ class ArticleController {
 Пример:
 
 ```ts
-import {getAction, requestQuery, DataType} from '@e22m4u/ts-rest-router';
+import {
+  DataType,
+  getAction,
+  requestQuery,
+  restController,
+} from '@e22m4u/ts-rest-router';
 
 @restController('products')
 class ProductController {
@@ -266,10 +277,11 @@ class ProductController {
 
 ```ts
 import {
+  DataType,
   postAction,
   requestBody,
   requestField,
-  DataType,
+  restController,
 } from '@e22m4u/ts-rest-router';
 
 @restController('users')
@@ -310,23 +322,87 @@ class UserController {
 }
 ```
 
-### Заголовки и Cookies
+### Заголовки
 
-Работа с заголовками и Cookies осуществляется аналогичным образом:
+Для извлечения HTTP-заголовков из запроса.
 
 Декораторы:
-
-- `@requestHeaders(schema)`  
-  \- извлечение всех заголовков;
 
 - `@requestHeader(name, schema)`  
   \- извлечение отдельного заголовка;
 
-- `@requestCookies(schema)`  
-  \- извлечение всех Cookies;
+- `@requestHeaders(schema)`  
+  \- извлечение всех заголовков;
+
+Пример:
+
+```ts
+import {
+  DataType,
+  getAction,
+  requestHeader,
+} from '@e22m4u/ts-rest-router';
+
+@restController('content')
+class ContentController {
+  // GET /content
+  @getAction()
+  getContentForLanguage(
+    // извлечение заголовка 'Accept-Language'
+    // со значением по умолчанию 'en'
+    @requestHeader('Accept-Language', {
+      type: DataType.STRING,
+      default: 'en',
+    })
+    lang: string,
+  ) {
+    // lang будет 'en', если заголовок отсутствует,
+    // или будет содержать значение заголовка, например 'ru-RU'
+    return {content: `Content in ${lang} language`};
+  }
+}
+```
+
+### Cookies
+
+Используется извлечения разобранного заголовка Cookies из входящего запроса.
+
+Декораторы:
 
 - `@requestCookie(name, schema)`  
   \- извлечение отдельного Cookie;
+
+- `@requestCookies(schema)`  
+  \- извлечение всех Cookies;
+
+Пример:
+
+```ts
+import {
+  DataType,
+  getAction,
+  requestCookie,
+} from '@e22m4u/ts-rest-router';
+
+@restController('session')
+class SessionController {
+  // GET /session/info
+  @getAction('info')
+  getSessionInfo(
+    // извлечение cookie с именем 'sessionId'
+    // и проверка, что значение является строкой
+    @requestCookie('sessionId', {
+      type: DataType.STRING,
+      required: true,
+    })
+    sessionId: string,
+  ) {
+    // если cookie 'sessionId' отсутствует,
+    // будет выброшена ошибка 400 Bad Request
+    return {sessionId, info: 'User session data...'};
+  }
+}
+```
 
 ### Контекст запроса
 
@@ -340,8 +416,11 @@ class UserController {
 - Псевдонимы: `@httpRequest()`, `@httpResponse()`, `@requestContainer()`;
 
 ```ts
-import {RequestContext} from '@e22m4u/js-trie-router';
-import {getAction, requestContext} from '@e22m4u/ts-rest-router';
+import {
+  getAction,
+  requestContext,
+  RequestContext,
+} from '@e22m4u/ts-rest-router';
 
 @restController('system')
 class SystemController {
@@ -453,7 +532,7 @@ class OrderController {
 
 ```ts
 import createError from 'http-errors';
-import {RequestContext} from '@e22m4u/js-trie-router';
+import {RequestContext} from '@e22m4u/ts-rest-router';
 
 // хук для проверки аутентификации
 async function authHook(ctx: RequestContext) {
@@ -524,7 +603,7 @@ DI-контейнера, который существует только в р�
 ```ts
 // src/auth.hook.ts
 import {AuthService} from './auth.service';
-import {RequestContext} from '@e22m4u/js-trie-router';
+import {RequestContext} from '@e22m4u/ts-rest-router';
 
 export async function authHook(context: RequestContext) {
   const requestContainer = context.container;
@@ -573,7 +652,7 @@ import {authHook} from './auth.hook';
 import createError from 'http-errors';
 import {Service} from '@e22m4u/js-service';
 import {AuthService} from './auth.service';
-import {getAction, restController, beforeAction} from '@e22m4u/ts-rest-router';
+import {getAction, beforeAction, restController} from '@e22m4u/ts-rest-router';
 
 @beforeAction(authHook)
 @restController('profile')
@@ -584,7 +663,9 @@ export class ProfileController extends Service {
     // который был создан и зарегистрирован в хуке
     const authService = this.getService(AuthService);
 
-    if (!authService.currentUser) throw createError(401, 'Unauthorized');
+    if (!authService.currentUser) {
+      throw createError(401, 'Unauthorized');
+    }
 
     return authService.currentUser;
   }
