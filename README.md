@@ -1,5 +1,8 @@
 # @e22m4u/ts-rest-router
 
+![npm version](https://badge.fury.io/js/@e22m4u%2Fts-rest-router.svg)
+![license](https://img.shields.io/badge/license-mit-blue.svg)
+
 REST-маршрутизатор на основе контроллеров и TypeScript декораторов.
 
 Модуль `@e22m4u/ts-rest-router` позволяет создавать структурированное
