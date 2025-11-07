@@ -338,7 +338,7 @@ class ContentController {
 Декораторы:
 
 - `@requestCookie(name, schema)`  
-  \- извлечение отдельного Cookie;
+  \- извлечение отдельного Cookie по ключу;
 
 - `@requestCookies(schema)`  
   \- извлечение всех Cookies;
