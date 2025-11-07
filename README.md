@@ -471,6 +471,7 @@ import {
   DataType,
   postAction,
   requestBody,
+  restController,
 } from '@e22m4u/ts-rest-router';
 
 @restController('orders')
