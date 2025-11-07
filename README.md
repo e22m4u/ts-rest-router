@@ -337,7 +337,7 @@ class UserController {
 - `@requestContext('req')` - инъекция нативного `IncomingMessage`;
 - `@requestContext('res')` - инъекция нативного `ServerResponse`;
 - `@requestContext('container')` - инъекция DI-контейнера запроса;
-- **Алиасы:** `@httpRequest()`, `@httpResponse()`, `@requestContainer()`;
+- Псевдонимы: `@httpRequest()`, `@httpResponse()`, `@requestContainer()`;
 
 ```ts
 import {RequestContext} from '@e22m4u/js-trie-router';
