@@ -7,7 +7,7 @@ export declare enum RequestDataSource {
     PARAMS = "params",
     QUERY = "query",
     HEADERS = "headers",
-    COOKIE = "cookie",
+    COOKIES = "cookies",
     BODY = "body"
 }
 /**

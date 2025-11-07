@@ -205,7 +205,7 @@ var RequestDataSource;
   RequestDataSource2["PARAMS"] = "params";
   RequestDataSource2["QUERY"] = "query";
   RequestDataSource2["HEADERS"] = "headers";
-  RequestDataSource2["COOKIE"] = "cookie";
+  RequestDataSource2["COOKIES"] = "cookies";
   RequestDataSource2["BODY"] = "body";
 })(RequestDataSource || (RequestDataSource = {}));
 var REQUEST_DATA_METADATA_KEY = new import_ts_reflector5.MetadataKey("requestDataMetadataKey");
@@ -305,8 +305,8 @@ var requestQueries = createRequestDataDecoratorWithSource(RequestDataSource.QUER
 var requestQuery = createRequestDataPropertyDecoratorWithSource(RequestDataSource.QUERY);
 var requestHeaders = createRequestDataDecoratorWithSource(RequestDataSource.HEADERS);
 var requestHeader = createRequestDataPropertyDecoratorWithSource(RequestDataSource.HEADERS);
-var requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIE);
-var requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIE);
+var requestCookies = createRequestDataDecoratorWithSource(RequestDataSource.COOKIES);
+var requestCookie = createRequestDataPropertyDecoratorWithSource(RequestDataSource.COOKIES);
 var requestBody = createRequestDataDecoratorWithSource(RequestDataSource.BODY);
 var requestField = createRequestDataPropertyDecoratorWithSource(RequestDataSource.BODY);
 
@@ -896,7 +896,7 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
             case RequestDataSource.HEADERS:
               data = requestContext2.headers;
               break;
-            case RequestDataSource.COOKIE:
+            case RequestDataSource.COOKIES:
               data = requestContext2.cookies;
               break;
             case RequestDataSource.BODY:

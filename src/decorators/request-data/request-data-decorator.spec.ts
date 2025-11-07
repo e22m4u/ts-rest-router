@@ -108,7 +108,7 @@ describe('requestData', function () {
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
-          source: RequestDataSource.COOKIE,
+          source: RequestDataSource.COOKIES,
           schema: {type: DataType.ANY},
         });
       });
@@ -502,7 +502,7 @@ describe('requestData', function () {
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
-          source: RequestDataSource.COOKIE,
+          source: RequestDataSource.COOKIES,
           schema: {
             type: DataType.OBJECT,
             properties: {
@@ -526,7 +526,7 @@ describe('requestData', function () {
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
-          source: RequestDataSource.COOKIE,
+          source: RequestDataSource.COOKIES,
           schema: {
             type: DataType.OBJECT,
             properties: {
@@ -553,7 +553,7 @@ describe('requestData', function () {
         }
         const res = RequestDataReflector.getMetadata(Target, 'myMethod');
         expect(res.get(0)).to.be.eql({
-          source: RequestDataSource.COOKIE,
+          source: RequestDataSource.COOKIES,
           schema: {
             type: DataType.OBJECT,
             properties: {
@@ -579,7 +579,7 @@ describe('requestData', function () {
         }
         const mdMap = RequestDataReflector.getMetadata(Target, 'myMethod');
         const md = mdMap.get(0) as RequestDataMetadata;
-        expect(md.source).to.be.eq(RequestDataSource.COOKIE);
+        expect(md.source).to.be.eq(RequestDataSource.COOKIES);
         expect(md.schema).to.be.a('function');
         expect(md.property).to.be.eq(propertyKey);
         const res1 = md.schema as DataSchemaFactory;

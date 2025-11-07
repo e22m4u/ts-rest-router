@@ -118,10 +118,10 @@ export const requestHeader = createRequestDataPropertyDecoratorWithSource(
   RequestDataSource.HEADERS,
 );
 export const requestCookies = createRequestDataDecoratorWithSource(
-  RequestDataSource.COOKIE,
+  RequestDataSource.COOKIES,
 );
 export const requestCookie = createRequestDataPropertyDecoratorWithSource(
-  RequestDataSource.COOKIE,
+  RequestDataSource.COOKIES,
 );
 export const requestBody = createRequestDataDecoratorWithSource(
   RequestDataSource.BODY,

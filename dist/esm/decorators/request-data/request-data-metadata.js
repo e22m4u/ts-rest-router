@@ -7,7 +7,7 @@ export var RequestDataSource;
     RequestDataSource["PARAMS"] = "params";
     RequestDataSource["QUERY"] = "query";
     RequestDataSource["HEADERS"] = "headers";
-    RequestDataSource["COOKIE"] = "cookie";
+    RequestDataSource["COOKIES"] = "cookies";
     RequestDataSource["BODY"] = "body";
 })(RequestDataSource || (RequestDataSource = {}));
 /**
