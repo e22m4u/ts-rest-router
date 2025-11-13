@@ -7,8 +7,8 @@ describe('RequestContextReflector', function () {
         it('sets a given value as target metadata', function () {
             class Target {
             }
-            const md1 = { property: 'req' };
-            const md2 = { property: 'res' };
+            const md1 = { property: 'request' };
+            const md2 = { property: 'response' };
             RequestContextReflector.setMetadata(md1, Target, 0, 'propertyKey');
             RequestContextReflector.setMetadata(md2, Target, 1, 'propertyKey');
             const res = Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, Target, 'propertyKey');
@@ -19,8 +19,8 @@ describe('RequestContextReflector', function () {
         it('overrides existing metadata', function () {
             class Target {
             }
-            const md1 = { property: 'req' };
-            const md2 = { property: 'res' };
+            const md1 = { property: 'request' };
+            const md2 = { property: 'response' };
             RequestContextReflector.setMetadata(md1, Target, 0, 'propertyKey');
             const res1 = Reflector.getOwnMetadata(REQUEST_CONTEXT_METADATA_KEY, Target, 'propertyKey');
             expect(res1).to.be.instanceof(Map);
@@ -35,8 +35,8 @@ describe('RequestContextReflector', function () {
         it('returns an existing metadata of the target', function () {
             class Target {
             }
-            const md1 = { property: 'req' };
-            const md2 = { property: 'res' };
+            const md1 = { property: 'request' };
+            const md2 = { property: 'response' };
             const mdMap = new Map([
                 [0, md1],
                 [1, md2],

@@ -36,16 +36,16 @@ describe('requestContext', function () {
             method(prop) { }
         }
         __decorate([
-            __param(0, requestContext('res')),
+            __param(0, requestContext('response')),
             __metadata("design:type", Function),
             __metadata("design:paramtypes", [Object]),
             __metadata("design:returntype", void 0)
         ], Target.prototype, "method", null);
         const res = RequestContextReflector.getMetadata(Target, 'method');
-        expect(res.get(0)).to.be.eql({ property: 'res' });
+        expect(res.get(0)).to.be.eql({ property: 'response' });
     });
     describe('httpRequest', function () {
-        it('should set the "req" property to target metadata', function () {
+        it('should set the "request" property to target metadata', function () {
             class Target {
                 method(prop) { }
             }
@@ -56,11 +56,11 @@ describe('requestContext', function () {
                 __metadata("design:returntype", void 0)
             ], Target.prototype, "method", null);
             const res = RequestContextReflector.getMetadata(Target, 'method');
-            expect(res.get(0)).to.be.eql({ property: 'req' });
+            expect(res.get(0)).to.be.eql({ property: 'request' });
         });
     });
     describe('httpResponse', function () {
-        it('should set the "res" property to target metadata', function () {
+        it('should set the "response" property to target metadata', function () {
             class Target {
                 method(prop) { }
             }
@@ -71,11 +71,11 @@ describe('requestContext', function () {
                 __metadata("design:returntype", void 0)
             ], Target.prototype, "method", null);
             const res = RequestContextReflector.getMetadata(Target, 'method');
-            expect(res.get(0)).to.be.eql({ property: 'res' });
+            expect(res.get(0)).to.be.eql({ property: 'response' });
         });
     });
     describe('requestContainer', function () {
-        it('should set the "cont" property to target metadata', function () {
+        it('should set the "container" property to target metadata', function () {
             class Target {
                 method(prop) { }
             }
@@ -86,7 +86,7 @@ describe('requestContext', function () {
                 __metadata("design:returntype", void 0)
             ], Target.prototype, "method", null);
             const res = RequestContextReflector.getMetadata(Target, 'method');
-            expect(res.get(0)).to.be.eql({ property: 'cont' });
+            expect(res.get(0)).to.be.eql({ property: 'container' });
         });
     });
 });

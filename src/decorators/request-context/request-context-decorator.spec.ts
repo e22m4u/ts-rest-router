@@ -21,16 +21,16 @@ describe('requestContext', function () {
   it('should set the given property to target metadata', function () {
     class Target {
       method(
-        @requestContext('res')
+        @requestContext('response')
         prop: unknown,
       ) {}
     }
     const res = RequestContextReflector.getMetadata(Target, 'method');
-    expect(res.get(0)).to.be.eql({property: 'res'});
+    expect(res.get(0)).to.be.eql({property: 'response'});
   });
 
   describe('httpRequest', function () {
-    it('should set the "req" property to target metadata', function () {
+    it('should set the "request" property to target metadata', function () {
       class Target {
         method(
           @httpRequest()
@@ -38,12 +38,12 @@ describe('requestContext', function () {
         ) {}
       }
       const res = RequestContextReflector.getMetadata(Target, 'method');
-      expect(res.get(0)).to.be.eql({property: 'req'});
+      expect(res.get(0)).to.be.eql({property: 'request'});
     });
   });
 
   describe('httpResponse', function () {
-    it('should set the "res" property to target metadata', function () {
+    it('should set the "response" property to target metadata', function () {
       class Target {
         method(
           @httpResponse()
@@ -51,12 +51,12 @@ describe('requestContext', function () {
         ) {}
       }
       const res = RequestContextReflector.getMetadata(Target, 'method');
-      expect(res.get(0)).to.be.eql({property: 'res'});
+      expect(res.get(0)).to.be.eql({property: 'response'});
     });
   });
 
   describe('requestContainer', function () {
-    it('should set the "cont" property to target metadata', function () {
+    it('should set the "container" property to target metadata', function () {
       class Target {
         method(
           @requestContainer()
@@ -64,7 +64,7 @@ describe('requestContext', function () {
         ) {}
       }
       const res = RequestContextReflector.getMetadata(Target, 'method');
-      expect(res.get(0)).to.be.eql({property: 'cont'});
+      expect(res.get(0)).to.be.eql({property: 'container'});
     });
   });
 });

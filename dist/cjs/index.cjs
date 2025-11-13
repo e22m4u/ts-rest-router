@@ -566,15 +566,15 @@ function requestContext(propertyName) {
 }
 __name(requestContext, "requestContext");
 function httpRequest() {
-  return requestContext("req");
+  return requestContext("request");
 }
 __name(httpRequest, "httpRequest");
 function httpResponse() {
-  return requestContext("res");
+  return requestContext("response");
 }
 __name(httpResponse, "httpResponse");
 function requestContainer() {
-  return requestContext("cont");
+  return requestContext("container");
 }
 __name(requestContainer, "requestContainer");
 
@@ -937,9 +937,9 @@ var _ControllerRegistry = class _ControllerRegistry extends DebuggableService {
           debug("No RequestDataMetadata specified for %v argument.", index);
         }
       });
-      if (requestContext2.cont.has(controllerCtor))
+      if (requestContext2.container.has(controllerCtor))
         throw new import_js_format2.Errorf("The controller %v is already registered, which breaks controller isolation per request.", controllerCtor.name);
-      const controller = requestContext2.cont.get(controllerCtor);
+      const controller = requestContext2.container.get(controllerCtor);
       return controller[actionName](...args);
     };
   }

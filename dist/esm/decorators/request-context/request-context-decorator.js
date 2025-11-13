@@ -19,17 +19,17 @@ export function requestContext(propertyName) {
  * HttpRequest decorator.
  */
 export function httpRequest() {
-    return requestContext('req');
+    return requestContext('request');
 }
 /**
  * HttpResponse decorator.
  */
 export function httpResponse() {
-    return requestContext('res');
+    return requestContext('response');
 }
 /**
  * RequestContainer decorator.
  */
 export function requestContainer() {
-    return requestContext('cont');
+    return requestContext('container');
 }
