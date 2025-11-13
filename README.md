@@ -407,7 +407,7 @@ class SystemController {
 ## Валидация данных
 
 Модуль интегрирован с
-[@e22m4u/js-data-schema](https://www.npmjs.com/package/@e22m4u/js-data-schema)
+[@e22m4u/ts-data-schema](https://www.npmjs.com/package/@e22m4u/ts-data-schema)
 для гибкой проверки данных. Это дает возможность определять типы данных
 и сложные правила.
 

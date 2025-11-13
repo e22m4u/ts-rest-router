@@ -1,14 +1,14 @@
 import { Errorf } from '@e22m4u/js-format';
 import { TrieRouter } from '@e22m4u/js-trie-router';
-import { DataValidator } from '@e22m4u/js-data-schema';
-import { DataTypeCaster } from '@e22m4u/js-data-schema';
+import { DataValidator } from '@e22m4u/ts-data-schema';
+import { DataTypeCaster } from '@e22m4u/ts-data-schema';
 import { NotAControllerError } from './errors/index.js';
 import { RequestDataSource } from './decorators/index.js';
 import { DebuggableService } from './debuggable-service.js';
 import { RestActionReflector } from './decorators/index.js';
 import { RequestDataReflector } from './decorators/index.js';
 import { AfterActionReflector } from './decorators/index.js';
-import { DefaultValuesApplier } from '@e22m4u/js-data-schema';
+import { DefaultValuesApplier } from '@e22m4u/ts-data-schema';
 import { BeforeActionReflector } from './decorators/index.js';
 import { RestControllerReflector } from './decorators/index.js';
 import { RequestContextReflector } from './decorators/index.js';

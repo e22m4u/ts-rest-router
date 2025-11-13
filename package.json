@@ -41,7 +41,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@e22m4u/js-data-schema": "~0.4.8",
+    "@e22m4u/ts-data-schema": "~0.4.9",
     "@e22m4u/js-debug": "~0.3.3",
     "@e22m4u/js-format": "~0.2.1",
     "@e22m4u/js-service": "~0.4.6",
