@@ -56,7 +56,7 @@ describe('requestContext', function () {
   });
 
   describe('requestContainer', function () {
-    it('should set the "container" property to target metadata', function () {
+    it('should set the "cont" property to target metadata', function () {
       class Target {
         method(
           @requestContainer()
@@ -64,7 +64,7 @@ describe('requestContext', function () {
         ) {}
       }
       const res = RequestContextReflector.getMetadata(Target, 'method');
-      expect(res.get(0)).to.be.eql({property: 'container'});
+      expect(res.get(0)).to.be.eql({property: 'cont'});
     });
   });
 });

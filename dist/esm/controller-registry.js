@@ -425,10 +425,10 @@ export class ControllerRegistry extends DebuggableService {
                 }
             });
             // выполнение операции контроллера
-            if (requestContext.container.has(controllerCtor))
+            if (requestContext.cont.has(controllerCtor))
                 throw new Errorf('The controller %v is already registered, which breaks ' +
                     'controller isolation per request.', controllerCtor.name);
-            const controller = requestContext.container.get(controllerCtor);
+            const controller = requestContext.cont.get(controllerCtor);
             return controller[actionName](...args);
         };
     }

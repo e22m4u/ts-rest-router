@@ -31,5 +31,5 @@ export function httpResponse() {
  * RequestContainer decorator.
  */
 export function requestContainer() {
-    return requestContext('container');
+    return requestContext('cont');
 }
