@@ -1,9 +1,8 @@
 /* eslint mocha/no-sibling-hooks: 0 */
 import {
-  createRequestMock,
-  createResponseMock,
-  RouterHookType,
+  TrieRouter,
   HttpMethod,
+  RouterHookType,
   ParsedCookies,
   ParsedHeaders,
   ParsedParams,
@@ -11,14 +10,16 @@ import {
   RequestContext,
   RequestParser,
   RouteRegistry,
-  TrieRouter,
+  createRouteMock,
+  createRequestMock,
+  createResponseMock,
 } from '@e22m4u/js-trie-router';
 
 import {
-  afterAction,
-  beforeAction,
   getAction,
   postAction,
+  afterAction,
+  beforeAction,
   requestBody,
   requestField,
   requestCookies,
@@ -637,7 +638,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       ctx.params = matching!.params;
       await matching!.route.handler(ctx);
       expect(checked).to.be.true;
@@ -666,7 +667,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       ctx.params = matching!.params;
       await matching!.route.handler(ctx);
       expect(checked).to.be.true;
@@ -695,7 +696,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -725,7 +726,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -760,7 +761,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -791,7 +792,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -822,7 +823,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -853,7 +854,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -885,7 +886,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -917,7 +918,7 @@ describe('ControllerRegistry', function () {
       const matching = routeReg.matchRouteByRequest(req);
       expect(matching).to.be.not.empty;
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const ctx = new RequestContext(S.container, req, res, matching!.route);
       const reqData = await S.getService(RequestParser).parse(req);
       Object.assign(ctx, reqData);
       await matching!.route.handler(ctx);
@@ -963,7 +964,8 @@ describe('ControllerRegistry', function () {
       const S = new ControllerRegistry();
       const req = createRequestMock();
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const route = createRouteMock();
+      const ctx = new RequestContext(S.container, req, res, route);
       const handler = S['createRouteHandler'](MyController, 'myAction');
       await handler(ctx);
       expect(invoked).to.be.true;
@@ -988,7 +990,8 @@ describe('ControllerRegistry', function () {
       const S = new ControllerRegistry();
       const req = createRequestMock();
       const res = createResponseMock();
-      const ctx = new RequestContext(S.container, req, res);
+      const route = createRouteMock();
+      const ctx = new RequestContext(S.container, req, res, route);
       const handler = S['createRouteHandler'](MyController, 'myAction');
       await handler(ctx);
       expect(invoked).to.be.true;
@@ -1017,13 +1020,13 @@ describe('ControllerRegistry', function () {
       const req1 = createRequestMock();
       const res1 = createResponseMock();
       const cont1 = new ServiceContainer(S.container);
-      const ctx1 = new RequestContext(cont1, req1, res1);
+      const ctx1 = new RequestContext(cont1, req1, res1, matching!.route);
       const controllerInstance1 = (await handler(ctx1)) as MyStatefulController;
       // симуляция второго запроса
       const req2 = createRequestMock();
       const res2 = createResponseMock();
       const cont2 = new ServiceContainer(S.container);
-      const ctx2 = new RequestContext(cont2, req2, res2);
+      const ctx2 = new RequestContext(cont2, req2, res2, matching!.route);
       const controllerInstance2 = (await handler(ctx2)) as MyStatefulController;
       // проверка, что это два разных экземпляра
       expect(controllerInstance1).to.be.instanceOf(MyStatefulController);
@@ -1057,7 +1060,7 @@ describe('ControllerRegistry', function () {
       // симуляция запроса
       const res = createResponseMock();
       const cont1 = new ServiceContainer(S.container);
-      const ctx1 = new RequestContext(cont1, req, res);
+      const ctx1 = new RequestContext(cont1, req, res, matching!.route);
       await handler(ctx1);
       expect(counter).to.be.eq(1);
     });
@@ -1078,8 +1081,9 @@ describe('ControllerRegistry', function () {
             }
             const req = createRequestMock();
             const res = createResponseMock();
+            const route = createRouteMock();
             const S = new ControllerRegistry();
-            const ctx = new RequestContext(S.container, req, res);
+            const ctx = new RequestContext(S.container, req, res, route);
             ctx.body = '10';
             const handler = S['createRouteHandler'](MyController, 'myAction');
             await handler(ctx);
@@ -1104,8 +1108,9 @@ describe('ControllerRegistry', function () {
             }
             const req = createRequestMock();
             const res = createResponseMock();
+            const route = createRouteMock();
             const S = new ControllerRegistry();
-            const ctx = new RequestContext(S.container, req, res);
+            const ctx = new RequestContext(S.container, req, res, route);
             const handler = S['createRouteHandler'](MyController, 'myAction');
             await handler(ctx);
             expect(invoked).to.be.eq(1);
@@ -1124,8 +1129,9 @@ describe('ControllerRegistry', function () {
             }
             const req = createRequestMock();
             const res = createResponseMock();
+            const route = createRouteMock();
             const S = new ControllerRegistry();
-            const ctx = new RequestContext(S.container, req, res);
+            const ctx = new RequestContext(S.container, req, res, route);
             ctx.body = '10';
             const handler = S['createRouteHandler'](MyController, 'myAction');
             await handler(ctx);
@@ -1145,11 +1151,11 @@ describe('ControllerRegistry', function () {
                 return body;
               }
             }
-
             const req = createRequestMock();
             const res = createResponseMock();
+            const route = createRouteMock();
             const S = new ControllerRegistry();
-            const ctx = new RequestContext(S.container, req, res);
+            const ctx = new RequestContext(S.container, req, res, route);
             const handler = S['createRouteHandler'](MyController, 'myAction');
             const throwable = () => handler(ctx);
             expect(throwable).to.throw(/is required, but undefined was given/);
@@ -1175,7 +1181,8 @@ describe('ControllerRegistry', function () {
             }
             const req = createRequestMock();
             const res = createResponseMock();
-            const ctx = new RequestContext(S.container, req, res);
+            const route = createRouteMock();
+            const ctx = new RequestContext(S.container, req, res, route);
             const handler = S['createRouteHandler'](MyController, 'myAction');
             await handler(ctx);
             expect(invoked).to.be.eq(1);
@@ -1199,7 +1206,8 @@ describe('ControllerRegistry', function () {
             }
             const req = createRequestMock();
             const res = createResponseMock();
-            const ctx = new RequestContext(S.container, req, res);
+            const route = createRouteMock();
+            const ctx = new RequestContext(S.container, req, res, route);
             ctx.body = '10';
             const handler = S['createRouteHandler'](MyController, 'myAction');
             await handler(ctx);
@@ -1224,7 +1232,8 @@ describe('ControllerRegistry', function () {
 
             const req = createRequestMock();
             const res = createResponseMock();
-            const ctx = new RequestContext(S.container, req, res);
+            const route = createRouteMock();
+            const ctx = new RequestContext(S.container, req, res, route);
             const handler = S['createRouteHandler'](MyController, 'myAction');
             const throwable = () => handler(ctx);
             expect(throwable).to.throw(/is required, but undefined was given/);
