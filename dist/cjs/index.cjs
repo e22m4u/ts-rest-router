@@ -975,6 +975,24 @@ var _RestRouter = class _RestRouter extends DebuggableService {
     this.getService(import_js_trie_router3.TrieRouter).addHook(type, hook);
     return this;
   }
+  /**
+   * Add pre-handler hook.
+   *
+   * @param hook
+   */
+  addPreHandler(hook) {
+    this.getService(import_js_trie_router3.TrieRouter).addPreHandler(hook);
+    return this;
+  }
+  /**
+   * Add post-handler hook.
+   *
+   * @param hook
+   */
+  addPostHandler(hook) {
+    this.getService(import_js_trie_router3.TrieRouter).addPostHandler(hook);
+    return this;
+  }
 };
 __name(_RestRouter, "RestRouter");
 var RestRouter = _RestRouter;

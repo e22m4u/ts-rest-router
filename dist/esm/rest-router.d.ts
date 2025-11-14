@@ -31,4 +31,16 @@ export declare class RestRouter extends DebuggableService {
      * @param hook
      */
     addHook(type: typeof RouterHookType.POST_HANDLER, hook: PostHandlerHook): this;
+    /**
+     * Add pre-handler hook.
+     *
+     * @param hook
+     */
+    addPreHandler(hook: PreHandlerHook): this;
+    /**
+     * Add post-handler hook.
+     *
+     * @param hook
+     */
+    addPostHandler(hook: PostHandlerHook): this;
 }

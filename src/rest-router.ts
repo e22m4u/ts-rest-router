@@ -68,4 +68,24 @@ export class RestRouter extends DebuggableService {
     this.getService(TrieRouter).addHook(type, hook);
     return this;
   }
+
+  /**
+   * Add pre-handler hook.
+   *
+   * @param hook
+   */
+  addPreHandler(hook: PreHandlerHook) {
+    this.getService(TrieRouter).addPreHandler(hook);
+    return this;
+  }
+
+  /**
+   * Add post-handler hook.
+   *
+   * @param hook
+   */
+  addPostHandler(hook: PostHandlerHook) {
+    this.getService(TrieRouter).addPostHandler(hook);
+    return this;
+  }
 }
